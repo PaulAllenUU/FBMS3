@@ -1,0 +1,42 @@
+@model IList<Stock>
+
+<partial name="_Breadcrumbs" model=@(new [] { ("/", "Home"), ("/stock", "Stock"), ("","Index") })>
+
+<h3>List Of All Stock</h3>
+
+<a class="btn btn-sm btn-primary my-3" asp-action="Create" >
+    <i class="bi bi-plus"></i> Create</a>
+
+<table class="table">
+
+    <thead>
+        <tr>
+
+            <th>Id</th>
+            <th>FoodBankId</th>
+            <th>Description</th>
+            <th>Quantity</th>
+            <th>ExpiryDate</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @foreach(var s in Model)
+        {
+            <tr>
+
+                <td>@s.Id</td>
+                <td>@s.FoodBankId</td>
+                <td>@s.Description</td>
+                <td>@s.Quantity</td>
+                <td>@s.ExpiryDate.ToShortDateString()</td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>

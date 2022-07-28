@@ -1,0 +1,46 @@
+@model IList<FoodBank>
+
+<partial name="_BreadCrumbs" model=@(new [] {
+    ("/","Home"),
+    ("","FoodBanks")
+}) />
+
+<h3 class="mb-3">List Of Our Food Bank Locations</h3>
+
+<a class="btn btn-sm btn-primary my-3" asp-action="Create" >
+    <i class="bi bi-plus"></i> Create
+</a>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Street Number</th>
+            <th>Street Name</th>
+            <th>Post Code</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var f in Model)
+        {
+            <tr>
+                <td>@f.Id</td>
+                <td>@f.StreetNumber</td>
+                <td>@f.StreetName</td>
+                <td>@f.PostCode</td>
+                <td>
+
+                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="View Foodbank Details" asp-controller="FoodBank" asp-action="Details" asp-route-id=@f.Id>View</a>  
+                    <!-- Add edit link  -->
+                    <a asp-controller="FoodBank" asp-action="Edit" asp-route-id=@f.Id>Edit</a>
+                    <!-- Add delete link -->
+                    <a asp-controller="FoodBank" asp-action="Delete" asp-route-id=@f.Id>Delete</a>    
+
+                </td>
+            </tr>
+            
+        }
+    </tbody>
+</table>
+

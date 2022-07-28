@@ -1,0 +1,26 @@
+@model FoodBank
+
+<partial name="_BreadCrumbs" model=@(new [] {
+    ("/","Home"),
+    ("/foodbank","FoodBanks"),
+    ($"/foodbank/details/{Model.Id}",$"{Model.Id}"),
+    ("","Details")
+}) />
+
+<h3 class="mt-4 mb-4">Food Bank Details</h3>
+<div class="row">
+    <!-- Details -->
+    <div class="col-8 card rounded shadow p-3">
+        <dl class="row">
+            <dt class="col-5">Street Number</dt>
+            <dd class="col-7">@Model.StreetNumber</dd>
+
+            <dt class="col-5">Street Name</dt>
+            <dd class="col-7">@Model.StreetName</dd>
+
+            <dt class="col-5">Postcode</dt>
+            <dd class="col-7">@Model.PostCode</dd>
+        </dl>
+
+    </div>
+</div>
