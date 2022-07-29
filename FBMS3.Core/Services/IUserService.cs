@@ -24,7 +24,7 @@ namespace FBMS3.Core.Services
         bool IsEmailAvailable(string email, int userId);
 
         //add a user to the database
-        User AddUser(string firstName, string secondName, string email, string password, string FoodBankStreetName, Role role);
+        User AddUser(string firstName, string secondName, string email, string password, int foodBankId, Role role);
 
         //update an existing user on the database
         User UpdateUser(User user);
@@ -71,6 +71,20 @@ namespace FBMS3.Core.Services
 
         // ----Begin Stock Management Interface ----//
         IList <Stock> GetAllStock();
+
+        //search stock method based on input from the user
+        //IList<Stock> SearchStock(StockRange range, string query);
+
+        //Return stock by specific bool values - non-food, meat, vegetables, carbohydrates
+        IList<Stock> GetAllNonFoodItems(bool nonFood);
+
+        IList<Stock> GetAllMeatFoodItems(bool meat);
+
+        IList<Stock> GetAllVegetablesFromStock (bool vegetable);
+
+        IList<Stock> GetAllCarbohydratesFromStock (bool carbs);
+
+        IList<Stock> SearchStock(StockRange range, string query);
 
         //get stock by id - id passed in as parameter from the user
         Stock GetStockById(int id);

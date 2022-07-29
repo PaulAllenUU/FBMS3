@@ -33,9 +33,10 @@ namespace FBMS3.Test
         [Fact]
         public void AddingUsersShouldWork()
         {
+            var foodbank = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
             // arrange
-            service.AddUser("admin", "scholefield", "admin@mail.com", "admin", "dublin road", Role.admin );
-            service.AddUser("guest", "phillips", "guest@mail.com", "guest", "antrim road", Role.guest);
+            service.AddUser("admin", "scholefield", "admin@mail.com", "admin", foodbank.Id, Role.admin );
+            service.AddUser("guest", "phillips", "guest@mail.com", "guest", foodbank.Id, Role.guest);
 
             // act
             var users = service.GetUsers();
@@ -48,13 +49,14 @@ namespace FBMS3.Test
         public void UpdatingUserShouldWork()
         {
             // arrange
-            var user = service.AddUser("admin", "o'neill", "admin@mail.com", "admin", "dublin road", Role.admin );
+            var foodbank = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var user = service.AddUser("admin", "o'neill", "admin@mail.com", "admin", foodbank.Id, Role.admin );
             
             // act
             user.FirstName = "administrator";
             user.SecondName = "o'neill";
             user.Email = "admin@mail.com";          
-            user.FoodBankStreetName = "dublin road";  
+            user.FoodBankId = foodbank.Id;  
             var updatedUser = service.UpdateUser(user);
 
             // assert
@@ -66,7 +68,8 @@ namespace FBMS3.Test
         public void LoginWithValidCredentialsShouldWork()
         {
             // arrange
-            service.AddUser("admin", "o'neill", "admin@mail.com", "admin", "dublin road", Role.admin );
+            var foodbank = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            service.AddUser("admin", "o'neill", "admin@mail.com", "admin", foodbank.Id, Role.admin );
             
             // act            
             var user = service.Authenticate("admin@mail.com","admin");
@@ -80,7 +83,8 @@ namespace FBMS3.Test
         public void LoginWithInvalidCredentialsShouldNotWork()
         {
             // arrange
-            service.AddUser("admin", "o'neill", "admin@mail.com", "admin", "dublinr road", Role.admin );
+            var foodbank = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            service.AddUser("admin", "o'neill", "admin@mail.com", "admin", foodbank.Id, Role.admin );
 
             // act      
             var user = service.Authenticate("admin@mail.com","xxx");

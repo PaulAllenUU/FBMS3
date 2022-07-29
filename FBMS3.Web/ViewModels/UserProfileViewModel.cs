@@ -19,7 +19,7 @@ namespace FBMS3.Web.ViewModels
         [Remote(action: "VerifyEmailAvailable", controller: "User", AdditionalFields = nameof(Id))]
         public string Email { get; set; }
 
-        public string FoodBankStreetName { get; set; }
+        public int FoodBankId { get; set; }
 
         [Required]
         public Role Role { get; set; }

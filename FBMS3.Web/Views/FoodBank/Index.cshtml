@@ -31,10 +31,10 @@
                 <td>@f.PostCode</td>
                 <td>
 
-                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="View Foodbank Details" asp-controller="FoodBank" asp-action="Details" asp-route-id=@f.Id>View</a>  
-                    <!-- Add edit link  -->
+                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="View Foodbank Details" asp-controller="FoodBank" asp-action="Details" asp-route-id=@f.Id>View</a>
+
                     <a asp-controller="FoodBank" asp-action="Edit" asp-route-id=@f.Id>Edit</a>
-                    <!-- Add delete link -->
+                    
                     <a asp-controller="FoodBank" asp-action="Delete" asp-route-id=@f.Id>Delete</a>    
 
                 </td>

@@ -1,4 +1,8 @@
 using System;
+
+using System.ComponentModel.DataAnnotations;
+using FBMS3.Core.Validators;
+
 namespace FBMS3.Core.Models
 {
     public class FoodBank

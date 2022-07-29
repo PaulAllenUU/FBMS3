@@ -9,13 +9,13 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
         <div class="form-group">
-            <label asp-for="FirstName" class="control-label"><i class="bi-person-fill"></i> Name</label>
+            <label asp-for="FirstName" class="control-label"><i class="bi-person-fill"></i> First Name</label>
             <input asp-for="FirstName" class="form-control" />
             <span asp-validation-for="FirstName" class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="SecondName" class="control-label"><i class="bi-person-fill"></i> Name</label>
+            <label asp-for="SecondName" class="control-label"><i class="bi-person-fill"></i> Second Name</label>
             <input asp-for="SecondName" class="form-control" />
             <span asp-validation-for="SecondName" class="text-danger"></span>
         </div>
@@ -39,11 +39,11 @@
                 <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
             </div>
         
-        <div class="col form-group mt-3">
-                <label asp-for="FoodBankStreetName" class="control-label">Your Local Food Bank</label>
-                <input type="password" asp-for="FoodBankStreetName" class="form-control" />
-                <span asp-validation-for="FoodBankStreetName" class="text-danger"></span>
-            </div>
+        <div class="form-group">
+            <label asp-for="FoodBankId" class="control-label"><i class="bi-person-fill"></i> Id Of Your Local Food Bank</label>
+            <input asp-for="FoodBankId" class="form-control"/>
+            <span asp-validation-for="FoodBankId" class="text-danger"></span>
+        </div>
 
         <div class="form-group mt-3">
             <label asp-for="Role" class="control-label"><i class="bi-person-badge-fill"></i> Role</label>

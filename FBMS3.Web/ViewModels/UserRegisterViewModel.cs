@@ -23,7 +23,7 @@ namespace FBMS3.Web.ViewModels
         [Compare("Password", ErrorMessage = "Confirm password doesn't match, Type again !")]
         public string PasswordConfirm  { get; set; }
 
-        public string FoodBankStreetName { get; set; }
+        public int FoodBankId { get; set; }
 
         [Required]
         [JsonConverter(typeof(JsonStringEnumConverter))]

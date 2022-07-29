@@ -1,3 +1,7 @@
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 using FBMS3.Core.Models;
 using FBMS3.Core.Services;
@@ -34,7 +38,7 @@ namespace FBMS3.Data.Services
         }
 
         // Add a new User checking a User with same email does not exist
-        public User AddUser(string firstName, string secondName, string email, string password, string foodBankStreetName, Role role)
+        public User AddUser(string firstName, string secondName, string email, string password, int foodBankId, Role role)
         {     
             var existing = GetUserByEmail(email);
             if (existing != null)
@@ -48,7 +52,7 @@ namespace FBMS3.Data.Services
                 SecondName = secondName,
                 Email = email,
                 Password = Hasher.CalculateHash(password), // can hash if require
-                FoodBankStreetName = foodBankStreetName, 
+                FoodBankId = foodBankId, 
                 Role = role              
             };
             ctx.Users.Add(user);
@@ -88,7 +92,7 @@ namespace FBMS3.Data.Services
             User.SecondName = updated.SecondName;
             User.Email = updated.Email;
             User.Password = Hasher.CalculateHash(updated.Password);
-            User.FoodBankStreetName = updated.FoodBankStreetName; 
+            User.FoodBankId = updated.FoodBankId; 
             User.Role = updated.Role; 
 
             ctx.SaveChanges();          
@@ -138,7 +142,10 @@ namespace FBMS3.Data.Services
 
         public FoodBank GetFoodBankById(int id)
         {
-            return ctx.FoodBanks.FirstOrDefault( x=> x.Id == id);
+            return ctx.FoodBanks
+                    //include the stock that is associated with that food bank
+                     .Include(x => x.Stock)
+                     .FirstOrDefault( x=> x.Id == id);
         }
 
         public FoodBank GetFoodBankByStreetNameAndNumber(string streetName, int streetNumber)
@@ -200,7 +207,7 @@ namespace FBMS3.Data.Services
             }*/
 
             foodbank.StreetNumber = updated.StreetNumber;
-            foodbank.StreetName = updated.StreetName;
+            foodbank.Id = updated.Id;
             foodbank.PostCode = updated.PostCode;
 
             //save changes and return the food bank
@@ -235,13 +242,18 @@ namespace FBMS3.Data.Services
         //------Begin Stock Management Methods-------//
         public IList<Stock> GetAllStock()
         {
-            return ctx.Stock.ToList();
+            return ctx.Stock
+                      .Include(s => s.FoodBank)
+                      .ToList();
         }
 
         //Get one item of stock by id
         public Stock GetStockById(int id)
         {
-            return ctx.Stock.FirstOrDefault( x => x.Id == id);
+            return ctx.Stock
+                        //include the food bank that the item of stock is associated with
+                      .Include(x => x.FoodBank)
+                      .FirstOrDefault( x => x.Id == id);
         }
 
         public Stock GetStockByDescription(string description)
@@ -254,7 +266,7 @@ namespace FBMS3.Data.Services
             return ctx.Stock.FirstOrDefault ( x => x.ExpiryDate == expiryDate);
         }
 
-        Stock IUserService.AddStock(int foodBankId, string description, int quantity, DateTime expiryDate)
+        public Stock AddStock(int foodBankId, string description, int quantity, DateTime expiryDate)
         {
             //the food bank id is the foreign key so need to check it exists
             var foodbank = GetFoodBankById(foodBankId);
@@ -268,6 +280,11 @@ namespace FBMS3.Data.Services
                 FoodBankId = foodBankId,
                 Description = description,
                 Quantity = quantity,
+
+                //boolean values below set to false by default but can change here necessary
+                NonFood = false,
+                Meat = false,
+                Carbohydrate = false,
                 ExpiryDate = expiryDate,
             };
 
@@ -290,6 +307,8 @@ namespace FBMS3.Data.Services
             s.Description = updated.Description;
             s.FoodBankId = updated.FoodBankId;
             s.Quantity = updated.Quantity;
+
+            s.NonFood = updated.NonFood;
             s.ExpiryDate = updated.ExpiryDate;
 
             //save changes and return the stock item just updated
@@ -309,6 +328,46 @@ namespace FBMS3.Data.Services
             ctx.Stock.Remove(s);
             ctx.SaveChanges();
             return true;
+        }
+
+        public IList<Stock> GetAllNonFoodItems(bool nonFood)
+        {
+            return ctx.Stock.Where(x => x.NonFood == true).ToList();
+        }
+
+        public IList<Stock> GetAllMeatFoodItems(bool meat)
+        {
+            return ctx.Stock.Where(x => x.Meat == true).ToList();
+        }
+
+        public IList<Stock> GetAllVegetablesFromStock(bool vegetable)
+        {
+            return ctx.Stock.Where( x => x.Vegetable == true).ToList();
+        }
+
+        public IList<Stock> GetAllCarbohydratesFromStock(bool carbs)
+        {
+            return ctx.Stock.Where( x => x.Carbohydrate == true).ToList();
+        }
+
+        public IList <Stock> SearchStock(StockRange range, string query)
+        {
+
+            //ensure that the query is not null
+            query = query == null ? "" : query.ToLower();
+
+            var results = ctx.Stock
+                             .Include(x => x.FoodBank)
+                             .Where(x => (x.Description.ToLower().Contains(query) ||
+                                          x.FoodBank.StreetName.ToLower().Contains(query)
+                                          ) &&
+                                          (range == StockRange.NONFOOD && x.NonFood==true ||
+                                           range == StockRange.MEAT && x.Meat == true ||
+                                           range == StockRange.CARBOHYDRATE && x.Carbohydrate == true ||
+                                           range == StockRange.ALL
+                                          )
+                             ).ToList();
+            return results;
         }
     }
 }

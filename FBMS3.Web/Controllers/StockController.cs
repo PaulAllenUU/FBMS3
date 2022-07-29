@@ -22,12 +22,12 @@ namespace FBMS3.Web.Controllers
         }
 
         //GET - return a list of all of the stock 
-        public IActionResult Index()
+        /*public IActionResult Index()
         {
             var stock = service.GetAllStock();
 
             return View(stock);
-        }
+        }*/
 
         //Get - return an item of stock by its id
         public IActionResult Details(int id)
@@ -44,24 +44,23 @@ namespace FBMS3.Web.Controllers
         }
 
         //GET - display blank form to create an item of stock for user
-        public IActionResult Create(int id)
+        public IActionResult Create()
         {
             var foodbanks = service.GetFoodBanks();
 
             //populate viewmodel stock select list prperty
-            var svm = new StockCreateViewModel
+            var scvm = new StockCreateViewModel
             {
-                FoodBanks = new SelectList(foodbanks, "Id", "Name")
+                FoodBanks = new SelectList(foodbanks,"Id","Name")
             };
 
-            //render the blank stock form to the view
-            return View(svm);
-
+            //render the blank form for stock to the view for adding all properties
+            return View( scvm );
         }
 
         //POST - Create a stock item when it has been loaded
         [HttpPost]
-        public IActionResult CReate(StockCreateViewModel svm)
+        public IActionResult Create(StockCreateViewModel svm)
         {
             if(ModelState.IsValid)
             {
@@ -74,6 +73,15 @@ namespace FBMS3.Web.Controllers
             //in case of error re display the form for editing
             return View(svm);
         }
+
+        //GET - Display the index page with all of the stock currently
+        public IActionResult Index(StockSearchViewModel s)
+        {
+            s.Stock = service.SearchStock(s.Range, s.Query);
+
+            return View (s);
+        }
+
 
 
 

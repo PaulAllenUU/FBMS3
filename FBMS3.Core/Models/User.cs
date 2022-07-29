@@ -21,7 +21,7 @@ namespace FBMS3.Core.Models
         public FoodBank FoodBank { get; set; }
 
         //1 - M relationship, each user will have 1 food bank
-        public string FoodBankStreetName { get; set; }
+        public int FoodBankId { get; set; }
 
     }
 }

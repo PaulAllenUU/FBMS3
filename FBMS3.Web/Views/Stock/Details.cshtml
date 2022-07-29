@@ -1,0 +1,44 @@
+@model Stock
+
+<partial name="_Breadcrumbs" model=@(new [] { ("/", "Home"), ("/stock", "Stock"), ("","Close") })>
+
+<div class="col card rounded shadow-lg p-4">
+
+    <h3 class="mb-4">Ticket</h3>
+
+    <dl class="row">       
+        <dt class="col-4">Id</dt>
+        <dd class="col-8">@Model.Id</dd>
+
+        <dt class="col-4">Description</dt>
+        <dd class="col-8">@Model.Description</dd>
+
+        <dt class="col-4">Expiry Date</dt>
+        <dd class="col-8">@Model.ExpiryDate</dd>
+
+        <dt class="col-4">Quantity</dt>
+        <dd class="col-8">@Model.Quantity</dd>
+
+        <dt class="col-4">Non-Food Item</dt>
+        <dd class="col-8">@Model.NonFood</dd>
+
+        <dt class="col-4">Meat</dt>
+        <dd class="col-8">@Model.Meat</dd>
+
+        <dt class="col-4">Vegetable</dt>
+        <dd class="col-8">@Model.Vegetable</dd>
+
+        <dt class="col-4">Carbohydrate</dt>
+        <dd class="col-8">@Model.Carbohydrate</dd>
+
+        <dt class="col-4">Food Bank Id</dt>
+        <dd class="col-8">@Model.FoodBankId</dd>
+    </dl>
+
+    <div class="mt-4"> 
+        <a class="btn btn-link" asp-action="Index">Cancel</a>
+    
+    </div>
+</div>
+
+

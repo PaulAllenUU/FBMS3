@@ -59,14 +59,15 @@ namespace FBMS3.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Register([Bind("Name,Email,Password,PasswordConfirm,FoodBankStreetName,Role")] UserRegisterViewModel m)       
+        //Register a new user and bind the below attributes to that user 
+        public IActionResult Register([Bind("FirstName,SecondName,Email,Password,PasswordConfirm,FoodBankId,Role")] UserRegisterViewModel m)       
         {
             if (!ModelState.IsValid)
             {
                 return View(m);
             }
             // add user via service
-            var user = _svc.AddUser(m.FirstName, m.SecondName, m.Email,m.Password, m.FoodBankStreetName, m.Role);
+            var user = _svc.AddUser(m.FirstName, m.SecondName, m.Email,m.Password, m.FoodBankId, m.Role);
             // check if error adding user and display warning
             if (user == null) {
                 Alert("There was a problem Registering. Please try again", AlertType.warning);
@@ -86,7 +87,8 @@ namespace FBMS3.Web.Controllers
             var userViewModel = new UserProfileViewModel { 
                 Id = user.Id, 
                 FirstName = user.FirstName,
-                SecondName = user.SecondName, 
+                SecondName = user.SecondName,
+                FoodBankId = user.FoodBankId, 
                 Email = user.Email,                 
                 Role = user.Role
             };
@@ -96,7 +98,7 @@ namespace FBMS3.Web.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateProfile([Bind("Id,FirstName,SecondName,Email,FoodBankStreetName,Role")] UserProfileViewModel m)       
+        public async Task<IActionResult> UpdateProfile([Bind("Id,FirstName,SecondName,Email,FoodBankId,Role")] UserProfileViewModel m)       
         {
             var user = _svc.GetUser(m.Id);
             // check if form is invalid and redisplay
@@ -109,7 +111,7 @@ namespace FBMS3.Web.Controllers
             user.FirstName = m.FirstName;
             user.SecondName = m.SecondName;
             user.Email = m.Email;
-            user.FoodBankStreetName = m.FoodBankStreetName;
+            user.FoodBankId = m.FoodBankId;
             user.Role = m.Role;        
             var updated = _svc.UpdateUser(user);
 
