@@ -37,9 +37,11 @@
                 <td>@s.Quantity</td>
                 <td>@s.ExpiryDate.ToShortDateString()</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@s.Id" >
-                  <i class="bi bi-ticket-detailed"></i> Details
-                    </a> 
+                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="View Stock Details" asp-controller="Stock" asp-action="Details" asp-route-id=@s.Id>View</a>
+
+                    <a asp-controller="Stock" asp-action="Edit" asp-route-id=@s.Id>Edit</a>
+                    
+                    <a asp-controller="Stock" asp-action="Delete" asp-route-id=@s.Id>Delete</a>  
                 </td>
 
             </tr>

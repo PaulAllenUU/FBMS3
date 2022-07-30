@@ -32,5 +32,8 @@ namespace FBMS3.Core.Models
         [JsonIgnore]
         //foreign key to the foodbank table
         public FoodBank FoodBank { get; set; }
+
+        //Relationship M:N Stock - Recipes
+        public IList<RecipeIngredients> RecipeIngredients { get; set; } = new List<RecipeIngredients>();
     }
 }

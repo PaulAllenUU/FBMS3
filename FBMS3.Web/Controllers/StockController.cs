@@ -82,12 +82,30 @@ namespace FBMS3.Web.Controllers
             return View (s);
         }
 
+        public IActionResult Delete(int id)
+        {
+            var s = service.GetStockById(id);
 
+            //check if the stock item is null and if so, return null
+            if(s == null)
+            {
+                Alert($"Stock {id} not found", AlertType.warning);
+                return RedirectToAction(nameof(Index));
+            }
 
+            //pass the item on to the view for deletion confirmation
+            return View(s);
+        }
 
+        public IActionResult DeleteConfirm(int id)
+        {
+            //delte the stock item via the service method
+            service.DeleteStockById(id);
 
+            Alert("Stock item deleted successfully", AlertType.info);
 
-        
+            return RedirectToAction(nameof(Index));
+        }
 
 
     }

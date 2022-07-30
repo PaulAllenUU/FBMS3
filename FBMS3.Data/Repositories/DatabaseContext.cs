@@ -20,6 +20,12 @@ namespace FBMS3.Data.Repositories
         //configure the data base set for stock
         public DbSet<Stock> Stock { get ; set ; }
 
+        //configure the data base sey for recipes
+        public DbSet<Recipe> Recipes { get; set; }
+
+        //configure the Db set for Recipe Ingredients
+        public DbSet<RecipeIngredients> RecipeIngredients { get; set; }
+
         // Configure the context to use Specified database. We are using 
         // Sqlite database as it does not require any additional installations.
         // FBMS3 configured to allow use of MySql and Postgres

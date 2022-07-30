@@ -410,8 +410,10 @@ namespace FBMS3.Data.Services
                              .Where(x => (x.Description.ToLower().Contains(query) ||
                                           x.FoodBank.StreetName.ToLower().Contains(query)
                                           ) &&
+                                          //for the enumeration when the value of the boolean values are set they will come up
                                           (range == StockRange.NONFOOD && x.NonFood== true ||
                                            range == StockRange.MEAT && x.Meat == true ||
+                                           range == StockRange.VEGETABLE && x.Vegetable == true ||
                                            range == StockRange.CARBOHYDRATE && x.Carbohydrate == true ||
                                            range == StockRange.ALL
                                           )

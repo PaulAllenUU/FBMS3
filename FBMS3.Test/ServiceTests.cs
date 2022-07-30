@@ -100,8 +100,50 @@ namespace FBMS3.Test
         [Fact]
         public void FoodBank_AddingFoodBankShouldWork()
         {
+            //arrange
+            var foodbank = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+
+            //assert
+            Assert.NotNull(foodbank);
             
         }
+
+        [Fact]
+        public void FoodBank_AddingFoodBank_WithSameAddress_ShouldFail()
+        {
+            var foodbank = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var foodbank2 = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+
+            //assert
+            Assert.NotNull(foodbank);
+            Assert.Null(foodbank2);
+
+        }
+
+        [Fact]
+        public void FoodBank_AddFoodBank_WhenNone_ShouldSetAllProperties()
+        {
+            //arrange
+            var added = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+
+            var f = service.GetFoodBankById(added.Id);
+
+            //assert that the food bank is not null
+            Assert.NotNull(f);
+
+            //assert that each property was set properly
+            Assert.Equal(f.Id, f.Id);
+            Assert.Equal(28, f.StreetNumber);
+            Assert.Equal("Thorndale", f.StreetName);
+            Assert.Equal("BT49 0ST", f.PostCode);
+        }
+
+        
+        
+
+
+
+        //End of Food Bank Service Management Tests
 
     }
 }
