@@ -1,0 +1,80 @@
+@model FoodBank
+
+@if (Model.Stock.Count == 0)
+{
+    <h3 class="mt-4 mb-4">This food bank does not currently have any stock</h3>
+}
+else
+{
+    <h3 class="mt-4 mb-4">Current Stock At This Food Bank</h3>
+
+    <div class="card rounded shadow p-4">
+
+        <table class="table table-sm">
+            <thead>
+
+                <tr>
+
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Expiry Date</th>
+                    <th>Non-Food Item</th>
+                    <th>Meat</th>
+                    <th>Vegetable</th>
+                    <th>Carbohydrate</th>
+                    
+                </tr>
+
+            </thead>
+
+            <tbody>
+                @foreach(var s in Model.Stock)
+                {
+                    <tr>
+                        
+                        <td>@s.Description</td>
+                        <td>@s.Quantity</td>
+                        <td>@s.ExpiryDate</td>
+                        <td>
+                            @if(@s.Meat==true)
+                            {
+                                <i class="bi bi-toggle-on"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-toggle-off"></i>
+                            }
+                        </td>
+                        <td>
+
+                            @if(@s.Vegetable==true)
+                            {
+                                <i class="bi bi-toggle-on"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-toggle-off"></i>
+                            }
+                        </td>
+
+                        <td>
+                            @if(@s.Carbohydrate==true)
+                            {
+                                <i class="bi bi-toggle-on"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-toggle-off"></i>
+                            }
+                        </td>
+
+                        <td>
+
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

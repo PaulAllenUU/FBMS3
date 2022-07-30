@@ -4,6 +4,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 
 using FBMS3.Core.Models;
+using FBMS3.Web.ViewModels;
 using FBMS3.Core.Services;
 using FBMS3.Core.Security;
 
@@ -20,14 +21,14 @@ namespace FBMS3.Web.Controllers
             svc = ss;
         }
 
-        public IActionResult Index()
+        //index page will allow a search feature to search for food banks
+        public IActionResult Index(FoodBankSearchViewModel f)
         {
+            //call to the method will return any matching criteria for street number, 
+            //street name or post code
+            f.FoodBanks = svc.SearchFoodBanks(f.Query);
 
-            //use the User service method to get a list of food banks
-            var foodbanks = svc.GetFoodBanks();
-
-            //return to the list to the view
-            return View(foodbanks);
+            return View (f);
         }
 
         public IActionResult Details(int id)
@@ -141,7 +142,6 @@ namespace FBMS3.Web.Controllers
             //re direct to the index view of all the food banks
             return RedirectToAction(nameof(Index));
         }
-
 
     }
 }

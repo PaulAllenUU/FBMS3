@@ -51,7 +51,7 @@ namespace FBMS3.Web.Controllers
             //populate viewmodel stock select list prperty
             var scvm = new StockCreateViewModel
             {
-                FoodBanks = new SelectList(foodbanks,"Id","Name")
+                FoodBanks = new SelectList(foodbanks,"Id","StreetName")
             };
 
             //render the blank form for stock to the view for adding all properties
@@ -66,7 +66,7 @@ namespace FBMS3.Web.Controllers
             {
                 service.AddStock(svm.FoodBankId, svm.Description, svm.Quantity, svm.ExpiryDate);
 
-                Alert($"Stock item added to food bank with Id {svm.FoodBankId}");
+                Alert($"{svm.Quantity} of {svm.Description} added to food bank no.1 {svm.FoodBankId}");
                 return RedirectToAction(nameof(Index));
             }
 

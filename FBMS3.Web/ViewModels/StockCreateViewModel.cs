@@ -8,13 +8,13 @@ namespace FBMS3.Web.ViewModels
         public SelectList FoodBanks { get; set; }
 
         [Required(ErrorMessage = "Please select a foodbank")]
-        [Display(Name = "Select which foodbank you are adding the stock item to")]
+        [Display(Name = "Please confirm where you are adding the stock to")]
         public int FoodBankId { get; set; }
 
         public string Description { get; set; }
 
-        public int Quantity { get; set ;}
+        public int Quantity { get; set ; }
 
-        public DateTime ExpiryDate { get; set; }
+        public DateTime ExpiryDate { get; set; } 
     }
 }

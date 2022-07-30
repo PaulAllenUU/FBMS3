@@ -280,13 +280,62 @@ namespace FBMS3.Data.Services
                 FoodBankId = foodBankId,
                 Description = description,
                 Quantity = quantity,
-
-                //boolean values below set to false by default but can change here necessary
-                NonFood = false,
-                Meat = false,
-                Carbohydrate = false,
                 ExpiryDate = expiryDate,
+
             };
+
+            //create a set of all meat types and add them all
+            List<String> MeatTypes = new List<String>();
+            MeatTypes.Add("Chicken");
+            MeatTypes.Add("Pork");
+            MeatTypes.Add("Beef");
+            MeatTypes.Add("Fish");
+
+            //check if the description added by the user contains any of the items in the list
+            if(MeatTypes.Contains(description))
+            {
+                s.Meat = true;
+            }
+
+            //do the same for checking for vegetable
+            List<String> Vegetables = new List<String>();
+            Vegetables.Add("Carrots");
+            Vegetables.Add("Peppers");
+            Vegetables.Add("Cauliflower");
+            Vegetables.Add("Onions");
+
+            //check if the descrption added by the user contains any items included in the created list
+            if(Vegetables.Contains(description))
+            {
+                s.Vegetable = true;
+            }
+
+            //do the same for carbohydrate items such as bread, pasta, rice and potatoes
+            List<String> Carbohydrates = new List<String>();
+            Carbohydrates.Add("Potato");
+            Carbohydrates.Add("Pasta");
+            Carbohydrates.Add("Rice");
+            Carbohydrates.Add("Spagehtti");
+
+            //check if the descrption contains any of these items
+            if(Carbohydrates.Contains(description))
+            {
+                s.Carbohydrate = true;
+            }
+
+            //last do the same for non food items
+            List<String> NonFoodItems = new List<String>();
+            NonFoodItems.Add("Toilet Paper");
+            NonFoodItems.Add("Kitchen Roll");
+            NonFoodItems.Add("Razors");
+            NonFoodItems.Add("Pet Food");
+            NonFoodItems.Add("Shower Gel");
+
+            //final if logic for containing non food items
+            if(NonFoodItems.Contains(description))
+            {
+                s.NonFood = true;
+            }
 
             //add the newly created stock item to the database and save changes
             ctx.Stock.Add(s);
@@ -361,12 +410,30 @@ namespace FBMS3.Data.Services
                              .Where(x => (x.Description.ToLower().Contains(query) ||
                                           x.FoodBank.StreetName.ToLower().Contains(query)
                                           ) &&
-                                          (range == StockRange.NONFOOD && x.NonFood==true ||
+                                          (range == StockRange.NONFOOD && x.NonFood== true ||
                                            range == StockRange.MEAT && x.Meat == true ||
                                            range == StockRange.CARBOHYDRATE && x.Carbohydrate == true ||
                                            range == StockRange.ALL
                                           )
                              ).ToList();
+            return results;
+        }
+
+        public IList<FoodBank> SearchFoodBanks(string query)
+        {
+            //ensure that the query is not null
+             query = query == null ? "" : query.ToLower();
+
+             //enable user to search food banks by street number, street name or post code
+             var results = ctx.FoodBanks
+                              .Include(x => x.Stock)
+                              .Where(x => (x.StreetName.ToLower().Contains(query) ||
+                                    
+                                    //street number must be cast to string
+                                     x.StreetNumber.ToString().Contains(query) ||
+                                     x.PostCode.ToLower().Contains(query))
+                              ).ToList();
+
             return results;
         }
     }

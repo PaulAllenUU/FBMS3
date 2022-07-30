@@ -1,4 +1,4 @@
-@model IList<FoodBank>
+@model FoodBankSearchViewModel
 
 <partial name="_BreadCrumbs" model=@(new [] {
     ("/","Home"),
@@ -7,9 +7,11 @@
 
 <h3 class="mb-3">List Of Our Food Bank Locations</h3>
 
-<a class="btn btn-sm btn-primary my-3" asp-action="Create" >
-    <i class="bi bi-plus"></i> Create
-</a>
+<div class="my-4 d-flex flex-row justify-content-between align-items-center">  
+   <a asp-action="Create" class="btn btn-primary btn-sm">Add Food Bank</a>   
+   <partial name="_Search" /> <!-- add form to search ticket issues -->
+</div>
+
 
 <table class="table table-hover">
     <thead>
@@ -22,7 +24,7 @@
     </thead>
 
     <tbody>
-        @foreach (var f in Model)
+        @foreach (var f in Model.FoodBanks)
         {
             <tr>
                 <td>@f.Id</td>

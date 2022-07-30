@@ -27,6 +27,10 @@ namespace FBMS3.Data.Services
             var s1 = svc.AddStock(f1.Id, "Orange", 4, new DateTime(2022, 10, 01));
             var s2 = svc.AddStock(f2.Id, "Banana", 10, new DateTime(2023, 12, 03));
             var s3 = svc.AddStock(f3.Id, "Potato", 20, new DateTime(2022, 12, 07));
+            var s4 = svc.AddStock(f1.Id, "Chicken", 6, new DateTime(2023, 08, 09));
+            var s5 = svc.AddStock(f2.Id, "Toilet Paper", 10, new DateTime(2024, 10, 07));
+            
+            
         }
     }
 }

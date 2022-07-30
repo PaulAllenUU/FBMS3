@@ -67,6 +67,9 @@ namespace FBMS3.Core.Services
         //Get FoodBank by PostCode
         FoodBank GetFoodBankByPostCode(string postCode);
 
+        //Search food banks
+        IList<FoodBank> SearchFoodBanks(string query);
+
         //-------End of Food Bank Management Methods ----//
 
         // ----Begin Stock Management Interface ----//

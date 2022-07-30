@@ -17,14 +17,14 @@ namespace FBMS3.Core.Models
         public int Quantity { get; set; }
         
         //non food to be used to search for non food items in the enum
-        public bool NonFood { get; set; } = false;
+        public bool NonFood { get; set; } 
 
         //to also be used to search for only meet in the enum
-        public bool Meat { get; set; } = false;
+        public bool Meat { get; set; } 
 
-        public bool Vegetable { get; set; } = false;
+        public bool Vegetable { get; set; } 
 
-        public bool Carbohydrate { get; set; } = false;
+        public bool Carbohydrate { get; set; } 
 
         //each Stock item will have only 1 Food Bank
         public int FoodBankId { get; set; }
