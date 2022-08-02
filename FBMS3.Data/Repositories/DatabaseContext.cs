@@ -24,7 +24,7 @@ namespace FBMS3.Data.Repositories
         public DbSet<Recipe> Recipes { get; set; }
 
         //configure the Db set for Recipe Ingredients
-        public DbSet<RecipeIngredients> RecipeIngredients { get; set; }
+        public DbSet<RecipeStock> RecipeStock { get; set; }
 
         // Configure the context to use Specified database. We are using 
         // Sqlite database as it does not require any additional installations.

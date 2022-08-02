@@ -438,5 +438,191 @@ namespace FBMS3.Data.Services
 
             return results;
         }
+
+        //add a recipe checking that is doesnt already exist using title
+        public Recipe AddRecipe(string title, int noOfIngredients, int cookingTime)
+        {
+            var existing = GetRecipeByTitle(title);
+
+            //if it does not null, already exists so return null
+            if(existing != null)
+            {
+                return null;
+            }
+
+            var recipe = new Recipe
+            {
+                Title = title,
+                NoOfIngredients = noOfIngredients,
+                CookingTimeMins = cookingTime,
+            };
+
+            //return the recipe, add to database and save changes
+            ctx.Add(recipe);
+            ctx.SaveChanges();
+            return recipe;
+        }
+
+        public bool DeleteRecipe(int id)
+        {
+            //check the recipe exists by loading it into memory using id
+            var recipe = GetRecipeById(id);
+
+            //if it is null then it does not exist so cannot delete - therefore return false
+            if (recipe == null)
+            {
+                return false;
+            }
+
+            ctx.Remove(recipe);
+            ctx.SaveChanges();
+            return true;
+        }
+
+        public bool IsRecipeVegetarian(RecipeStock recipeStock)
+        {
+            //check the recipe exists through the get recipe by title method
+            var exists = GetRecipeStockById(recipeStock.Id);
+
+            //if the recipe is null then cannot check so return false
+            if(exists == null) { return false; };
+
+            //use the list of possible meatTypes from previous method
+            List<String> MeatTypes = new List<String>();
+            MeatTypes.Add("Chicken");
+            MeatTypes.Add("Pork");
+            MeatTypes.Add("Beef");
+            MeatTypes.Add("Fish");
+
+            //if stock recipe contains any items with the description above then return false
+            if (MeatTypes.Contains(exists.Stock.Description))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public Recipe GetRecipeById(int id)
+        {
+            return ctx.Recipes.FirstOrDefault( x => x.Id == id);
+        }
+
+        public Recipe UpdateRecipe(Recipe updated)
+        {
+            //check that recipe exists using the get recipe by id method
+            var recipe = GetRecipeById(updated.Id);
+
+            //if it is null, it does not exist therefore return null
+            if(recipe == null)
+            {
+                return null;
+            }
+
+            //otherwise update all properties and then save changes
+            recipe.Title = updated.Title;
+            recipe.NoOfIngredients = updated.NoOfIngredients;
+            recipe.CookingTimeMins = updated.CookingTimeMins;
+
+            //save changes and return the recipe
+            ctx.SaveChanges();
+            return recipe;
+        }
+
+        public Recipe GetRecipeByTitle(string title)
+        {
+            return ctx.Recipes
+                        //include the recipe stock associated with that recipe
+                        //avoids eager loading
+                      .Include( x => x.RecipeStock)
+                      .FirstOrDefault( x => x.Title == title);
+        }
+
+        public IList<Recipe> GetAllRecipes()
+        {
+            //return all recipes but include recipestock
+            return ctx.Recipes.ToList();
+        }
+
+        public RecipeStock AddStockItemToRecipe(int stockId, int recipeId, int stockItemQuantity)
+        {
+            //check that the recipe stock already exists and return null if found
+            var rs = ctx.RecipeStock
+                        .FirstOrDefault( x => x.StockId == stockId &&
+                                              x.RecipeId == recipeId);
+
+            //if these are not null then stock iteam already in recipe - return null
+            if (rs != null) { return null; }
+
+            //locate the stock item and the recipe
+            var s = ctx.Stock.FirstOrDefault(s => s.Id == stockId);
+            var r = ctx.Recipes.FirstOrDefault(r => r.Id == recipeId);
+
+            //if either do not exist then cannot add so return null
+            if(s == null || s == null) { return null; }
+
+            //otherwise create the recipestock and add to the database
+            var nrs = new RecipeStock { StockId = s.Id, RecipeId = r.Id, StockItemQuantity = stockItemQuantity };
+
+            //save changes and return the recipe stock
+            ctx.RecipeStock.Add(nrs);
+            ctx.SaveChanges();
+            return nrs;
+        }
+
+        public RecipeStock GetRecipeStockById(int id)
+        {
+            return ctx.RecipeStock.FirstOrDefault(x => x.Id == id);
+        }
+
+        public bool RemoveStockItemFromRecipe(int stockId, int recipeId)
+        {
+            //check that the stock item is already in the recipe before it can be removed
+            var rs = ctx.RecipeStock.FirstOrDefault(
+                s => s.StockId == stockId && s.RecipeId == recipeId
+            );
+
+            //if it is not already there then cannot remove to return false
+            if (rs == null) { return false; }
+
+            //remove the stock item from the recipe
+            ctx.RecipeStock.Remove(rs);
+            ctx.SaveChanges();
+            return true;
+        }
+
+        public IList<Recipe> GetAvailableRecipesForStockItem(int id)
+        {
+            var stockitem = GetStockById(id);
+            var rs = stockitem.RecipeStock.ToList();
+            var recipes = ctx.Recipes.ToList();
+
+            return recipes.Where(r => rs.Any( x => x.RecipeId != r.Id)).ToList();
+        }
+
+        public RecipeStock UpdateStockItemQuantity(int stockId, int recipeId, int stockItemQuantity)
+        {
+            var stockitem = GetStockById(stockId);
+
+            //check that the stock item exists and if not, return null
+            if(stockitem == null)
+            {
+                return null;
+            }
+
+            //check the recipe stock id exists
+            var rs = stockitem.RecipeStock.FirstOrDefault(o => o.StockId == stockId);
+
+            if(rs == null)
+            {
+                return null;
+            }
+
+            //update the stock item quantity
+            rs.StockItemQuantity = stockItemQuantity;
+
+            ctx.SaveChanges();
+            return rs;
+        }
     }
 }

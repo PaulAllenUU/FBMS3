@@ -17,7 +17,11 @@ namespace FBMS3.Core.Models
 
         public int CookingTimeMins { get; set; }
 
-        public IList<RecipeIngredients> RecipeIngredients { get; set; } = new List<RecipeIngredients>();
+        public bool Vegetarian { get; set; }
+
+        public bool CoeliacFriendly { get; set; }
+
+        public IList<RecipeStock> RecipeStock { get; set; } = new List<RecipeStock>();
 
     }
 }

@@ -1,7 +1,7 @@
 namespace FBMS3.Core.Models
 {
     //bridging class that removes the many to many relationships between stock and recipe
-    public class RecipeIngredients
+    public class RecipeStock
     {
         public int Id { get; set; }
 

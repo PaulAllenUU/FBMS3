@@ -34,6 +34,6 @@ namespace FBMS3.Core.Models
         public FoodBank FoodBank { get; set; }
 
         //Relationship M:N Stock - Recipes
-        public IList<RecipeIngredients> RecipeIngredients { get; set; } = new List<RecipeIngredients>();
+        public IList<RecipeStock> RecipeStock { get; set; } = new List<RecipeStock>();
     }
 }

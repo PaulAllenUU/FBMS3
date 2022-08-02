@@ -112,13 +112,19 @@ namespace FBMS3.Core.Services
         //--------Begin Recipe Management Methods------//
 
         //add recipe to the database
-        Recipe AddRecipe(string title);
+        Recipe AddRecipe(string title, int noOfIngredients, int cookingTime);
 
         //delete recipe
         bool DeleteRecipe(int id);
 
+        //isrecipevegetarian - accepts a list of stock as parameter
+        bool IsRecipeVegetarian(RecipeStock recipeStock);
+
+        //get recipe by id
+        Recipe GetRecipeById(int id);
+
         //update recipe
-        Recipe UpdateRecipe(int id);
+        Recipe UpdateRecipe(Recipe updated);
 
         //get recipe by title
         Recipe GetRecipeByTitle(string title);
@@ -127,25 +133,22 @@ namespace FBMS3.Core.Services
         IList<Recipe> GetAllRecipes();
 
         //add ingredient to recipe
-        RecipeIngredients AddStockItemToRecipe(int stockId, int recipeId, int stockItemQuantity);
+        RecipeStock AddStockItemToRecipe(int stockId, int recipeId, int stockItemQuantity);
+
+        //get recipeingredient by Id
+        RecipeStock GetRecipeStockById(int id);
 
         //remove item from recipe
-        bool RemoveIngredientFromRecipe(int stockId, int recipeId);
-
-        //get recipeIngredient
-        RecipeIngredients GetRecipeIngredient(int id);
+        bool RemoveStockItemFromRecipe(int stockId, int recipeId);
 
         //get available recipes for ingredient
-        IList<Recipe> GetAvailableRecipesForIngredient(int id);
+        IList<Recipe> GetAvailableRecipesForStockItem(int id);
 
         //update recipeingredient stock item quantity
-        RecipeIngredients UpdateStockItemQuantity(int stockId, int recipeId, int stockItemQuantity);
-
-        
+        RecipeStock UpdateStockItemQuantity(int stockId, int recipeId, int stockItemQuantity);
 
         //-------End of Recipe Management Interface ------//
 
-       
     }
     
 }
