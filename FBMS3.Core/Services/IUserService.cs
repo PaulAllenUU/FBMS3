@@ -75,7 +75,6 @@ namespace FBMS3.Core.Services
         // ----Begin Stock Management Interface ----//
         IList <Stock> GetAllStock();
 
-        //search stock method based on input from the user
         //IList<Stock> SearchStock(StockRange range, string query);
 
         //Return stock by specific bool values - non-food, meat, vegetables, carbohydrates
@@ -87,6 +86,7 @@ namespace FBMS3.Core.Services
 
         IList<Stock> GetAllCarbohydratesFromStock (bool carbs);
 
+        //search stock method based on input from the user
         IList<Stock> SearchStock(StockRange range, string query);
 
         //get stock by id - id passed in as parameter from the user
@@ -108,6 +108,43 @@ namespace FBMS3.Core.Services
         bool DeleteStockById(int id);
 
         //-----------End of Stock Management Methods ------//
+
+        //--------Begin Recipe Management Methods------//
+
+        //add recipe to the database
+        Recipe AddRecipe(string title);
+
+        //delete recipe
+        bool DeleteRecipe(int id);
+
+        //update recipe
+        Recipe UpdateRecipe(int id);
+
+        //get recipe by title
+        Recipe GetRecipeByTitle(string title);
+
+        //get list of all of the recipes in the database
+        IList<Recipe> GetAllRecipes();
+
+        //add ingredient to recipe
+        RecipeIngredients AddStockItemToRecipe(int stockId, int recipeId, int stockItemQuantity);
+
+        //remove item from recipe
+        bool RemoveIngredientFromRecipe(int stockId, int recipeId);
+
+        //get recipeIngredient
+        RecipeIngredients GetRecipeIngredient(int id);
+
+        //get available recipes for ingredient
+        IList<Recipe> GetAvailableRecipesForIngredient(int id);
+
+        //update recipeingredient stock item quantity
+        RecipeIngredients UpdateStockItemQuantity(int stockId, int recipeId, int stockItemQuantity);
+
+        
+
+        //-------End of Recipe Management Interface ------//
+
        
     }
     

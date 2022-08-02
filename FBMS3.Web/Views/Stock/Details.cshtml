@@ -14,7 +14,7 @@
         <dd class="col-8">@Model.Description</dd>
 
         <dt class="col-4">Expiry Date</dt>
-        <dd class="col-8">@Model.ExpiryDate</dd>
+        <dd class="col-8">@Model.ExpiryDate.ToShortDateString()</dd>
 
         <dt class="col-4">Quantity</dt>
         <dd class="col-8">@Model.Quantity</dd>
@@ -39,6 +39,16 @@
         <a class="btn btn-link" asp-action="Index">Cancel</a>
     
     </div>
+
+    <div>
+        <button type="button" class="btn btn-sm btn-danger"
+                data-bs-toggle="modal" data-bs-target="#deleteStockModal">
+                <i class="bi bi-trash"></i> Delete
+
+        </button>
+
+    </div>
 </div>
 
-
+<!-- Delete modal for deleting this stock item -->
+<partial name="_DeleteModal" />

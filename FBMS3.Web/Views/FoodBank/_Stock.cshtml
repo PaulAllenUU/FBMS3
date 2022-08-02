@@ -12,7 +12,7 @@ else
 
         <table class="table table-sm">
             <thead>
-
+                
                 <tr>
 
                     <th>Description</th>
@@ -69,7 +69,9 @@ else
                         </td>
 
                         <td>
-
+                            <a asp-action="StockDelete" asp-route-id="@s.Id" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
                         </td>
 
                     </tr>

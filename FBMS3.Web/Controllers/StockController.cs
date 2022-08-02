@@ -75,11 +75,45 @@ namespace FBMS3.Web.Controllers
         }
 
         //GET - Display the index page with all of the stock currently
+        //enumeration used to get either meat, vegetables, carbohydrates or non food items
         public IActionResult Index(StockSearchViewModel s)
         {
             s.Stock = service.SearchStock(s.Range, s.Query);
 
             return View (s);
+        }
+
+        //GET - Edit/Update the stock item
+        public IActionResult Edit(int id)
+        {
+            //load the stock by using the service methods
+            var s = service.GetStockById(id);
+
+            //check if null and is so alert the user
+            if (s == null)
+            {
+                Alert($"Stock item {id} not found", AlertType.warning);
+                return RedirectToAction(nameof(Index));
+            }
+
+            //pass the stock item to the view for editing
+            return View(s);
+        }
+
+        //POST - Edit stock item
+        [HttpPost]
+        public IActionResult Edit (int id, [Bind("Id, Description, Quantity, ExpiryDate")] Stock s)
+        {
+            if(ModelState.IsValid)
+            {
+                service.UpdateStock(s);
+                Alert("Stock item update successfully", AlertType.info);
+
+                return RedirectToAction(nameof(Details), new { Id = s.Id});
+            }
+
+            //model state not valid return the form for editing to correct the errors
+            return View(s);
         }
 
         public IActionResult Delete(int id)
@@ -99,7 +133,7 @@ namespace FBMS3.Web.Controllers
 
         public IActionResult DeleteConfirm(int id)
         {
-            //delte the stock item via the service method
+            //delete the stock item via the service method
             service.DeleteStockById(id);
 
             Alert("Stock item deleted successfully", AlertType.info);

@@ -6,7 +6,7 @@ namespace FBMS3.Core.Models
         public int Id { get; set; }
 
         //detail about the relationship - quantity of that item of stock
-        public int ItemAmount { get; set; }
+        public int StockItemQuantity { get; set; }
 
         //foreign for the stock table
         public int StockId { get; set; }

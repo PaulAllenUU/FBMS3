@@ -2,7 +2,7 @@
 using Xunit;
 using FBMS3.Core.Models;
 using FBMS3.Core.Services;
-
+using System;
 
 using FBMS3.Data.Services;
 
@@ -138,9 +138,97 @@ namespace FBMS3.Test
             Assert.Equal("BT49 0ST", f.PostCode);
         }
 
-        
-        
+        [Fact]
+        public void FoodBank_UpdateFoodBankThatExist_ShouldUpdateAllProperties()
+        {
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
 
+            var get = service.GetFoodBankById(1);
+
+            //update the student
+            var u = service.UpdateFoodBank(f);
+            {
+                f.StreetNumber = 30;
+                f.StreetName = "Meadowvale";
+                f.PostCode = "BT41 2FL";
+            };
+
+            //assert the the properties have now changed after the update method
+            Assert.Equal(30, f.StreetNumber);
+            Assert.Equal("Meadowvale", f.StreetName);
+            Assert.Equal("BT41 2FL", f.PostCode);
+        }
+
+        [Fact]
+        public void FoodBank_GetAllFoodBanks_WhenNone_ShouldReturn0()
+        {
+            //act
+            var foodbanks = service.GetFoodBanks();
+            var count = foodbanks.Count;
+
+            //assert
+            Assert.Equal(0, count);
+        }
+
+        [Fact]
+        public void FoodBank_GetAllFoodBanks_WhenOne_ShouldReturn1()
+        {
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var list = service.GetFoodBanks();
+
+            //count
+            var count = list.Count;
+
+            Assert.Equal(1, count);
+        }
+
+        [Fact]
+        public void FoodBank_GetFoodBankById_WhenNull_ShouldReturnNull()
+        {
+            //act
+            var f = service.GetFoodBankById(1); //non existent food bank
+
+            //assert
+            Assert.Null(f);
+        }
+
+        [Fact]
+        public void FoodBank_DeleteFoodBank_WhenNull_ShouldReturnFalse()
+        {
+            var f = service.DeleteFoodBank(1);
+
+            Assert.False(f);
+        }
+
+        [Fact]
+        public void AddFoodBank_WhenDuplicateAddress_ShouldReturnNull()
+        {
+            //act
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+
+            //arrange - duplicate food bank address details
+            var f2 = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+
+            //assert
+            Assert.NotNull(f);
+
+            //f2 should not be added
+            Assert.Null(f2);
+        }
+
+        [Fact]
+        public void FoodBank_RemoveFoodBankThatExists_ShouldReturnTrue()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            
+            //act
+            var remove = service.DeleteFoodBank(1);
+
+            //assert
+            Assert.True(remove);
+            
+        }
 
 
         //End of Food Bank Service Management Tests

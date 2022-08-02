@@ -135,12 +135,77 @@ namespace FBMS3.Web.Controllers
         //POST // FoodBank / Delte / {id}
         public IActionResult DeleteConfirm(int id)
         {
-            svc.DeleteFoodBank(id);
+            var f = svc.DeleteFoodBank(id);
 
             Alert("Food Bank deleted successfully", AlertType.info);
 
             //re direct to the index view of all the food banks
             return RedirectToAction(nameof(Index));
+        }
+
+        //=====Food Bank Stock Management ========
+
+        //GET - Stock Create from the Food bank details page
+        public IActionResult StockCreate(int id)
+        {
+            var f = svc.GetFoodBankById(id);
+
+            //check the returned food bank is not null
+            if(f == null)
+            {
+                //if it is null then does not exist so return null
+                Alert($"Foodbank {id} not found", AlertType.warning);
+                return RedirectToAction(nameof(Index));
+            }
+
+            //create the new stock item and set the FoodBank id - foreign key
+            var s = new Stock { FoodBankId = id };
+
+            return View (s);
+        }
+
+        //POST - filling in the form to create the new item of stock
+        [HttpPost]
+        public IActionResult StockCreate([Bind("FoodBankId, Description, Quantity, ExpiryDate")] Stock s)
+        {
+            if(ModelState.IsValid)
+            {
+                var stock = svc.AddStock(s.FoodBankId, s.Description, s.Quantity, s.ExpiryDate);
+                Alert($"Stock item created successfully for food bank {s.FoodBankId}", AlertType.info);
+                return RedirectToAction(nameof(Details), new { Id = stock.FoodBankId });
+            }
+
+            //in case of errors return the form for further editing
+            return View(s);
+        }
+
+        //GET - Stock DeleteConfirm
+        public IActionResult StockDelete(int id)
+        {
+            //load the stock item using the service method
+            var stockitem = svc.GetStockById(id);
+
+            //check that it is not null and if it is then return null
+            if(stockitem == null)
+            {
+                Alert($"Stock {id} not found", AlertType.warning);
+                return RedirectToAction(nameof(Index));
+            }
+
+            //pass the stock item to the view for deletion confirmation
+            return View(stockitem);
+        }
+
+        //POST - STOCK DeleteConfirm
+        [HttpPost]
+        public IActionResult StockDeleteConfirm(int id, int foodbankId)
+        {
+            //delete the stock item via the service methods
+            svc.DeleteStockById(id);
+            Alert($"Stock item delete successfully for food bank {foodbankId}", AlertType.info);
+
+            //re direct to the stock list index view
+            return RedirectToAction(nameof(Details), new { Id = foodbankId });
         }
 
     }

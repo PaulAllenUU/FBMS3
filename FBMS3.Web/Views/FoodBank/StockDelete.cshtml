@@ -1,0 +1,42 @@
+@model Stock
+
+<partial name="_BreadCrumbs" model=@(new [] {
+    ("/","Home"),
+    ("/stock","Stock"),
+    ($"/stock/details/{Model.Id}",$"{Model.Id}"),
+    ("","Delete Stock Item")
+}) /> 
+
+<h3 class="mt-4 mb-4">Delete Stock Item</h3>
+
+<h4 class="mb-4">Are you sure you want to delete this Stock item?</h4>
+
+<div>
+
+    <div class="col card rounded shadow p-3">
+        <dl class="row">       
+            <dt class="col-5">FoodBank Street</dt>
+            <dd class="col-7">@Model.FoodBank.StreetName</dd>
+
+            <dt class="col-5">Description</dt>
+            <dd class="col-7">@Model.Description</dd>
+            
+            <dt class="col-5">Quantity</dt>
+            <dd class="col-7">@Model.Quantity</dd>
+            
+            <dt class="col-5">Expiry Date</dt>
+            <dd class="col-7">@Model.ExpiryDate.ToShortDateString()</dd>           
+        </dl>
+    </div>
+
+    <div class="mt-4">
+        <form asp-action="StockDeleteConfirm" type="post">
+            <input type="hidden" asp-for="Id"/>
+            <input type="hidden" asp-for="FoodBankId"/>
+            
+            <input type="submit" value="Confirm" class="btn btn-danger" />
+            <a class="btn btn-secondary" asp-controller="Stock" asp-action="Details" asp-route-id="@Model.FoodBank.Id" >Cancel</a>
+
+        </form>
+
+</div>
