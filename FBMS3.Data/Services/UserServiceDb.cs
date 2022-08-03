@@ -465,7 +465,7 @@ namespace FBMS3.Data.Services
 
         public bool DeleteRecipe(int id)
         {
-            //check the recipe exists by loading it into memory using id
+            //check the recipe exists by loading it into memory using the service method previously created
             var recipe = GetRecipeById(id);
 
             //if it is null then it does not exist so cannot delete - therefore return false
@@ -623,6 +623,26 @@ namespace FBMS3.Data.Services
 
             ctx.SaveChanges();
             return rs;
+        }
+
+        public bool CheckFoodBanksForRecipeItem(RecipeStock recipeStock, int foodBankId)
+        {
+            //check both the foodBank and and the description exist
+            var f = GetFoodBankById(foodBankId);
+            var s = GetStockByDescription(foodBank);
+
+            //if either of the above is null then return false
+            if(f == null || s == null) { return false; }
+
+            //otherwise check the recipestock stock id for the 
+            var r = GetRecipeStockById(recipeStock.Id);
+
+            var foodbanks = GetFoodBanks();
+
+            bool has = foodbanks.Any(x => 
+
+
+
         }
     }
 }
