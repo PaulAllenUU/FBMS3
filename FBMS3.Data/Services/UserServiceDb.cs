@@ -625,24 +625,44 @@ namespace FBMS3.Data.Services
             return rs;
         }
 
-        public bool CheckFoodBanksForRecipeItem(RecipeStock recipeStock, int foodBankId)
+        //method to determine if recipe already exists with the same title
+        public bool IsDuplicateRecipe(string title)
         {
-            //check both the foodBank and and the description exist
+            //get all of the existing recipes using the service method
+            var recipes = GetAllRecipes();
+
+            //convert list to an array so it can be iterated through using for loop
+            var recipesArray = recipes.ToArray();
+
+            for(int i=0; i<recipesArray.Length; i++)
+            {
+                //check if the array index [i] equals the title passed in as parameter, if so it is a duplicate
+                if(recipesArray[i].Title == title)
+                {
+                    return true;
+                }
+                
+            }
+
+            //if none of the elements in the array contain the same title then return false;
+            return false;
+        }
+
+        /*public bool CheckFoodBanksForRecipeItem(int foodBankId, int stockId)
+        {
+            //check both the foodBank and and the stock item passed in both exist
+            //if either of them returns not null then cannot find so return false
             var f = GetFoodBankById(foodBankId);
-            var s = GetStockByDescription(foodBank);
+            var s = GetStockById(stockId);
 
             //if either of the above is null then return false
             if(f == null || s == null) { return false; }
 
             //otherwise check the recipestock stock id for the 
-            var r = GetRecipeStockById(recipeStock.Id);
-
-            var foodbanks = GetFoodBanks();
-
-            bool has = foodbanks.Any(x => 
+            
 
 
 
-        }
+        }*/
     }
 }

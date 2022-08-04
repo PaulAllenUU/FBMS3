@@ -120,6 +120,9 @@ namespace FBMS3.Core.Services
         //isrecipevegetarian - accepts a list of stock as parameter
         bool IsRecipeVegetarian(RecipeStock recipeStock);
 
+        //check if recipe already exists when adding
+        bool IsDuplicateRecipe(string description);
+
         //get recipe by id
         Recipe GetRecipeById(int id);
 
@@ -136,7 +139,7 @@ namespace FBMS3.Core.Services
         RecipeStock AddStockItemToRecipe(int stockId, int recipeId, int stockItemQuantity);
 
         //get recipeingredient by Id
-        RecipeStock GetRecipeStockById(int id);
+        //RecipeStock GetRecipeStockById(int id);
 
         //remove item from recipe
         bool RemoveStockItemFromRecipe(int stockId, int recipeId);
