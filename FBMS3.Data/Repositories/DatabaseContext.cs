@@ -26,6 +26,12 @@ namespace FBMS3.Data.Repositories
         //configure the Db set for Recipe Ingredients
         public DbSet<RecipeStock> RecipeStock { get; set; }
 
+        //congfigure the dbSet for Clients - entity which are added when they come to the food bank
+        public DbSet<Client> Clients { get; set; }
+
+        //configure for stock category
+        public DbSet<StockCategory> StockCategories { get; set; }
+
         // Configure the context to use Specified database. We are using 
         // Sqlite database as it does not require any additional installations.
         // FBMS3 configured to allow use of MySql and Postgres

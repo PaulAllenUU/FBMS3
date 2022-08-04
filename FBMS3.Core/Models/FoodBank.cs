@@ -13,7 +13,7 @@ namespace FBMS3.Core.Models
 
         public int StreetNumber { get; set; }
 
-        public string StreetName { get; set ;}
+        public string StreetName { get; set; }
 
         public string PostCode { get; set; }
 
@@ -22,6 +22,9 @@ namespace FBMS3.Core.Models
 
         //foodBanks will also have a list of stock - 1 food bank will have many stock items
         public IList<Stock> Stock { get; set; } = new List<Stock>();
+
+        //foodbanks can have many clients
+        public IList<Client> Clients { get; set; } = new List<Client>();
 
     }
 }

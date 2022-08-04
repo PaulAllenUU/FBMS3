@@ -109,6 +109,27 @@ namespace FBMS3.Core.Services
 
         //-----------End of Stock Management Methods ------//
 
+        //-------Begin client management methods----//
+        
+        //client added to the database by the food banks staff or volunteers on site
+        Client AddClient(string secondName, string postCode, DateOnly dateOfBirth, int noOfPeople, int foodBankId);
+
+        IList<Client> GetAllClients();
+
+        Client GetClientById(int id);
+
+        Client GetClientBySecondNameAndDateOfBirth(int id, DateOnly dob);
+
+        Client UpDateClient(Client updated);
+
+        bool DeleteClient(int id);
+
+        IList<Client> SearchClients(string query);
+
+        bool IsDuplicateClient(int secondName, DateOnly dob);
+
+        Client AllocatePreferredFoodBankBasedOnDistance(Client c, FoodBank f);
+
         //--------Begin Recipe Management Methods------//
 
         //add recipe to the database

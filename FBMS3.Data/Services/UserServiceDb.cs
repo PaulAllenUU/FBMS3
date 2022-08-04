@@ -648,6 +648,51 @@ namespace FBMS3.Data.Services
             return false;
         }
 
+        Client IUserService.AddClient(string secondName, string postCode, DateOnly dateOfBirth, int noOfPeople, int foodBankId)
+        {
+            throw new NotImplementedException();
+        }
+
+        IList<Client> IUserService.GetAllClients()
+        {
+            throw new NotImplementedException();
+        }
+
+        Client IUserService.GetClientById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        Client IUserService.GetClientBySecondNameAndDateOfBirth(int id, DateOnly dob)
+        {
+            throw new NotImplementedException();
+        }
+
+        Client IUserService.UpDateClient(Client updated)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool IUserService.DeleteClient(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        IList<Client> IUserService.SearchClients(string query)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool IUserService.IsDuplicateClient(int secondName, DateOnly dob)
+        {
+            throw new NotImplementedException();
+        }
+
+        Client IUserService.AllocatePreferredFoodBankBasedOnDistance(Client c, FoodBank f)
+        {
+            throw new NotImplementedException();
+        }
+
         /*public bool CheckFoodBanksForRecipeItem(int foodBankId, int stockId)
         {
             //check both the foodBank and and the stock item passed in both exist

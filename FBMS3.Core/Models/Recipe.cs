@@ -22,6 +22,8 @@ namespace FBMS3.Core.Models
 
         public bool CoeliacFriendly { get; set; }
 
+        public bool IngredientsAvailable { get; set; }
+
         public IList<RecipeStock> RecipeStock { get; set; } = new List<RecipeStock>();
 
     }
