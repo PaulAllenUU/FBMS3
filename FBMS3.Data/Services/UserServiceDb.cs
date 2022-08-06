@@ -648,44 +648,105 @@ namespace FBMS3.Data.Services
             return false;
         }
 
-        Client IUserService.AddClient(string secondName, string postCode, DateOnly dateOfBirth, int noOfPeople, int foodBankId)
+        public Client AddClient(string secondName, string postCode, DateOnly dob, int noOfPeople, int foodBankId)
         {
-            throw new NotImplementedException();
+            //check that the client does not exist already using second name and date of birth
+            var c = ctx.Clients.FirstOrDefault(x => x.SecondName == secondName && x.DateOfBirth == dob);
+
+            //if c is not null then the client already exists so return null
+            if(c != null) 
+            { 
+                return null; 
+            
+            }
+
+            var client = new Client
+            {
+                SecondName = secondName,
+                PostCode = postCode,
+                DateOfBirth = dob,
+                NoOfPeople = noOfPeople,
+                FoodBankId = foodBankId,
+            };
+
+            return client;
+
         }
 
-        IList<Client> IUserService.GetAllClients()
+        public IList<Client> GetAllClients()
         {
-            throw new NotImplementedException();
+            return ctx.Clients.ToList();
         }
 
-        Client IUserService.GetClientById(int id)
+        public Client GetClientById(int id)
         {
-            throw new NotImplementedException();
+            return ctx.Clients.FirstOrDefault(x => x.Id == id);
         }
 
-        Client IUserService.GetClientBySecondNameAndDateOfBirth(int id, DateOnly dob)
+        public Client GetClientBySecondNameAndDateOfBirth(string secondName, DateOnly dob)
         {
-            throw new NotImplementedException();
+            var c = ctx.Clients.FirstOrDefault(x => x.SecondName == secondName && x.DateOfBirth == dob);
+
+            return c;
         }
 
-        Client IUserService.UpDateClient(Client updated)
+        public Client UpdateClient(Client updated)
         {
-            throw new NotImplementedException();
+            //check that the updating client exists from a previous service method
+            var client = GetClientById(updated.Id);
+            
+            if(client == null) { return null; }
+
+            //update the details with all propeties
+            client.SecondName = updated.SecondName;
+            client.PostCode = updated.PostCode;
+            client.DateOfBirth = updated.DateOfBirth;
+            client.NoOfPeople = updated.NoOfPeople;
+            client.FoodBankId = updated.FoodBankId;
+
+            ctx.SaveChanges();
+            return client;
+        
         }
 
-        bool IUserService.DeleteClient(int id)
+        public bool DeleteClient(int id)
         {
-            throw new NotImplementedException();
+            //get the client by id to ensure they are already there
+            var client = GetClientById(id);
+            if(client == null)
+            {
+                return false;
+            }
+
+            ctx.Remove(client);
+            ctx.SaveChanges();
+            return true;
+
         }
 
-        IList<Client> IUserService.SearchClients(string query)
+        public IList<Client> SearchClients(string query)
         {
-            throw new NotImplementedException();
+            //ensure that the query is not null
+            query = query == null ? "" : query.ToLower();
+
+            var results = ctx.Clients
+                             .Include(x => x.FoodBank)
+                             .Where (x => (x.SecondName.ToLower().Contains(query) ||
+                                          x.PostCode.ToLower().Contains(query) ||
+                                          x.NoOfPeople.ToString().Contains(query) ||
+                                          x.DateOfBirth.ToString().Contains(query)
+                                         )
+                             ).ToList();
+            return results;
         }
 
-        bool IUserService.IsDuplicateClient(int secondName, DateOnly dob)
+        public bool IsDuplicateClient(string secondName, DateOnly dob)
         {
-            throw new NotImplementedException();
+            var client = GetClientBySecondNameAndDateOfBirth(secondName, dob);
+
+            if(client != null){ return true; }
+
+            return false;
         }
 
         Client IUserService.AllocatePreferredFoodBankBasedOnDistance(Client c, FoodBank f)

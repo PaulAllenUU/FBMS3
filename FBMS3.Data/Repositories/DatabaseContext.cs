@@ -30,7 +30,7 @@ namespace FBMS3.Data.Repositories
         public DbSet<Client> Clients { get; set; }
 
         //configure for stock category
-        public DbSet<StockCategory> StockCategories { get; set; }
+        //public DbSet<StockCategory> StockCategorys { get; set; }
 
         // Configure the context to use Specified database. We are using 
         // Sqlite database as it does not require any additional installations.

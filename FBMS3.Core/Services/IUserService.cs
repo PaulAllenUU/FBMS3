@@ -118,15 +118,15 @@ namespace FBMS3.Core.Services
 
         Client GetClientById(int id);
 
-        Client GetClientBySecondNameAndDateOfBirth(int id, DateOnly dob);
+        Client GetClientBySecondNameAndDateOfBirth(string secondName, DateOnly dob);
 
-        Client UpDateClient(Client updated);
+        Client UpdateClient(Client updated);
 
         bool DeleteClient(int id);
 
         IList<Client> SearchClients(string query);
 
-        bool IsDuplicateClient(int secondName, DateOnly dob);
+        bool IsDuplicateClient(string secondName, DateOnly dob);
 
         Client AllocatePreferredFoodBankBasedOnDistance(Client c, FoodBank f);
 
