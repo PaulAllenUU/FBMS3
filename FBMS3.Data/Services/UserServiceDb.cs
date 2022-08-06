@@ -178,7 +178,7 @@ namespace FBMS3.Data.Services
 
             var foodbank = new FoodBank
             {
-                StreetNumber = streetNumber,Hi
+                StreetNumber = streetNumber,
                 StreetName = streetName,
                 PostCode = postCode
             };
