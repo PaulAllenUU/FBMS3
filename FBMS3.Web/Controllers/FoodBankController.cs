@@ -133,6 +133,7 @@ namespace FBMS3.Web.Controllers
         }
 
         //POST // FoodBank / Delte / {id}
+        [HttpPost]
         public IActionResult DeleteConfirm(int id)
         {
             var f = svc.DeleteFoodBank(id);

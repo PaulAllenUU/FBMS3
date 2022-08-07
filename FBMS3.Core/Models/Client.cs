@@ -15,8 +15,8 @@ namespace FBMS3.Core.Models
         //post code might change due to moving address
         public string PostCode { get; set; }
 
-        //date of birth will never change
-        public DateOnly DateOfBirth { get; set; }
+        //e mail address so they can be sent notifications when food parcel is ready
+        public string EmailAddress { get; set; }
 
         //no of people could change
         public int NoOfPeople { get; set; }

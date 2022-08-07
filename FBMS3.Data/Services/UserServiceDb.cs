@@ -648,10 +648,11 @@ namespace FBMS3.Data.Services
             return false;
         }
 
-        public Client AddClient(string secondName, string postCode, DateOnly dob, int noOfPeople, int foodBankId)
+        public Client AddClient(string secondName, string postCode, string email, int noOfPeople, int foodBankId)
         {
-            //check that the client does not exist already using second name and date of birth
-            var c = ctx.Clients.FirstOrDefault(x => x.SecondName == secondName && x.DateOfBirth == dob);
+            //check that the client does not exist already using email address
+            var c = GetClientByEmailAddress(email);
+            
 
             //if c is not null then the client already exists so return null
             if(c != null) 
@@ -664,7 +665,7 @@ namespace FBMS3.Data.Services
             {
                 SecondName = secondName,
                 PostCode = postCode,
-                DateOfBirth = dob,
+                EmailAddress = email,
                 NoOfPeople = noOfPeople,
                 FoodBankId = foodBankId,
             };
@@ -683,9 +684,9 @@ namespace FBMS3.Data.Services
             return ctx.Clients.FirstOrDefault(x => x.Id == id);
         }
 
-        public Client GetClientBySecondNameAndDateOfBirth(string secondName, DateOnly dob)
+        public Client GetClientByEmailAddress(string email)
         {
-            var c = ctx.Clients.FirstOrDefault(x => x.SecondName == secondName && x.DateOfBirth == dob);
+            var c = ctx.Clients.FirstOrDefault(x => x.EmailAddress == email);
 
             return c;
         }
@@ -700,7 +701,7 @@ namespace FBMS3.Data.Services
             //update the details with all propeties
             client.SecondName = updated.SecondName;
             client.PostCode = updated.PostCode;
-            client.DateOfBirth = updated.DateOfBirth;
+            client.EmailAddress = updated.EmailAddress;
             client.NoOfPeople = updated.NoOfPeople;
             client.FoodBankId = updated.FoodBankId;
 
@@ -709,10 +710,11 @@ namespace FBMS3.Data.Services
         
         }
 
-        public bool DeleteClient(int id)
+        public bool DeleteClient(string email)
         {
             //get the client by id to ensure they are already there
-            var client = GetClientById(id);
+            var client = GetClientByEmailAddress(email);
+            
             if(client == null)
             {
                 return false;
@@ -734,24 +736,33 @@ namespace FBMS3.Data.Services
                              .Where (x => (x.SecondName.ToLower().Contains(query) ||
                                           x.PostCode.ToLower().Contains(query) ||
                                           x.NoOfPeople.ToString().Contains(query) ||
-                                          x.DateOfBirth.ToString().Contains(query)
+                                          x.EmailAddress.ToString().Contains(query)
                                          )
                              ).ToList();
             return results;
         }
 
-        public bool IsDuplicateClient(string secondName, DateOnly dob)
+        public bool IsDuplicateClient(string email)
         {
-            var client = GetClientBySecondNameAndDateOfBirth(secondName, dob);
+            //get lists of all clients
+            var clients = GetAllClients();
 
-            if(client != null){ return true; }
+            //change to array
+            var clientsArray = clients.ToArray();
+
+            //for loop to check all of the clients e mail
+            for(int i = 0; i<clientsArray.Length; i++)
+            {
+                //if the e mail address in any indexes of the array equals the e mail passed in then diplicate so return true
+                if(clientsArray[i].EmailAddress == email)
+                {
+                    return true;
+                }
+
+            }
 
             return false;
-        }
 
-        Client IUserService.AllocatePreferredFoodBankBasedOnDistance(Client c, FoodBank f)
-        {
-            throw new NotImplementedException();
         }
 
         /*public bool CheckFoodBanksForRecipeItem(int foodBankId, int stockId)
