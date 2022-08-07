@@ -1,14 +1,15 @@
 @model Stock
 
-<partial name="_Breadcrumbs" model=@(new [] { ("/", "Home"), ("/stock", "Stock"), ("","Close") })>
+<partial name="_Breadcrumbs" model=@(new [] 
+{ 
+    ("/", "Home"), ("/stock", "Stock"), ("","Close") 
+})>
 
 <div class="col card rounded shadow-lg p-4">
 
     <h3 class="mb-4">Stock Item</h3>
 
-    <dl class="row">       
-        <dt class="col-4">Id</dt>
-        <dd class="col-8">@Model.Id</dd>
+    <dl class="row">
 
         <dt class="col-4">Description</dt>
         <dd class="col-8">@Model.Description</dd>

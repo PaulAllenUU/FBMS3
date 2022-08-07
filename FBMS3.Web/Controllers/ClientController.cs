@@ -19,6 +19,14 @@ namespace FBMS3.Web.Controllers
         {
             svc = ss;
         }
+
+        //index page will allow search feature for clients
+        public IActionResult Index(ClientSearchViewModel c)
+        {
+            c.Clients = svc.SearchClients(c.Query);
+
+            return View(c);
+        }
         
         //return empty client registration form to the view for completion
         public IActionResult Register()

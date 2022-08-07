@@ -9,14 +9,13 @@
 
 <div class="my-4 d-flex flex-row justify-content-between align-items-center">  
    <a asp-action="Create" class="btn btn-primary btn-sm">Add Food Bank</a>   
-   <partial name="_Search" /> <!-- add form to search ticket issues -->
+   <partial name="_Search" /> <!-- add partial to search foodbanks -->
 </div>
 
 
 <table class="table table-hover">
     <thead>
         <tr>
-            <th>Id</th>
             <th>Street Number</th>
             <th>Street Name</th>
             <th>Post Code</th>
@@ -27,7 +26,6 @@
         @foreach (var f in Model.FoodBanks)
         {
             <tr>
-                <td>@f.Id</td>
                 <td>@f.StreetNumber</td>
                 <td>@f.StreetName</td>
                 <td>@f.PostCode</td>

@@ -1,0 +1,52 @@
+@model Client
+
+<partial name="_BreadCrumbs" model=@(new [] {
+    ("/","Home"),
+    ("/client","Clients"),
+    ("","Create")
+}) />
+
+<h3 class="my-4">Add New Client to our database</h3>
+
+<div class="card rounded shadow p-3">
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="mt-3">
+                <label asp-for="SecondName" class="form-label">Family Name</label>
+                <input asp-for="SecondName" class="form-control"/>
+                <span asp-validation-for="SecondName" class="text-danger"></span>
+        </div>
+
+        <div class="mt-3">
+                <label asp-for="PostCode" class="form-label">Post code</label>
+                <input asp-for="PostCode" class="form-control"/>
+                <span asp-validation-for="PostCode" class="text-danger"></span>
+        </div>
+
+        <div class="mt-3">
+                <label asp-for="EmailAddress" class="form-label">E mail Address</label>
+                <input asp-for="EmailAddress" class="form-control"/>
+                <span asp-validation-for="EmailAddress" class="text-danger"></span>
+        </div>
+
+        <div class="mt-3">
+                <label asp-for="NoOfPeople" class="form-label">No. Of People</label>
+                <input asp-for="NoOfPeople" class="form-control"/>
+                <span asp-validation-for="NoOfPeople" class="text-danger"></span>
+        </div>
+
+        <div class="mt-3">
+                <label asp-for="FoodBankId" class="form-label">Food Bank Id</label>
+                <input asp-for="FoodBankId" class="form-control"/>
+                <span asp-validation-for="FoodBankId" class="text-danger"></span>
+        </div>
+
+
+    </form>
+
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

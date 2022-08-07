@@ -1,0 +1,39 @@
+@model Client
+
+<partial name="_Breadcrumbs" model=@(new [] 
+{ 
+    ("/", "Home"), ("/stock", "Stock"), ("","Close") 
+
+})>
+
+<div class="col card rounded shadow-lg p-4">
+
+    <h3 class="mb-4">Stock Item</h3>
+
+    <dl class="row">
+
+        <dt class="col-4">Family Name</dt>
+        <dd class="col-8">@Model.SecondName</dd>
+
+        <dt class="col-4">Post code</dt>
+        <dd class="col-8">@Model.PostCode</dd>
+
+        <dt class="col-4">E-mail Address</dt>
+        <dd class="col-8">@Model.EmailAddress</dd>
+
+        <dt class="col-4">No. Of People</dt>
+        <dd class="col-8">@Model.NoOfPeople</dd>
+
+        <dt class="col-4">Preferred Food Bank</dt>
+        <dd class="col-8">@Model.FoodBankId</dd>    
+    
+    </dl>
+
+    <div class="mt-4"> 
+        <a class="btn btn-link" asp-action="Index">Cancel</a>
+    
+    </div>
+
+
+</div>
+

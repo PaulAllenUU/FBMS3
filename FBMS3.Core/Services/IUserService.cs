@@ -116,6 +116,8 @@ namespace FBMS3.Core.Services
 
         IList<Client> GetAllClients();
 
+        IList<Client> SearchClients (string query);
+
         Client GetClientById(int id);
 
         Client GetClientByEmailAddress(string email);
@@ -123,8 +125,6 @@ namespace FBMS3.Core.Services
         Client UpdateClient(Client updated);
 
         bool DeleteClient(string email);
-
-        IList<Client> SearchClients(string query);
 
         bool IsDuplicateClient(string email);
 
