@@ -43,17 +43,18 @@ namespace FBMS3.Data.Services
             var s13 = svc.AddStock(f6.Id, "Onions", 6, new DateTime(2022, 02,02));
             var s14 = svc.AddStock(f6.Id, "Peppers", 5, new DateTime(2022, 09, 04));
 
+            //add some dummy client data
+
             //add some dummy recipe data
-            var r1 = svc.AddRecipe("Carrot & Tomato Soup", 2, 30);
+            /*var r1 = svc.AddRecipe("Carrot & Tomato Soup", 2, 30);
             var r2 = svc.AddRecipe("Vegetable Stir Fry", 4, 20);
             var r3 = svc.AddRecipe("Chilli Con Carne", 4, 20);
-            var r4 = svc.AddRecipe("Chicken Curry", 5, 30);
+            var r4 = svc.AddRecipe("Chicken Curry", 5, 30);*/
 
             //add the stock to each recipe
 
             //for recipe 1 you use carrots and tomatoes, add those to the recipe along with the quantity of each
-            svc.AddStockItemToRecipe(s11.Id, r1.Id, 3);
-            svc.AddStockItemToRecipe(s10.Id, r1.Id, 2);
+        
 
             //add some
             

@@ -34,7 +34,9 @@ namespace FBMS3.Data.Services
         // Retrive User by Id 
         public User GetUser(int id)
         {
-            return ctx.Users.FirstOrDefault(s => s.Id == id);
+            return ctx.Users
+                      .Include(x => x.FoodBank)
+                      .FirstOrDefault(s => s.Id == id);
         }
 
         // Add a new User checking a User with same email does not exist
@@ -143,8 +145,9 @@ namespace FBMS3.Data.Services
         public FoodBank GetFoodBankById(int id)
         {
             return ctx.FoodBanks
-                    //include the stock that is associated with that food bank
+                    //include the stock and clients that are associated with that food bank
                      .Include(x => x.Stock)
+                     .Include(x => x.Clients)
                      .FirstOrDefault( x=> x.Id == id);
         }
 
@@ -648,7 +651,7 @@ namespace FBMS3.Data.Services
             return false;
         }
 
-        public Client AddClient(string secondName, string postCode, string email, int noOfPeople, int foodBankId)
+        public Client AddClient(string secondName, string postCode, string email, int noOfPeople)
         {
             //check that the client does not exist already using email address
             var c = GetClientByEmailAddress(email);
@@ -667,7 +670,6 @@ namespace FBMS3.Data.Services
                 PostCode = postCode,
                 EmailAddress = email,
                 NoOfPeople = noOfPeople,
-                FoodBankId = foodBankId,
             };
 
             return client;
@@ -681,12 +683,16 @@ namespace FBMS3.Data.Services
 
         public Client GetClientById(int id)
         {
-            return ctx.Clients.FirstOrDefault(x => x.Id == id);
+            return ctx.Clients
+                      .Include(x => x.FoodBank)
+                      .FirstOrDefault(x => x.Id == id);
         }
 
         public Client GetClientByEmailAddress(string email)
         {
-            var c = ctx.Clients.FirstOrDefault(x => x.EmailAddress == email);
+            var c = ctx.Clients
+                       .Include(x => x.FoodBank)
+                       .FirstOrDefault(x => x.EmailAddress == email);
 
             return c;
         }

@@ -1,0 +1,43 @@
+@model Client
+<partial name="_BreadCrumbs" model=@(new [] {
+    ("/","Home"),
+    ("/foodbank","FoodBanks"),
+    ($"/foodbank/details/{Model.Id}",$"{Model.Id}"),
+    ("","Delete")
+}) />
+
+<h3 class="mt-4 mb-4">Delete Food Bank</h3>
+
+<h4 class="mb-4">Are you sure you want to delete this Client from the database?</h4>
+
+<div>
+
+    <div class="col card rounded shadow p-3">
+        <dl class="row">       
+            <dt class="col-5">Family Name</dt>
+            <dd class="col-7">@Model.SecondName</dd>
+
+            <dt class="col-5">Post code</dt>
+            <dd class="col-7">@Model.PostCode</dd>
+            
+            <dt class="col-5">E-mail Address</dt>
+            <dd class="col-7">@Model.EmailAddress</dd>
+
+            <dt class="col-5">No. Of People</dt>
+            <dd class="col-7">@Model.NoOfPeople</dd>
+            
+            <dt class="col-5">Preferred Food Bank</dt>
+            <dd class="col-7">@Model.FoodBankStreetName</dd>
+
+        </dl>
+    </div>
+
+    <div class="mt-4">
+        <form asp-action="DeleteConfirm" type="post">
+            <input type="hidden" asp-for="Id"/>
+            <input type="submit" value="Confirm" class="btn btn-danger" />
+            <a class="btn btn-secondary" asp-controller="FoodBank" asp-action="Index" >Cancel</a>
+        </form>
+    </div>
+
+</div>

@@ -26,5 +26,8 @@ namespace FBMS3.Core.Models
 
         //foreign key from the food bank table, each client has 1 and only 1
         public int FoodBankId { get; set; }
+
+        //FoodBank street name attribute to ensure it can be retrieved for greater context to the use
+        public string FoodBankStreetName => FoodBank?.StreetName;
     }
 }

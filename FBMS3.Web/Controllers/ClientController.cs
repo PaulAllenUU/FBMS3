@@ -29,7 +29,7 @@ namespace FBMS3.Web.Controllers
         }
         
         //return empty client registration form to the view for completion
-        public IActionResult Register()
+        public IActionResult Create()
         {
             return View();
         }
@@ -53,7 +53,7 @@ namespace FBMS3.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Register([Bind("SecondName,PostCode,EmailAddress,NoOfPeople,FoodBankId")] ClientRegisterViewModel c)
+        public IActionResult Create([Bind("SecondName,PostCode,EmailAddress,NoOfPeople")] ClientRegisterViewModel c)
         {
             if(!ModelState.IsValid)
             {
@@ -61,7 +61,7 @@ namespace FBMS3.Web.Controllers
             }
 
             //add the client via the methods in the service
-            var client = svc.AddClient(c.SecondName, c.PostCode, c.EmailAddress, c.NoOfPeople, c.FoodBankId);
+            var client = svc.AddClient(c.SecondName, c.PostCode, c.EmailAddress, c.NoOfPeople);
             {
                 if(client == null)
                 {
