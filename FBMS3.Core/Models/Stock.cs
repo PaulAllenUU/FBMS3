@@ -19,7 +19,7 @@ namespace FBMS3.Core.Models
         //non food to be used to search for non food items in the enum
         public bool NonFood { get; set; } 
 
-        //to also be used to search for only meet in the enum
+        //to also be used to search for only meat in the enumeration
         public bool Meat { get; set; } 
 
         public bool Vegetable { get; set; } 

@@ -29,5 +29,8 @@ namespace FBMS3.Core.Models
 
         //FoodBank street name attribute to ensure it can be retrieved for greater context to the use
         public string FoodBankStreetName => FoodBank?.StreetName;
+
+        //each client could have 1 or many parcels
+        public IList<Parcel> Parcels { get; set; } = new List<Parcel>();
     }
 }

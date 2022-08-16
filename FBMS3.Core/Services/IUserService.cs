@@ -114,7 +114,7 @@ namespace FBMS3.Core.Services
         //client added to the database by the food banks staff or volunteers at the food bank site
         Client AddClient(string secondName, string postCode, string email, int noOfPeople, int foodBankId);
 
-        IList<Client> GetAllClients();
+        Queue<Client> GetAllClients();
 
         IList<Client> SearchClients (string query);
 
@@ -127,7 +127,15 @@ namespace FBMS3.Core.Services
         bool DeleteClient(string email);
 
         bool IsDuplicateClient(string email);
-        //end basic client management methods
+
+        void CountNumberOfClientsInFoodBank(FoodBank foodBank);
+        //--------End basic client management methods
+
+        //-----Begin Parcel Management Methods-----//
+        bool checkFoodBankForStockItem(string stockitem);
+
+        Parcel GenerateParcelForClient(Queue<Client>clients, int ClientId);
+
 
         //--------Begin Recipe Management Methods------//
 

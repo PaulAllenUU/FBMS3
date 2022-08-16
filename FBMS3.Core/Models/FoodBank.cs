@@ -17,6 +17,9 @@ namespace FBMS3.Core.Models
 
         public string PostCode { get; set; }
 
+        //keep track of number of clients that are currently registered with the food bank
+        public int NoOfClients { get; set; }
+
         //Many side of the relaton with users - 1 food bank will have many users
         public IList<User> Users { get ; set; } = new List <User>();
 
@@ -25,6 +28,9 @@ namespace FBMS3.Core.Models
 
         //foodbanks can have many clients
         public IList<Client> Clients { get; set; } = new List<Client>();
+
+        //food banks will have many parcels
+        public IList<Parcel> Parcels { get; set; } = new List<Parcel>();
 
     }
 }

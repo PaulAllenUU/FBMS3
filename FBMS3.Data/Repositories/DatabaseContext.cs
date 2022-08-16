@@ -29,6 +29,9 @@ namespace FBMS3.Data.Repositories
         //congfigure the dbSet for Clients - entity which are added when they come to the food bank
         public DbSet<Client> Clients { get; set; }
 
+        //db set for Parcels - parcels are generated and will take food away from the food bank
+        public DbSet<Parcel> Parcels { get; set; }
+
         //configure for stock category
         //public DbSet<StockCategory> StockCategorys { get; set; }
 

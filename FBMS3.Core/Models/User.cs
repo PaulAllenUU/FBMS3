@@ -23,5 +23,8 @@ namespace FBMS3.Core.Models
         //1 - M relationship, each user will have 1 food bank
         public int FoodBankId { get; set; }
 
+        //each user will have multiple parcels they allocate to clients
+        public IList<Parcel> Parcels { get; set; } = new List<Parcel>();
+
     }
 }

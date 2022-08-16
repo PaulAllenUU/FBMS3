@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+
 using Microsoft.EntityFrameworkCore;
 
 using FBMS3.Core.Models;
@@ -673,6 +674,15 @@ namespace FBMS3.Data.Services
                 FoodBankId = foodBankId,
 
             };
+
+            //Queue constructur - instantiate the instance of an empty queue
+            var queue = new Queue<Client>
+            {
+
+            };
+
+            //add the newly created client to the Queue
+            queue.Enqueue(client);
             //add the newly created client and save changes
             ctx.Add(client);
             ctx.SaveChanges();
@@ -682,9 +692,16 @@ namespace FBMS3.Data.Services
 
         }
 
-        public IList<Client> GetAllClients()
+        public Queue <Client> GetAllClients()
         {
-            return ctx.Clients.ToList();
+            //get the clients from the DbSet
+            var clients = ctx.Clients;
+
+            //convert the DbSet to a Queue data type
+            var Queue = new Queue<Client>(clients);
+
+            //return the queue
+            return Queue;
         }
 
         public Client GetClientById(int id)
@@ -777,6 +794,29 @@ namespace FBMS3.Data.Services
             return false;
 
         }
+
+        public Parcel GenerateParcelForClient(Queue<Client> clients, int FoodBankId)
+        {
+            int QueueSize = clients.Count();
+
+            for(int i=0; i<QueueSize; i++)
+            {
+                
+            }
+
+            
+            
+        }
+
+        public bool checkFoodBankForStockItem(FoodBank foodbank, string stockitem)
+        {
+            foreach (var s in foodbank)
+            {
+                
+            }
+        }
+
+
 
         /*public bool CheckFoodBanksForRecipeItem(int foodBankId, int stockId)
         {
