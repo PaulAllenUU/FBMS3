@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 using FBMS3.Core.Models;
 using FBMS3.Core.Services;
@@ -31,18 +32,25 @@ namespace FBMS3.Web.Controllers
         //return empty client registration form to the view for completion
         public IActionResult Create()
         {
-            return View();
+            var foodbanks = svc.GetFoodBanks();
+
+            var ccvm = new ClientCreateViewModel
+            {
+                FoodBanks = new SelectList(foodbanks, "Id", "StreetName")
+            };
+
+            return View(ccvm);
         }
 
-        public IActionResult Details(string email)
+        public IActionResult Details(int id)
         {
             //retreive the client using the e mail address service method
-            var c = svc.GetClientByEmailAddress(email);
+            var c = svc.GetClientById(id);
 
             //if the object is null then the client does not exist
             if(c == null)
             {
-                Alert($"Client with {email} not found", AlertType.warning);
+                Alert($"Client with {id} not found", AlertType.warning);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -53,7 +61,7 @@ namespace FBMS3.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("SecondName,PostCode,EmailAddress,NoOfPeople")] ClientRegisterViewModel c)
+        public IActionResult Create([Bind("SecondName,PostCode,EmailAddress,NoOfPeople,FoodBankId")] ClientCreateViewModel c)
         {
             if(!ModelState.IsValid)
             {
@@ -61,7 +69,7 @@ namespace FBMS3.Web.Controllers
             }
 
             //add the client via the methods in the service
-            var client = svc.AddClient(c.SecondName, c.PostCode, c.EmailAddress, c.NoOfPeople);
+            var client = svc.AddClient(c.SecondName, c.PostCode, c.EmailAddress, c.NoOfPeople, c.FoodBankId);
             {
                 if(client == null)
                 {
@@ -84,15 +92,15 @@ namespace FBMS3.Web.Controllers
         }
 
         //GET - Edit by e mail address
-        public IActionResult Edit(string email)
+        public IActionResult Edit(int id)
         {
             //check the user exists through their e mail address
-            var client = svc.GetClientByEmailAddress(email);
+            var client = svc.GetClientById(id);
 
             //if null then cannot update so return null
             if(client == null)
             {
-                Alert($"User with {email} not found", AlertType.warning);
+                Alert($"User with {id} not found", AlertType.warning);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -123,15 +131,15 @@ namespace FBMS3.Web.Controllers
         }
 
         //GET - Client - email address
-        public IActionResult Delete(string email)
+        public IActionResult Delete(int id)
         {
             //use the service method to retrive the client by e mail address
-            var c = svc.GetClientByEmailAddress(email);
+            var c = svc.GetClientById(id);
 
             //if the email address does not exist then return error
             if (c == null)
             {
-                Alert($"Client with {email} not found", AlertType.warning);
+                Alert($"Client with {id} not found", AlertType.warning);
                 return RedirectToAction(nameof(Index));
             }
 

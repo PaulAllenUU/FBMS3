@@ -651,7 +651,7 @@ namespace FBMS3.Data.Services
             return false;
         }
 
-        public Client AddClient(string secondName, string postCode, string email, int noOfPeople)
+        public Client AddClient(string secondName, string postCode, string email, int noOfPeople, int foodBankId)
         {
             //check that the client does not exist already using email address
             var c = GetClientByEmailAddress(email);
@@ -670,8 +670,14 @@ namespace FBMS3.Data.Services
                 PostCode = postCode,
                 EmailAddress = email,
                 NoOfPeople = noOfPeople,
-            };
+                FoodBankId = foodBankId,
 
+            };
+            //add the newly created client and save changes
+            ctx.Add(client);
+            ctx.SaveChanges();
+
+            //return the newly created client
             return client;
 
         }
@@ -742,7 +748,8 @@ namespace FBMS3.Data.Services
                              .Where (x => (x.SecondName.ToLower().Contains(query) ||
                                           x.PostCode.ToLower().Contains(query) ||
                                           x.NoOfPeople.ToString().Contains(query) ||
-                                          x.EmailAddress.ToString().Contains(query)
+                                          x.EmailAddress.Contains(query) ||
+                                          x.FoodBankId.ToString().Contains(query)
                                          )
                              ).ToList();
             return results;

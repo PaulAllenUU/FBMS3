@@ -112,7 +112,7 @@ namespace FBMS3.Core.Services
         //-------Begin client management methods----//
         
         //client added to the database by the food banks staff or volunteers at the food bank site
-        Client AddClient(string secondName, string postCode, string email, int noOfPeople);
+        Client AddClient(string secondName, string postCode, string email, int noOfPeople, int foodBankId);
 
         IList<Client> GetAllClients();
 
@@ -128,9 +128,6 @@ namespace FBMS3.Core.Services
 
         bool IsDuplicateClient(string email);
         //end basic client management methods
-
-        //begin user food bank service methods which allocate client to food bank based on post code
-        FoodBank AddClientToPrefferedFoodBank(string postCode, List<FoodBank> foodbanks);
 
         //--------Begin Recipe Management Methods------//
 

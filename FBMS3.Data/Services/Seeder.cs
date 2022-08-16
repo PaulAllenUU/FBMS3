@@ -44,6 +44,7 @@ namespace FBMS3.Data.Services
             var s14 = svc.AddStock(f6.Id, "Peppers", 5, new DateTime(2022, 09, 04));
 
             //add some dummy client data
+            var c1 = svc.AddClient("Allen", "BT45 7PL", "example@mail.com", 3, f1.Id);
 
             //add some dummy recipe data
             /*var r1 = svc.AddRecipe("Carrot & Tomato Soup", 2, 30);

@@ -232,13 +232,13 @@ namespace FBMS3.Test
         //End of Food Bank Service Management Tests
 
         [Fact]
-        public static void Stock_GetAllStockWhenNone_ShouldReturnNone()
+        public void Stock_GetAllStockWhenNone_ShouldReturnNone()
         {
             //arrange
             var list = service.GetAllStock();
 
             //assert
-            Assert.Null(list):
+            Assert.Null(list);
 
         }
 
@@ -247,7 +247,7 @@ namespace FBMS3.Test
         {
             //arrange
             var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
-            var stock = AddStock(f.FoodBankId, "Cereal", 3, new DateTime(2022, 04, 10));
+            
 
             //act
             

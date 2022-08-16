@@ -8,6 +8,11 @@
 
 <h3 class="mb-3">List Of All Currently Registered Clients</h3>
 
+<div class="my-4 d-flex flex-row justify-content-between align-items-center">  
+   <a asp-action="Create" class="btn btn-primary btn-sm">Add New Client</a>   
+   <partial name="_Search" /> <!-- add partial to search foodbanks -->
+</div>
+
 <table class="table table-hover">
     <thead>
         <tr>
