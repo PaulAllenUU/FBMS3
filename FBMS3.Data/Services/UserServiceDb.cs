@@ -675,24 +675,31 @@ namespace FBMS3.Data.Services
 
             };
 
-            //Queue constructur - instantiate the instance of an empty queue
-            var queue = new Queue<Client>
-            {
-
-            };
-
-            //add the newly created client to the Queue
-            queue.Enqueue(client);
-            //add the newly created client and save changes
+            //add the client to the database
             ctx.Add(client);
+
+            //save changes
             ctx.SaveChanges();
 
-            //return the newly created client
+            //call the method below so that every time someone is added to the database they are also added to the queue
+            AddClientToTheQueue(client);
+
+            //return the client
             return client;
 
         }
 
-        public Queue <Client> GetAllClients()
+        //void method which uses the generic queue type from collections
+        public void AddClientToTheQueue(Client client)
+        {
+            //instantiate a queue a call it FoodBankQueue - uses FIFO data type
+            Queue<Client> TheQueue = new Queue<Client>();
+
+            //using the enqueue method we add the client to end of the queue
+            TheQueue.Enqueue(client);
+        }
+
+        public Queue<Client> GetAllClients()
         {
             //get the clients from the DbSet
             var clients = ctx.Clients;
@@ -814,6 +821,16 @@ namespace FBMS3.Data.Services
             {
                 
             }
+        }
+
+        public void RemoveClientFromTheQueue(Client client)
+        {
+            Queue<Client> TheQueue = new Queue<Client>()
+            {
+
+            };
+
+            TheQueue.Enqueue(client);
         }
 
 
