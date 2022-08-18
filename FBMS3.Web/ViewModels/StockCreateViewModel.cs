@@ -16,5 +16,7 @@ namespace FBMS3.Web.ViewModels
         public int Quantity { get; set ; }
 
         public DateTime ExpiryDate { get; set; } 
+
+        public int StockCategoryId { get; set; }
     }
 }

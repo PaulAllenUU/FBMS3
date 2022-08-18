@@ -21,10 +21,10 @@ namespace FBMS3.Core.Models
         public string Item { get; set; }
 
         //the allocation of each item
-        public int Quantity { get; set; }
+        private int Quantity => QuantityChanger();
 
         //the size of each item included in the parcel
-        public string ItemSize { get; set; }
+        private string ItemSize => SizeChanger();
 
         //navigation to the Client table
         public Client Client { get; set; }
@@ -41,6 +41,47 @@ namespace FBMS3.Core.Models
         //no of people that the parcel is for
         public int NoOfPeople { get; set; }
 
+        //size and quantity determined by number of people in family that the parcel is for
+        private string SizeChanger()
+        {
+            if(NoOfPeople == 1)
+            {
+                return "small";
+            }
+            else if(NoOfPeople == 2)
+            {
+                return "medium";
+            }
+                 else if(NoOfPeople == 3)
+                 {
+                    return "large";
+                 }
+                        else
+                        {
+                            return "extra large";
+                        }
+        }
+
+        //larger family sizes will higher quantities of more stock
+        private int QuantityChanger()
+        {
+            if(NoOfPeople == 1)
+            {
+                return 1;
+            }
+            else if(NoOfPeople == 2)
+            {
+                return 2;
+            }
+                else if(NoOfPeople == 3)
+                {
+                    return 3;
+                }
+                    else 
+                    {
+                        return 4;
+                    }
+        }
     }
 
 }

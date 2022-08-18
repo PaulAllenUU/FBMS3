@@ -64,7 +64,7 @@ namespace FBMS3.Web.Controllers
         {
             if(ModelState.IsValid)
             {
-                service.AddStock(svm.FoodBankId, svm.Description, svm.Quantity, svm.ExpiryDate);
+                service.AddStock(svm.FoodBankId, svm.Description, svm.Quantity, svm.ExpiryDate, svm.StockCategoryId);
 
                 Alert($"{svm.Quantity} of {svm.Description} added to food bank no.1 {svm.FoodBankId}");
                 return RedirectToAction(nameof(Index));

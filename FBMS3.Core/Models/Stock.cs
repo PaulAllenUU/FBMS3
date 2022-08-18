@@ -27,10 +27,12 @@ namespace FBMS3.Core.Models
         public bool Carbohydrate { get; set; } 
 
         //navigation property to stock category table
-        //public StockCategory StockCategory { get; set; }
+        public StockCategory StockCategory { get; set; }
 
         //1 side of the relationship - each stock item has one category
-        //public int StockCategoryId { get; set; }
+        public int StockCategoryId { get; set; }
+
+        public string StockCategoryDescription => StockCategory?.Description;
 
         //each Stock item will have only 1 Food Bank
         public int FoodBankId { get; set; }

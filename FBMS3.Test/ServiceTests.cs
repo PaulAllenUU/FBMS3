@@ -247,7 +247,8 @@ namespace FBMS3.Test
         {
             //arrange
             var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
-            var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01));
+            var category = service.AddStockCategory("Fruit");
+            var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01), category.Id);
 
             //act
             var get = service.GetAllStock();
@@ -264,7 +265,8 @@ namespace FBMS3.Test
             var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
             var f2 = service.AddFoodBank(36, "Meadowvale", "bt61 7LK");
             var list = service.GetFoodBanks();
-            var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01));
+            var category = service.AddStockCategory("Fruit");
+            var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01), category.Id);
 
             //act
             var check = service.CheckAllFoodBanksForStockItem(list, "Apple");
@@ -280,7 +282,8 @@ namespace FBMS3.Test
             var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
             var f2 = service.AddFoodBank(36, "Meadowvale", "bt61 7LK");
             var list = service.GetFoodBanks();
-            var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01));
+            var category = service.AddStockCategory("Fruit");
+            var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01), category.Id);
 
             //act
             var check = service.CheckAllFoodBanksForStockItem(list, "Orange");

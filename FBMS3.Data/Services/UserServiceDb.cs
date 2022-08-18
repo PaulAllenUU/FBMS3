@@ -281,7 +281,7 @@ namespace FBMS3.Data.Services
             return ctx.Stock.FirstOrDefault ( x => x.ExpiryDate == expiryDate);
         }
 
-        public Stock AddStock(int foodBankId, string description, int quantity, DateTime expiryDate)
+        public Stock AddStock(int foodBankId, string description, int quantity, DateTime expiryDate, int stockCategoryId)
         {
             //the food bank id is the foreign key so need to check it exists
             var foodbank = GetFoodBankById(foodBankId);
@@ -296,61 +296,48 @@ namespace FBMS3.Data.Services
                 Description = description,
                 Quantity = quantity,
                 ExpiryDate = expiryDate,
-
+                StockCategoryId = stockCategoryId,
             };
 
-            //create a set of all meat types and add them all
-            List<String> MeatTypes = new List<String>();
-            MeatTypes.Add("Chicken");
-            MeatTypes.Add("Pork");
-            MeatTypes.Add("Beef");
-            MeatTypes.Add("Fish");
-
-            //check if the description added by the user contains any of the items in the list
-            if(MeatTypes.Contains(description))
+            if(DetermineEnumerationType(s.StockCategoryDescription, "Meat"))
             {
                 s.Meat = true;
             }
-
-            //do the same for checking for vegetable
-            List<String> Vegetables = new List<String>();
-            Vegetables.Add("Carrots");
-            Vegetables.Add("Peppers");
-            Vegetables.Add("Cauliflower");
-            Vegetables.Add("Onions");
-
-            //check if the descrption added by the user contains any items included in the created list
-            if(Vegetables.Contains(description))
+                
+            if(DetermineEnumerationType(s.StockCategoryDescription, "Vegetable"))
             {
                 s.Vegetable = true;
-            }
-
-            //do the same for carbohydrate items such as bread, pasta, rice and potatoes
-            List<String> Carbohydrates = new List<String>();
-            Carbohydrates.Add("Potato");
-            Carbohydrates.Add("Pasta");
-            Carbohydrates.Add("Rice");
-            Carbohydrates.Add("Spagehtti");
-
-            //check if the descrption contains any of these items
-            if(Carbohydrates.Contains(description))
+            } 
+            
+            if(DetermineEnumerationType(s.StockCategoryDescription, "Carbohydrates"))
             {
                 s.Carbohydrate = true;
             }
+            IList<String> nonFoodList = new IList<>
 
-            //last do the same for non food items
-            List<String> NonFoodItems = new List<String>();
-            NonFoodItems.Add("Toilet Paper");
-            NonFoodItems.Add("Kitchen Roll");
-            NonFoodItems.Add("Razors");
-            NonFoodItems.Add("Pet Food");
-            NonFoodItems.Add("Shower Gel");
 
-            //final if logic for containing non food items
-            if(NonFoodItems.Contains(description))
+            if(DetermineEnumerationTypeWithArray(s.StockCategoryDescription, {"Razor, Toileteries, "}))
+
+            if(DetermineEnumerationType(s.StockCategoryDescription, "Razor", "")
             {
                 s.NonFood = true;
             }
+            else if(DetermineEnumerationType(s.StockCategoryDescription, "Toileteries"))
+            {
+                s.NonFood = true;
+            }
+                else if(DetermineEnumerationType(s.StockCategoryDescription, "Pet Food" || "Toileteries"))
+                {
+                    s.NonFood = true;
+                }
+                    else if(DetermineEnumerationType(s.StockCategoryDescription, "Kitchen Cleaning"))
+                    {
+                        s.NonFood = true;
+                    }
+                        else if(DetermineEnumerationType(s.StockCategoryDescription, "Logs"))
+                        {
+                            s.NonFood = true;
+                        }
 
             //add the newly created stock item to the database and save changes
             ctx.Stock.Add(s);
@@ -452,6 +439,40 @@ namespace FBMS3.Data.Services
                               ).ToList();
 
             return results;
+        }
+
+        //---------Stock Categiry Methods-----//
+        public StockCategory AddStockCategory(string description)
+        {
+            var exists = GetStockCategoryByDescription(description);
+            
+            //if the category is not null, ie already exists then return null
+            if(exists != null)
+            {
+                return null;
+            }
+
+            var scat = new StockCategory
+            {
+                Description = description
+            };
+
+            return scat;
+
+        }
+
+        public StockCategory GetStockCategoryById(int id)
+        {
+            return ctx.StockCategorys
+                      .Include(x => x.Stock)
+                      .FirstOrDefault(x => x.Id == id);
+        }
+
+        public StockCategory GetStockCategoryByDescription(string description)
+        {
+            return ctx.StockCategorys
+                      .Include(x => x.Stock)
+                      .FirstOrDefault(x => x.Description == description);
         }
 
         //add a recipe checking that is doesnt already exist using title
@@ -847,31 +868,19 @@ namespace FBMS3.Data.Services
             ctx.SaveChanges();
         }
 
-        public Parcel GenerateParcelFromStock(int userId, DateTime date, string item, int quantity, string itemSize, int clientId, int foodBankId, int noOfPeople)
+        /*public Parcel GenerateParcelFromStock(int userId, DateTime date, string item, int clientId, int foodBankId, int noOfPeople)
         {
             var Parcel = new Parcel
             {
                 UserId = userId,
                 Date = DateTime.Now,
                 Item = item,
-                Quantity = 1,
-                ItemSize = itemSize,
                 ClientId = clientId,
                 FoodBankId = foodBankId,
                 NoOfPeople = noOfPeople,
             };
-
-            if(noOfPeople > 1 && noOfPeople <= 2)
-            {
-                quantity++;
-            }
-            else if(noOfPeople > 2 && noOfPeople <= 3)
-            {
-                quantity+
-            }
-
             
-        }
+        }*/
 
         //method to check a specific food bank for specific item of stock
         public bool checkFoodBankForStockItem(int FoodBankId, string description)
@@ -940,6 +949,35 @@ namespace FBMS3.Data.Services
         bool IUserService.checkAllFoodBanksForListOfStockItems(IList<FoodBank> f, IList<Stock> s)
         {
             throw new NotImplementedException();
+        }
+
+        public bool DetermineEnumerationType(string actual, string categorydescription)
+        {
+            bool found = false;
+            if(actual.Contains(categorydescription))
+            {
+                found = true;
+            }
+            
+            return found;
+        }
+
+        public bool DetermineEnumerationTypeWithArray(string actual, List <String> nonFoodCategories)
+        {
+            nonFoodCategories.ToArray();
+            bool found = false;
+
+            //for loop for traversing the array
+            for (int i = 0; i < nonFoodCategories.Count ; i++)
+            {
+                if(actual == nonFoodCategories[i])
+                {
+                    found = true;
+                }
+                
+            }
+
+            return found;
         }
 
 

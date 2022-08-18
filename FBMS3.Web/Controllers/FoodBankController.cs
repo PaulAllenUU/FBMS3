@@ -171,7 +171,7 @@ namespace FBMS3.Web.Controllers
         {
             if(ModelState.IsValid)
             {
-                var stock = svc.AddStock(s.FoodBankId, s.Description, s.Quantity, s.ExpiryDate);
+                var stock = svc.AddStock(s.FoodBankId, s.Description, s.Quantity, s.ExpiryDate, s.StockCategoryId);
                 Alert($"Stock item created successfully for food bank {s.FoodBankId}", AlertType.info);
                 return RedirectToAction(nameof(Details), new { Id = stock.FoodBankId });
             }
