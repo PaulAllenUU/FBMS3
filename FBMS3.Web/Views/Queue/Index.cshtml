@@ -1,0 +1,15 @@
+@model Queue<Client>
+
+<partial name="_BreadCrumbs" model=@(new [] {
+    ("/","Home"),
+    ("","Queue")
+}) />
+
+<h3 class="mb-3">The current Queue for parcels</h3>
+
+
+@foreach (var c in Model)
+{
+    <td>@c.SecondName</td>
+    <td>@c.NoOfPeople People ,</td>
+}

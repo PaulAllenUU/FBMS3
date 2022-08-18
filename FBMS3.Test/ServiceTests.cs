@@ -243,14 +243,50 @@ namespace FBMS3.Test
         }
 
         [Fact]
-        public void Stock_GetStockById_WhenExists_ShouldReturnOne()
+        public void Stock_GetAllStock_WhenOneExists_ShouldReturnOne()
         {
             //arrange
             var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
-            
+            var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01));
 
             //act
-            
+            var get = service.GetAllStock();
+            var count = get.Count;
+
+            //assert
+            Assert.Equal(1, count);
+        }
+
+        [Fact]
+        public void CheckAllFoodBanksForStockItem_WhenHas_ShouldReturnTrue()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var f2 = service.AddFoodBank(36, "Meadowvale", "bt61 7LK");
+            var list = service.GetFoodBanks();
+            var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01));
+
+            //act
+            var check = service.CheckAllFoodBanksForStockItem(list, "Apple");
+
+            Assert.True(check);
+
+        }
+
+        [Fact]
+        public void CheckAllFoodBanksForStockItem_WhenDoesntHave_ShouldReturnFalse()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var f2 = service.AddFoodBank(36, "Meadowvale", "bt61 7LK");
+            var list = service.GetFoodBanks();
+            var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01));
+
+            //act
+            var check = service.CheckAllFoodBanksForStockItem(list, "Orange");
+
+            Assert.False(check);
+
         }
 
     }

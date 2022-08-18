@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 
 using FBMS3.Core.Models;
 using FBMS3.Core.Services;
@@ -85,6 +86,7 @@ namespace FBMS3.Web.Controllers
                 }
 
                 Alert("Client successfully added, please click next to view their food bank and parcel details");
+                
 
                 //change this to take the user to the assignment of the food bank and food parcel
                 return RedirectToAction(nameof(Index));

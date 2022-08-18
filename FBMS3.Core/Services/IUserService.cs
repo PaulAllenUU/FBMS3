@@ -37,6 +37,9 @@ namespace FBMS3.Core.Services
 
         // ---------- End User Management Interface ------//
 
+        //------- Queue Management Method---------//
+        void AddClientToQueue(Client client);
+
         //-----Begin Food Bank Management Methods------??
 
         //Get all food banks that are in the database
@@ -114,11 +117,8 @@ namespace FBMS3.Core.Services
         //client added to the database by the food banks staff or volunteers at the food bank site
         Client AddClient(string secondName, string postCode, string email, int noOfPeople, int foodBankId);
 
-        //method that will add the client to the queue
-        void AddClientToTheQueue(Client client);
-
         //method that will remove someone from the queue
-        void RemoveClientFromTheQueue(Client client);
+        void RemoveClientFromTheQueue();
 
         Queue<Client> GetAllClients();
 
@@ -134,8 +134,9 @@ namespace FBMS3.Core.Services
 
         bool IsDuplicateClient(string email);
 
-        Parcel GenerateParcelForClient(Queue<Client>clients, int ClientId);
-
+        //--------Begin Parcel Management Methods---------///
+        Parcel GenerateParcelFromStock(int userd, DateTime date, string item, int quantity, string itemSize, int clientId, int foodBankId, int noOfPeople);
+    
 
         //--------Begin Recipe Management Methods------//
 
@@ -177,6 +178,14 @@ namespace FBMS3.Core.Services
 
         //update recipeingredient stock item quantity
         RecipeStock UpdateStockItemQuantity(int stockId, int recipeId, int stockItemQuantity);
+
+        bool checkFoodBankForStockItem(int FoodBankId, string description);
+
+        bool CheckAllFoodBanksForStockItem(IList<FoodBank> foodbanks, string description);
+
+        bool checkFoodBankForListOfStockItems(int FoodBankId, IList<Stock> s);
+
+        bool checkAllFoodBanksForListOfStockItems(IList<FoodBank> f, IList<Stock> s);
 
         //-------End of Recipe Management Interface ------//
 

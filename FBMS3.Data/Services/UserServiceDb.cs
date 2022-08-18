@@ -8,8 +8,10 @@ using FBMS3.Core.Models;
 using FBMS3.Core.Services;
 using FBMS3.Core.Security;
 using FBMS3.Data.Repositories;
+
 namespace FBMS3.Data.Services
 {
+    
     public class UserServiceDb : IUserService
     {
         private readonly DatabaseContext  ctx;
@@ -23,6 +25,15 @@ namespace FBMS3.Data.Services
         {
            ctx.Initialise(); 
         }
+
+        public Queue<Client> TheQueue = new Queue<Client>(); 
+
+        //public Queue<Client> TheQueue = new Queue<Client>();
+
+        /*public UserServiceDb(Queue<Client> theQueue)
+        {
+            TheQueue = theQueue;
+        }*/
 
         // ------------------ User Related Operations ------------------------
 
@@ -656,6 +667,8 @@ namespace FBMS3.Data.Services
         {
             //check that the client does not exist already using email address
             var c = GetClientByEmailAddress(email);
+
+            //var theQueue = new Queue<Client>();
             
 
             //if c is not null then the client already exists so return null
@@ -675,40 +688,32 @@ namespace FBMS3.Data.Services
 
             };
 
-            //add the client to the database
             ctx.Add(client);
+
+            //call the add client to queue method from below
+            AddClientToQueue(client);
 
             //save changes
             ctx.SaveChanges();
-
-            //call the method below so that every time someone is added to the database they are also added to the queue
-            AddClientToTheQueue(client);
 
             //return the client
             return client;
 
         }
-
-        //void method which uses the generic queue type from collections
-        public void AddClientToTheQueue(Client client)
-        {
-            //instantiate a queue a call it FoodBankQueue - uses FIFO data type
-            Queue<Client> TheQueue = new Queue<Client>();
-
-            //using the enqueue method we add the client to end of the queue
-            TheQueue.Enqueue(client);
-        }
-
+       
         public Queue<Client> GetAllClients()
         {
             //get the clients from the DbSet
             var clients = ctx.Clients;
 
-            //convert the DbSet to a Queue data type
-            var Queue = new Queue<Client>(clients);
+            //for each loop to add every client in to the queue
+            foreach (var c in clients)
+            {
+                TheQueue.Enqueue(c);
+            }
 
             //return the queue
-            return Queue;
+            return TheQueue;
         }
 
         public Client GetClientById(int id)
@@ -802,7 +807,7 @@ namespace FBMS3.Data.Services
 
         }
 
-        public Parcel GenerateParcelForClient(Queue<Client> clients, int FoodBankId)
+        /*public Parcel GenerateParcelForClient(Queue<Client> clients, int FoodBankId)
         {
             int QueueSize = clients.Count();
 
@@ -813,27 +818,140 @@ namespace FBMS3.Data.Services
 
             
             
-        }
+        }*/
 
-        public bool checkFoodBankForStockItem(FoodBank foodbank, string stockitem)
+        /*public bool checkFoodBankForStockItem(FoodBank foodbank, string stockitem)
         {
             foreach (var s in foodbank)
             {
                 
             }
+        }*/
+
+        //using the built in methods to dequeue a client from the queue
+        public void RemoveClientFromTheQueue()
+        {
+            //dequeue the client at the head of the queue and then save changes
+            TheQueue.Dequeue();
+
+            ctx.SaveChanges();
         }
 
-        public void RemoveClientFromTheQueue(Client client)
+        //using the built in DeQueue method we can add clients to the queue
+        public void AddClientToQueue(Client client)
         {
-            Queue<Client> TheQueue = new Queue<Client>()
-            {
+            //pass in the client to be added to the queue
+            TheQueue.Enqueue(client);
 
+            //save changes
+            ctx.SaveChanges();
+        }
+
+        public Parcel GenerateParcelFromStock(int userId, DateTime date, string item, int quantity, string itemSize, int clientId, int foodBankId, int noOfPeople)
+        {
+            var Parcel = new Parcel
+            {
+                UserId = userId,
+                Date = DateTime.Now,
+                Item = item,
+                Quantity = 1,
+                ItemSize = itemSize,
+                ClientId = clientId,
+                FoodBankId = foodBankId,
+                NoOfPeople = noOfPeople,
             };
 
-            TheQueue.Enqueue(client);
+            if(noOfPeople > 1 && noOfPeople <= 2)
+            {
+                quantity++;
+            }
+            else if(noOfPeople > 2 && noOfPeople <= 3)
+            {
+                quantity+
+            }
+
+            
+        }
+
+        //method to check a specific food bank for specific item of stock
+        public bool checkFoodBankForStockItem(int FoodBankId, string description)
+        {
+            //call the food bank by id into memory
+            var foodbank = GetFoodBankById(FoodBankId);
+
+            //call the stock item by description in to memory
+            var stockitem = GetStockByDescription(description);
+
+            //if either of the above are null then return false
+            if(foodbank == null || stockitem == null)
+            {
+                return false;
+            }
+
+            //if the foodbank contains the stock item return true if 
+            if(foodbank.Stock.Contains(stockitem))
+            {
+                return true;
+            }
+
+            return false;
+
+        }
+
+        public bool CheckAllFoodBanksForStockItem(IList<FoodBank> f, string description)
+        {
+            //load all of the food banks in to memory using one of the above methods
+            var foodbanks = GetFoodBanks();
+
+            //load the stock item in to memoery using the method above
+            var stockitem = GetStockByDescription(description);
+
+            bool found = false;
+            //use for loop to iterate through each food bank
+            for (int i = 0; i < foodbanks.Count(); i++)
+            {
+                if(foodbanks[i].Stock.Contains(stockitem))
+                {
+                    found = true;
+                }
+            }
+            return found;
+        }
+
+        public bool checkFoodBankForListOfStockItems(int FoodBankId, IList<Stock> s)
+        {
+            var fb = GetFoodBankById(FoodBankId);
+            var items = GetAllStock();
+            bool found = false;
+
+            //for loop to through all of the items
+            for(int i =0 ; i < items.Count(); i++)
+            {
+                if(fb.Stock.Contains(items[i]))
+                {
+                    found = true;
+                }
+                found = false;
+            }
+
+            return found;
+        }
+
+        bool IUserService.checkAllFoodBanksForListOfStockItems(IList<FoodBank> f, IList<Stock> s)
+        {
+            throw new NotImplementedException();
         }
 
 
+
+        /*public Parcel GenerateParcelFromStock(int userId, DateTime date, string item, int quantity, 
+                                            string itemSize, int clientId, int foodBankId, int noOfPeople)
+        {
+            var foodBank = GetFoodBankById(foodBankId);
+
+            var stock = 
+            
+        }*/
 
         /*public bool CheckFoodBanksForRecipeItem(int foodBankId, int stockId)
         {

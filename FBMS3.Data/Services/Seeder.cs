@@ -45,6 +45,9 @@ namespace FBMS3.Data.Services
 
             //add some dummy client data
             var c1 = svc.AddClient("Allen", "BT45 7PL", "example@mail.com", 3, f1.Id);
+            var c2 = svc.AddClient("McLaughlin", "BT65 9LU", "mcl@gmx.com", 4, f2.Id);
+            var c3 = svc.AddClient("Johnston", "BT72 9PO", "jjopl@yahoo.co.uk", 1, f3.Id);
+            var c4 = svc.AddClient("O'Neill", "BT31 0NM", "oneill@hotmail.co.uk", 2, f3.Id);
 
             //add some dummy recipe data
             /*var r1 = svc.AddRecipe("Carrot & Tomato Soup", 2, 30);
