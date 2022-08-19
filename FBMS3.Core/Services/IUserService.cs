@@ -102,11 +102,7 @@ namespace FBMS3.Core.Services
         Stock GetStockByExpiryDate(DateTime expiryDate);
 
         //add stock using all properties
-        Stock AddStock(int foodBankId, string description, int quantity, DateTime expiryDate, int stockCategoryId); 
-
-        bool DetermineEnumerationType(string actual, string categorydescription);
-
-        bool DetermineEnumerationTypeWithArray(string actual, Array nonFoodCategories);
+        Stock AddStock(int foodBankId, string description, int quantity, DateTime expiryDate, int categoryId); 
 
         //update existing stock
         Stock UpdateStock(Stock updated);
@@ -117,11 +113,11 @@ namespace FBMS3.Core.Services
         //-----------End of Stock Management Methods ------//
 
         //-----Begin Stock Category Management Methods-----//
-        StockCategory AddStockCategory(string description);
+        Category AddCategory(string description);
 
-        StockCategory GetStockCategoryById(int id);
+        Category GetCategoryById(int id);
 
-        StockCategory GetStockCategoryByDescription(string description);
+        Category GetCategoryByDescription(string description);
 
         //-------Begin client management methods----//
         
@@ -146,7 +142,10 @@ namespace FBMS3.Core.Services
         bool IsDuplicateClient(string email);
 
         //--------Begin Parcel Management Methods---------///
-        //Parcel GenerateParcelFromStock(int userId, DateTime date, string item, int clientId, int foodBankId, int noOfPeople);
+    
+
+        //-------Begin Category Management Methods
+       IList<Category> GetAllCategorys();
 
 
         //--------Begin Recipe Management Methods------//

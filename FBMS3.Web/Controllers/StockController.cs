@@ -47,11 +47,13 @@ namespace FBMS3.Web.Controllers
         public IActionResult Create()
         {
             var foodbanks = service.GetFoodBanks();
+            var categorys = service.GetAllCategorys();
 
             //populate viewmodel stock select list prperty
             var scvm = new StockCreateViewModel
             {
-                FoodBanks = new SelectList(foodbanks,"Id","StreetName")
+                FoodBanks = new SelectList(foodbanks,"Id","StreetName"),
+                Categorys = new SelectList(categorys, "Id", "Description")
             };
 
             //render the blank form for stock to the view for adding all properties
@@ -64,9 +66,9 @@ namespace FBMS3.Web.Controllers
         {
             if(ModelState.IsValid)
             {
-                service.AddStock(svm.FoodBankId, svm.Description, svm.Quantity, svm.ExpiryDate, svm.StockCategoryId);
+                service.AddStock(svm.FoodBankId, svm.Description, svm.Quantity, svm.ExpiryDate, svm.CategoryId);
 
-                Alert($"{svm.Quantity} of {svm.Description} added to food bank no.1 {svm.FoodBankId}");
+                Alert($"{svm.Quantity} of {svm.Description} added to food bank no. {svm.FoodBankId}");
                 return RedirectToAction(nameof(Index));
             }
 

@@ -41,6 +41,9 @@ namespace FBMS3.Core.Models
         //no of people that the parcel is for
         public int NoOfPeople { get; set; }
 
+        //every parcel will have a list of stock
+        public IList<Stock> Stock { get; set; } = new List<Stock>();
+
         //size and quantity determined by number of people in family that the parcel is for
         private string SizeChanger()
         {

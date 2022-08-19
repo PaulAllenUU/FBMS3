@@ -33,12 +33,13 @@ namespace FBMS3.Data.Repositories
         public DbSet<Parcel> Parcels { get; set; }
 
         //configure for stock category
-        public DbSet<StockCategory> StockCategorys { get; set; }
+        public DbSet<Category> Categorys { get; set; }
 
         // Configure the context to use Specified database. We are using 
         // Sqlite database as it does not require any additional installations.
         // FBMS3 configured to allow use of MySql and Postgres
         // ideally connections strings should be stored in appsettings.json
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder                  

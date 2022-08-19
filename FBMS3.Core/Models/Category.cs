@@ -5,7 +5,7 @@ using FBMS3.Core.Validators;
 
 namespace FBMS3.Core.Models
 {
-    public class StockCategory
+    public class Category
     {
         public int Id { get; set; }
 

@@ -268,6 +268,7 @@ namespace FBMS3.Data.Services
             return ctx.Stock
                         //include the food bank that the item of stock is associated with
                       .Include(x => x.FoodBank)
+                      .Include(x => x.Category)
                       .FirstOrDefault( x => x.Id == id);
         }
 
@@ -281,7 +282,28 @@ namespace FBMS3.Data.Services
             return ctx.Stock.FirstOrDefault ( x => x.ExpiryDate == expiryDate);
         }
 
-        public Stock AddStock(int foodBankId, string description, int quantity, DateTime expiryDate, int stockCategoryId)
+        public Category AddCategory(string description)
+        {
+            var exists = GetCategoryByDescription(description);
+            
+            //if the category is not null, ie already exists then return null
+            if(exists != null)
+            {
+                return null;
+            }
+
+            var cat = new Category
+            {
+                Description = description
+            };
+
+            ctx.Categorys.Add(cat);
+            ctx.SaveChanges();
+            return cat;
+
+        }
+
+        public Stock AddStock(int foodBankId, string description, int quantity, DateTime expiryDate, int categoryId)
         {
             //the food bank id is the foreign key so need to check it exists
             var foodbank = GetFoodBankById(foodBankId);
@@ -296,48 +318,43 @@ namespace FBMS3.Data.Services
                 Description = description,
                 Quantity = quantity,
                 ExpiryDate = expiryDate,
-                StockCategoryId = stockCategoryId,
+                CategoryId = categoryId
             };
 
-            if(DetermineEnumerationType(s.StockCategoryDescription, "Meat"))
+            //determine enumeration types from the object just create
+            if(s.Description == "Meat")
             {
                 s.Meat = true;
             }
-                
-            if(DetermineEnumerationType(s.StockCategoryDescription, "Vegetable"))
+
+            if(s.Description == "Vegetables")
             {
                 s.Vegetable = true;
-            } 
-            
-            if(DetermineEnumerationType(s.StockCategoryDescription, "Carbohydrates"))
+            }
+
+            if(s.Description == "Carbohydrates")
             {
                 s.Carbohydrate = true;
             }
-            IList<String> nonFoodList = new IList<>
 
-
-            if(DetermineEnumerationTypeWithArray(s.StockCategoryDescription, {"Razor, Toileteries, "}))
-
-            if(DetermineEnumerationType(s.StockCategoryDescription, "Razor", "")
+            /*if(s.Description == "Toileteries" || s.Description == "Pet Food"
+                                || s.Description == "Kitchen Cleaning" || s.Description == "Logs")
             {
                 s.NonFood = true;
-            }
-            else if(DetermineEnumerationType(s.StockCategoryDescription, "Toileteries"))
+            }*/
+
+            String [] NonFoodItems = new String[]{ "Toileteries", "Pet Food", "Logs", "Razors", "Kitchen Cleaning"};
+
+            //for loop to traverse the array
+            for(int i = 0 ; i < NonFoodItems.Length ; i++)
             {
-                s.NonFood = true;
-            }
-                else if(DetermineEnumerationType(s.StockCategoryDescription, "Pet Food" || "Toileteries"))
+
+                if(s.Description == NonFoodItems[i])
                 {
                     s.NonFood = true;
                 }
-                    else if(DetermineEnumerationType(s.StockCategoryDescription, "Kitchen Cleaning"))
-                    {
-                        s.NonFood = true;
-                    }
-                        else if(DetermineEnumerationType(s.StockCategoryDescription, "Logs"))
-                        {
-                            s.NonFood = true;
-                        }
+                
+            }
 
             //add the newly created stock item to the database and save changes
             ctx.Stock.Add(s);
@@ -413,7 +430,7 @@ namespace FBMS3.Data.Services
                                           x.FoodBank.StreetName.ToLower().Contains(query)
                                           ) &&
                                           //for the enumeration when the value of the boolean values are set they will come up
-                                          (range == StockRange.NONFOOD && x.NonFood== true ||
+                                          (range == StockRange.NONFOOD && x.NonFood == true ||
                                            range == StockRange.MEAT && x.Meat == true ||
                                            range == StockRange.VEGETABLE && x.Vegetable == true ||
                                            range == StockRange.CARBOHYDRATE && x.Carbohydrate == true ||
@@ -442,35 +459,17 @@ namespace FBMS3.Data.Services
         }
 
         //---------Stock Categiry Methods-----//
-        public StockCategory AddStockCategory(string description)
+
+        public Category GetCategoryById(int id)
         {
-            var exists = GetStockCategoryByDescription(description);
-            
-            //if the category is not null, ie already exists then return null
-            if(exists != null)
-            {
-                return null;
-            }
-
-            var scat = new StockCategory
-            {
-                Description = description
-            };
-
-            return scat;
-
-        }
-
-        public StockCategory GetStockCategoryById(int id)
-        {
-            return ctx.StockCategorys
+            return ctx.Categorys
                       .Include(x => x.Stock)
                       .FirstOrDefault(x => x.Id == id);
         }
 
-        public StockCategory GetStockCategoryByDescription(string description)
+        public Category GetCategoryByDescription(string description)
         {
-            return ctx.StockCategorys
+            return ctx.Categorys
                       .Include(x => x.Stock)
                       .FirstOrDefault(x => x.Description == description);
         }
@@ -828,6 +827,11 @@ namespace FBMS3.Data.Services
 
         }
 
+        public IList<Category> GetAllCategorys()
+        {
+            return ctx.Categorys.ToList();
+        }
+
         /*public Parcel GenerateParcelForClient(Queue<Client> clients, int FoodBankId)
         {
             int QueueSize = clients.Count();
@@ -940,7 +944,6 @@ namespace FBMS3.Data.Services
                 {
                     found = true;
                 }
-                found = false;
             }
 
             return found;
@@ -951,35 +954,16 @@ namespace FBMS3.Data.Services
             throw new NotImplementedException();
         }
 
-        public bool DetermineEnumerationType(string actual, string categorydescription)
+        public bool DetermineEnumerationType(Stock s, string categorydescription)
         {
             bool found = false;
-            if(actual.Contains(categorydescription))
+            if(s.Category.Description.Contains(categorydescription))
             {
                 found = true;
             }
             
             return found;
         }
-
-        public bool DetermineEnumerationTypeWithArray(string actual, List <String> nonFoodCategories)
-        {
-            nonFoodCategories.ToArray();
-            bool found = false;
-
-            //for loop for traversing the array
-            for (int i = 0; i < nonFoodCategories.Count ; i++)
-            {
-                if(actual == nonFoodCategories[i])
-                {
-                    found = true;
-                }
-                
-            }
-
-            return found;
-        }
-
 
 
         /*public Parcel GenerateParcelFromStock(int userId, DateTime date, string item, int quantity, 

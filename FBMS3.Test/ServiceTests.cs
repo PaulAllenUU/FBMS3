@@ -247,7 +247,7 @@ namespace FBMS3.Test
         {
             //arrange
             var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
-            var category = service.AddStockCategory("Fruit");
+            var category = service.AddCategory("Fruit");
             var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01), category.Id);
 
             //act
@@ -265,7 +265,7 @@ namespace FBMS3.Test
             var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
             var f2 = service.AddFoodBank(36, "Meadowvale", "bt61 7LK");
             var list = service.GetFoodBanks();
-            var category = service.AddStockCategory("Fruit");
+            var category = service.AddCategory("Fruit");
             var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01), category.Id);
 
             //act
@@ -282,7 +282,7 @@ namespace FBMS3.Test
             var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
             var f2 = service.AddFoodBank(36, "Meadowvale", "bt61 7LK");
             var list = service.GetFoodBanks();
-            var category = service.AddStockCategory("Fruit");
+            var category = service.AddCategory("Fruit");
             var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01), category.Id);
 
             //act

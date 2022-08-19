@@ -17,6 +17,9 @@ namespace FBMS3.Web.ViewModels
 
         public DateTime ExpiryDate { get; set; } 
 
-        public int StockCategoryId { get; set; }
+        public SelectList Categorys { get; set; }
+
+        [Required(ErrorMessage = "Please select a category for your stock")]
+        public int CategoryId { get; set; }
     }
 }

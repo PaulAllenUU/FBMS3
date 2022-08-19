@@ -27,12 +27,11 @@ namespace FBMS3.Core.Models
         public bool Carbohydrate { get; set; } 
 
         //navigation property to stock category table
-        public StockCategory StockCategory { get; set; }
+        public Category Category { get; set; }
 
-        //1 side of the relationship - each stock item has one category
-        public int StockCategoryId { get; set; }
+        public int CategoryId { get; set; }
 
-        public string StockCategoryDescription => StockCategory?.Description;
+        public string CategoryDescription => Category?.Description;
 
         //each Stock item will have only 1 Food Bank
         public int FoodBankId { get; set; }
@@ -40,6 +39,12 @@ namespace FBMS3.Core.Models
         [JsonIgnore]
         //foreign key to the foodbank table
         public FoodBank FoodBank { get; set; }
+
+        //navigation properto to parcel
+        public Parcel Parcel { get; set; }
+
+        //each item of stock will have one and only parcel
+        public Parcel ParcelId { get; set; }
 
         //Relationship M:N Stock - Recipes
         public IList<RecipeStock> RecipeStock { get; set; } = new List<RecipeStock>();

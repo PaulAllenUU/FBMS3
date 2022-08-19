@@ -28,49 +28,50 @@ namespace FBMS3.Data.Services
             //end of dummy user data
 
             //add dummy food category data
-            var c1 = svc.AddStockCategory("Cereal");
-            var c2 = svc.AddStockCategory("Soup");
-            var c3 = svc.AddStockCategory("Baked Beans");
-            var c4 = svc.AddStockCategory("Tomatoes");
-            var c5 = svc.AddStockCategory("Vegetables");
-            var c6 = svc.AddStockCategory("Meat");
-            var c7 = svc.AddStockCategory("Veggie Option");
-            var c8 = svc.AddStockCategory("Fish");
-            var c9 = svc.AddStockCategory("Fruit");
-            var c10 = svc.AddStockCategory("Pudding");
-            var c11 = svc.AddStockCategory("Carbohydrates");
-            var c12 = svc.AddStockCategory("Hot Beverage");
-            var c13 = svc.AddStockCategory("Juice");
-            var c14 = svc.AddStockCategory("Milk UHT");
-            var c15 = svc.AddStockCategory("Sauces");
-            var c16 = svc.AddStockCategory("Treats");
-            var c17 = svc.AddStockCategory("Spreads");
-            var c18 = svc.AddStockCategory("Toileteries");
-            var c19 = svc.AddStockCategory("Pet Food");
-            var c20 = svc.AddStockCategory("Kitchen Cleaning");
-            var c21 = svc.AddStockCategory("Logs");  
+            var c1 = svc.AddCategory("Cereal");
+            var c2 = svc.AddCategory("Soup");
+            var c3 = svc.AddCategory("Baked Beans");
+            var c4 = svc.AddCategory("Tomatoes");
+            var c5 = svc.AddCategory("Vegetables");
+            var c6 = svc.AddCategory("Meat");
+            var c7 = svc.AddCategory("Veggie Option");
+            var c8 = svc.AddCategory("Fish");
+            var c9 = svc.AddCategory("Fruit");
+            var c10 = svc.AddCategory("Pudding");
+            var c11 = svc.AddCategory("Carbohydrates");
+            var c12 = svc.AddCategory("Hot Beverage");
+            var c13 = svc.AddCategory("Juice");
+            var c14 = svc.AddCategory("Milk UHT");
+            var c15 = svc.AddCategory("Sauces");
+            var c16 = svc.AddCategory("Treats");
+            var c17 = svc.AddCategory("Spreads");
+            var c18 = svc.AddCategory("Toileteries");
+            var c19 = svc.AddCategory("Pet Food");
+            var c20 = svc.AddCategory("Kitchen Cleaning");
+            var c21 = svc.AddCategory("Logs");  
 
             //add some dummy stock to the database
             var s1 = svc.AddStock(f1.Id, "Orange", 4, new DateTime(2022, 10, 01), c9.Id);
             var s2 = svc.AddStock(f2.Id, "Banana", 10, new DateTime(2023, 12, 03), c9.Id);
-            var s3 = svc.AddStock(f3.Id, "Potato", 20, new DateTime(2022, 12, 07), c11.Id);
-            var s4 = svc.AddStock(f1.Id, "Chicken", 6, new DateTime(2023, 08, 09), c6.Id);
-            var s11 = svc.AddStock(f3.Id, "Carrots", 10, new DateTime(2023, 10, 01), c5.Id);
-            var s5 = svc.AddStock(f2.Id, "Toilet Paper", 10, new DateTime(2024, 10, 07), c18.Id);
+            var s3 = svc.AddStock(f3.Id, "Carbohydrates", 20, new DateTime(2022, 12, 07), c11.Id);
+            var s4 = svc.AddStock(f1.Id, "Meat", 6, new DateTime(2023, 08, 09), c6.Id);
+            var s11 = svc.AddStock(f3.Id, "Vegetables", 10, new DateTime(2023, 10, 01), c5.Id);
+            var s5 = svc.AddStock(f2.Id, "Toileteries", 10, new DateTime(2024, 10, 07), c18.Id);
             var s6 = svc.AddStock(f2.Id, "Fish", 8, new DateTime(2022, 11, 18), c8.Id);
             var s7 = svc.AddStock(f3.Id, "Tinned Tomatoes", 4, new DateTime(2024,01,01), c4.Id);
-            var s8 = svc.AddStock(f5.Id, "Beef", 2, new DateTime(2022, 08, 08), c6.Id);
-            var s9 = svc.AddStock(f5.Id, "Sweet Potato", 10, new DateTime(2022, 09, 01), c11.Id);
-            var s10 = svc.AddStock(f1.Id, "Tomatoes", 12, new DateTime(2022, 08, 30), c4.Id);
-            var s12 = svc.AddStock(f2.Id, "Frozen Vegetables Packet", 8, new DateTime(2023, 01, 01), c5.Id);
-            var s13 = svc.AddStock(f6.Id, "Onions", 6, new DateTime(2022, 02,02), c5.Id);
-            var s14 = svc.AddStock(f6.Id, "Peppers", 5, new DateTime(2022, 09, 04), c5.Id);
+            var s8 = svc.AddStock(f5.Id, "Meat", 2, new DateTime(2022, 08, 08), c6.Id);
+            var s9 = svc.AddStock(f5.Id, "Carbohydrates", 10, new DateTime(2022, 09, 01), c11.Id);
+            var s10 = svc.AddStock(f1.Id, "Vegetables", 12, new DateTime(2022, 08, 30), c4.Id);
+            var s12 = svc.AddStock(f2.Id, "Vegetables", 8, new DateTime(2023, 01, 01), c5.Id);
+            var s13 = svc.AddStock(f6.Id, "Vegetables", 6, new DateTime(2022, 02,02), c5.Id);
+            var s14 = svc.AddStock(f6.Id, "Vegetables", 5, new DateTime(2022, 09, 04), c5.Id);
 
             //add some dummy client data
             var cL1 = svc.AddClient("Allen", "BT45 7PL", "example@mail.com", 3, f1.Id);
             var cL2 = svc.AddClient("McLaughlin", "BT65 9LU", "mcl@gmx.com", 4, f2.Id);
             var cL3 = svc.AddClient("Johnston", "BT72 9PO", "jjopl@yahoo.co.uk", 1, f3.Id);
             var cL4 = svc.AddClient("O'Neill", "BT31 0NM", "oneill@hotmail.co.uk", 2, f3.Id);
+            var cL5 = svc.AddClient("Campbell", "BT56 7KM", "cmp@hotmail.co.uk", 4, f2.Id);
 
             //add some dummy recipe data
             /*var r1 = svc.AddRecipe("Carrot & Tomato Soup", 2, 30);
