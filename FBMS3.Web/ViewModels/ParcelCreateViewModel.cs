@@ -1,4 +1,4 @@
-/*using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using FBMS3.Core.Models;
@@ -14,5 +14,9 @@ namespace FBMS3.Web.ViewModels
 
         public int FoodBankId { get; set; }
 
+        public int NoOfPeople { get; set; }
+
+        public IList<Stock> Stock { get; set; }
+
     }
-}*/
+}
