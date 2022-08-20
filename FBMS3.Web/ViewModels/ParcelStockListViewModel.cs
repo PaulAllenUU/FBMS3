@@ -6,18 +6,17 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FBMS3.Web.ViewModels
 { //parcel controller inherits all of the properts from client create except for User Id
-    public class ParcelCreateViewModel 
+    public class ParcelStockListViewModel
     {
-        public int Id { get; set; }
-        public int UserId { get; set;}
+        public int UserFirstName { get; set; }
+        
+        public IList <Parcel> Parcels { get; set; } = new List <Parcel>();
 
-        public int ClientId { get; set; }
+        public IList<Stock> Stock { get; set; } = new List<Stock>();
 
         public int FoodBankId { get; set; }
 
-        public int NoOfPeople { get; set; }
-
-        public IList<Stock> Stock { get; set; }
+        public string ClientSecondName { get; set; }
 
     }
 }
