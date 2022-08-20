@@ -1,0 +1,44 @@
+@model IList<Parcel>
+
+<h3 class="mb-3">Parcel List</h3>
+
+<table class="table table-hover">
+
+<thead>
+        <tr>
+            <th>Staff Member</th>
+            <th>Quantity of Items</th>
+            <th>Client Family Name</th>
+            <th>Food Bank Location</th>
+            
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.User.FirstName</td>
+                <td>@p.Quantity</td>
+                <td>@p.Client.SecondName</td>
+                <td>@p.FoodBank.StreetName</td>
+                
+
+                <td>
+
+                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="View Parcel Details" asp-controller="Parcel" 
+                        asp-action="Details" asp-route-id=@p.Id>View</a>
+
+                    <a asp-controller="Parcel" asp-action="Edit" asp-route-id=@p.Id>Edit</a>
+                    
+                    <a asp-controller="Parcel" asp-action="Delete" asp-route-id=@p.Id>Delete</a>
+
+                </td>
+
+            </tr>
+            
+        }
+    </tbody>
+
+</table>

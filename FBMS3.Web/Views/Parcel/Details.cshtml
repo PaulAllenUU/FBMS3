@@ -1,0 +1,32 @@
+@model Parcel
+
+<div class="col card rounded shadow-lg p-4">
+
+    <h3 class="mb-4">Parcel Details</h3>
+
+    <dl class="row">
+
+        <dt class="col-4">Staff Member</dt>
+        <dd class="col-8">@Model.UserId</dd>
+
+        <dt class="col-4">Quantity of Items</dt>
+        <dd class="col-8">@Model.Quantity</dd>
+
+        <dt class="col-4">Client Family Name</dt>
+        <dd class="col-8">@Model.Client.SecondName</dd>
+
+        <dt class="col-4">Food Bank Location</dt>
+        <dd class="col-8">@Model.FoodBank.StreetName</dd>
+
+        <dt class="col-4">Stock Details</dt>
+        <dd class="col-8">@Model.Stock</dd>
+    
+    </dl>
+
+    <div class="mt-4"> 
+        <a class="btn btn-link" asp-action="Index">Cancel</a>
+    
+    </div>
+
+
+</div>

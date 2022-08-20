@@ -31,7 +31,10 @@ namespace FBMS3.Core.Models
 
         public int CategoryId { get; set; }
 
-        public string CategoryDescription => Category?.Description;
+        private string GetCategoryDescription()
+        {
+            return Category?.Description;
+        }
 
         //each Stock item will have only 1 Food Bank
         public int FoodBankId { get; set; }

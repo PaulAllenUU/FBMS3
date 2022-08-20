@@ -20,6 +20,8 @@ namespace FBMS3.Core.Services
         //get user by their e mail address
         User GetUserByEmail(string email);
 
+        User GetUserByFirstName(string firstName);
+
         //check if a users e mail address is available
         bool IsEmailAvailable(string email, int userId);
 
@@ -47,6 +49,8 @@ namespace FBMS3.Core.Services
 
         //Get list of food banks on certain street name
         IList<FoodBank> GetFoodBanksWithSameStreetName(string streetName);
+
+        FoodBank GetFoodBankByStreetName(string streetName);
 
         //add food bank
         FoodBank AddFoodBank(int streetNumber, string streetName, string postCode);
@@ -94,6 +98,9 @@ namespace FBMS3.Core.Services
 
         //get stock by id - id passed in as parameter from the user
         Stock GetStockById(int id);
+
+        //get stock available at foodbank
+        IList<Stock> GetAvailableStockAtFoodBank(int id);
 
         //get stock by descrption passed in from the user
         Stock GetStockByDescription(string description);
@@ -147,6 +154,12 @@ namespace FBMS3.Core.Services
         //-------Begin Category Management Methods
        IList<Category> GetAllCategorys();
 
+       //----------Begin Parcel Management Methodds------//
+       Parcel GenerateParcelForClient(int userId, int clientId, int foodBankId, int noOfPeople);
+
+       IList<Parcel> GetAllParcels();
+
+       Parcel GetParcelById(int id);
 
         //--------Begin Recipe Management Methods------//
 

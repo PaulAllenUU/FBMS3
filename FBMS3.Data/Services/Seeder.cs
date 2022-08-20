@@ -73,6 +73,9 @@ namespace FBMS3.Data.Services
             var cL4 = svc.AddClient("O'Neill", "BT31 0NM", "oneill@hotmail.co.uk", 2, f3.Id);
             var cL5 = svc.AddClient("Campbell", "BT56 7KM", "cmp@hotmail.co.uk", 4, f2.Id);
 
+            //add dummy parcel data
+            var p1 = svc.GenerateParcelForClient(u1.Id, cL1.Id, f1.Id, cL1.NoOfPeople);
+
             //add some dummy recipe data
             /*var r1 = svc.AddRecipe("Carrot & Tomato Soup", 2, 30);
             var r2 = svc.AddRecipe("Vegetable Stir Fry", 4, 20);

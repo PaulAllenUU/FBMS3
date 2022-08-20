@@ -39,6 +39,15 @@ namespace FBMS3.Data.Repositories
         // Sqlite database as it does not require any additional installations.
         // FBMS3 configured to allow use of MySql and Postgres
         // ideally connections strings should be stored in appsettings.json
+
+        //manually map the relationship between parcel and stock
+        //one parcel has many items of stock with stock having one parcel
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Stock>()
+                        .HasOne(p => p.Parcel)
+                        .WithMany( b => b.Stock);
+        }
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

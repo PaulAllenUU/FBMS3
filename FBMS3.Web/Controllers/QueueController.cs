@@ -28,10 +28,21 @@ namespace FBMS3.Web.Controllers
 
             var count = queue.Count();
 
+            var nextPerson = queue.Peek;
+
             Alert($"There are currently {count} clients in the queue", AlertType.info);
 
             return View(queue);
         }
+
+        public IActionResult CreateParcel(Queue<Client> theQueue)
+        {
+            var firstPersonInQueue = theQueue.Peek;
+
+            return View(firstPersonInQueue);
+        }
+
+
 
     }
 }

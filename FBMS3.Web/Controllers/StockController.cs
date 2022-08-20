@@ -21,14 +21,6 @@ namespace FBMS3.Web.Controllers
             service = ss;
         }
 
-        //GET - return a list of all of the stock 
-        /*public IActionResult Index()
-        {
-            var stock = service.GetAllStock();
-
-            return View(stock);
-        }*/
-
         //Get - return an item of stock by its id
         public IActionResult Details(int id)
         {

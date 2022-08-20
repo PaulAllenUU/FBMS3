@@ -17,11 +17,8 @@ namespace FBMS3.Core.Models
         //the date the parcel is created or given to the client - default to dateTime.now
         public DateTime Date { get; set; } = DateTime.Now;
 
-        //each item which included in the parcel
-        public string Item { get; set; }
-
         //the allocation of each item
-        private int Quantity => QuantityChanger();
+        public int Quantity => QuantityChanger();
 
         //the size of each item included in the parcel
         private string ItemSize => SizeChanger();

@@ -93,6 +93,15 @@ namespace FBMS3.Web.Controllers
             }
         }
 
+        /*public IActionResult ParcelCreate([Bind("UserId")] ParcelCreateViewModel p)
+        {
+            var parcel = svc.GenerateParcelForClient(p.UserId, p.ClientId, p.FoodBankId);
+
+            return View(parcel);
+
+
+        }*/
+
         //GET - Edit by e mail address
         public IActionResult Edit(int id)
         {

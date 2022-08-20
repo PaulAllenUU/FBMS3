@@ -232,13 +232,13 @@ namespace FBMS3.Test
         //End of Food Bank Service Management Tests
 
         [Fact]
-        public void Stock_GetAllStockWhenNone_ShouldReturnNone()
+        public void Stock_GetAllStockWhenNone_ShouldReturnEmptyList()
         {
             //arrange
             var list = service.GetAllStock();
 
             //assert
-            Assert.Null(list);
+            Assert.Empty(list);
 
         }
 
@@ -289,6 +289,35 @@ namespace FBMS3.Test
             var check = service.CheckAllFoodBanksForStockItem(list, "Orange");
 
             Assert.False(check);
+
+        }
+        [Fact]
+        public void GenerateParcelForClient_WhenFoodBankHas_ShouldAddItemsToParcel()
+        {
+            //arrange - add food bank
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var u = service.AddUser("Paul", "Allen", "allen@gmail.com", "password", f.Id, Role.admin);
+
+            //add client
+            var cL1 = service.AddClient("Allen", "BT45 7PL", "example@mail.com", 3, f.Id);
+            //add stock category
+            var c1 = service.AddCategory("Carbohydrates");
+            var c2 = service.AddCategory("Vegetables");
+            //add items of the same category
+            var s1 = service.AddStock(f.Id, "Potato", 3, new DateTime(2022, 10, 01), c1.Id);
+            var s2 = service.AddStock(f.Id, "Vegetables", 4, new DateTime(2022, 10, 01), c1.Id);
+
+            //act
+            var parcel = service.GenerateParcelForClient(u.Id, cL1.Id, f.Id, cL1.NoOfPeople);
+            var parcelcount = parcel.Stock.Count;
+
+            //check if it auto decrements from the database
+            var stockCount = f.Stock.Count;
+            
+            //assert
+            Assert.Contains(s1, parcel.Stock);
+            Assert.Contains(s2, parcel.Stock);
+            Assert.Equal(0, stockCount);  
 
         }
 

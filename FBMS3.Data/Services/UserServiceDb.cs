@@ -119,6 +119,11 @@ namespace FBMS3.Data.Services
             return ctx.Users.FirstOrDefault(u => u.Email == email);
         }
 
+        public User GetUserByFirstName(string firstName)
+        {
+            return ctx.Users.FirstOrDefault(u => u.FirstName == firstName);
+        }
+
         // Verify if email is available or registered to specified user
         public bool IsEmailAvailable(string email, int userId)
         {
@@ -202,6 +207,11 @@ namespace FBMS3.Data.Services
             ctx.Add(foodbank);
             ctx.SaveChanges();
             return foodbank;
+        }
+
+        public FoodBank GetFoodBankByStreetName(string streetName)
+        {
+            return ctx.FoodBanks.FirstOrDefault(x => x.StreetName == streetName);
         }
 
         public FoodBank UpdateFoodBank(FoodBank updated)
@@ -472,6 +482,75 @@ namespace FBMS3.Data.Services
             return ctx.Categorys
                       .Include(x => x.Stock)
                       .FirstOrDefault(x => x.Description == description);
+        }
+
+        public IList<Stock> GetAvailableStockAtFoodBank(int id)
+        {
+            var foodbank = GetFoodBankById(id);
+            var stockavailable = foodbank.Stock.ToList();
+
+            return stockavailable;
+        }
+
+        //----Begin Parcel Management Methods
+        public Parcel GenerateParcelForClient(int userId, int clientId, int foodBankId, int noOfPeople)
+        {
+            //get the 3 above parameters by their id method and check if null
+            var user = GetUser(userId);
+            var client = GetClientById(clientId);
+            var foodbank = GetFoodBankById(foodBankId);
+
+            //check that none of the above are null and if they are then return null
+            if(user == null || client == null || foodbank == null)
+            {
+                return null;
+            }
+
+            //add all properties
+            var p = new Parcel
+            {
+               UserId = userId,
+               ClientId = clientId,
+               FoodBankId = foodBankId,
+               NoOfPeople = noOfPeople
+               
+            };
+            
+
+            var available = GetAvailableStockAtFoodBank(foodBankId);
+
+            //foreach loop to iterate over every item available at that foodbank
+            foreach (var item in available)
+            {
+                //add each item to the stock in the parcel
+                p.Stock.Add(item);
+
+                //remove that item from that foodbanks stock
+                foodbank.Stock.Remove(item);
+                
+            }
+
+            client.Parcels.Add(p);
+
+            ctx.SaveChanges();
+
+            return p;
+
+        }
+
+        public IList<Parcel> GetAllParcels() => ctx.Parcels.Include(p => p.Client)
+                              .Include(p => p.User)
+                              .Include(p => p.FoodBank)
+                              .ToList();''
+
+        public Parcel GetParcelById(int id)
+        {
+            return ctx.Parcels
+                      .Include(x => x.Client)
+                      .Include(x => x.FoodBank)
+                      .Include(x => x.User)
+                      .Include(x => x.Stock)
+                      .FirstOrDefault(x => x.Id == id);
         }
 
         //add a recipe checking that is doesnt already exist using title
