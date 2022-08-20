@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -538,10 +539,17 @@ namespace FBMS3.Data.Services
 
         }
 
-        public IList<Parcel> GetAllParcels() => ctx.Parcels.Include(p => p.Client)
-                              .Include(p => p.User)
-                              .Include(p => p.FoodBank)
-                              .ToList();''
+        public IList<Parcel> GetAllParcels()
+        {
+            var parcels = ctx.Parcels.Include(p => p.User)
+                                     .Include(p => p.FoodBank)
+                                     .Include(p => p.Client)
+                                     .Include(p => p.Stock);
+
+
+            return parcels.ToList();
+                      
+        }
 
         public Parcel GetParcelById(int id)
         {
