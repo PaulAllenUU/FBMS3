@@ -8,6 +8,7 @@ namespace FBMS3.Web.ViewModels
 { //parcel controller inherits all of the properts from client create except for User Id
     public class ParcelCreateViewModel 
     {
+        public int Id { get; set; }
         public int UserId { get; set;}
 
         public int ClientId { get; set; }

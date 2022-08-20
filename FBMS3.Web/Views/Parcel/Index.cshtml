@@ -1,4 +1,4 @@
-@model ParcelCreateViewModel
+@model IList<Parcel>
 
 <h3 class="mb-3">Parcel List</h3>
 
@@ -17,7 +17,7 @@
 
     <tbody>
 
-        @foreach (var p in Model.)
+        @foreach (var p in Model)
         {
             <tr>
                 <td>@p.User.FirstName</td>
