@@ -8,15 +8,13 @@ namespace FBMS3.Web.ViewModels
 { //parcel controller inherits all of the properts from client create except for User Id
     public class ParcelStockListViewModel
     {
-        public int UserFirstName { get; set; }
+        public User User { get; set; }
         
-        public IList <Parcel> Parcels { get; set; } = new List <Parcel>();
+        public FoodBank FoodBank { get; set; } 
+
+        public Client Client { get; set; }
 
         public IList<Stock> Stock { get; set; } = new List<Stock>();
-
-        public int FoodBankId { get; set; }
-
-        public string ClientSecondName { get; set; }
 
     }
 }

@@ -24,15 +24,11 @@ namespace FBMS3.Web.Controllers
 
         public IActionResult Index()
         {
-            var pvm = new ParcelStockListViewModel
-            {
-                Parcels = svc.GetAllParcels()
+            var parcels = svc.GetAllParcels();
 
-            };
-
-
-            return (pvm);
+            return View(parcels);
         }
+            
 
         public IActionResult Details(int id)
         {

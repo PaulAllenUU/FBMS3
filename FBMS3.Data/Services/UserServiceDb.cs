@@ -541,14 +541,14 @@ namespace FBMS3.Data.Services
 
         public IList<Parcel> GetAllParcels()
         {
-            var parcels = ctx.Parcels.Include(p => p.User)
-                                     .Include(p => p.FoodBank)
-                                     .Include(p => p.Client)
-                                     .Include(p => p.Stock);
 
+            var parcels = ctx.Parcels.Include( p => p.User)
+                                     .Include( p => p.FoodBank)
+                                     .Include( p => p.Client)
+                                     .Include( p => p.Stock);
 
+            
             return parcels.ToList();
-                      
         }
 
         public Parcel GetParcelById(int id)
@@ -557,7 +557,6 @@ namespace FBMS3.Data.Services
                       .Include(x => x.Client)
                       .Include(x => x.FoodBank)
                       .Include(x => x.User)
-                      .Include(x => x.Stock)
                       .FirstOrDefault(x => x.Id == id);
         }
 
