@@ -13,6 +13,7 @@ using FBMS3.Core.Security;
 
 namespace FBMS3.Web.Controllers
 {
+    [Authorize]
     public class ClientController : BaseController
     {
         private readonly IUserService svc;
@@ -23,6 +24,7 @@ namespace FBMS3.Web.Controllers
         }
 
         //index page will allow search feature for clients
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Index(ClientSearchViewModel c)
         {
             c.Clients = svc.SearchClients(c.Query);
@@ -31,6 +33,7 @@ namespace FBMS3.Web.Controllers
         }
         
         //return empty client registration form to the view for completion
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Create()
         {
             var foodbanks = svc.GetFoodBanks();
@@ -43,6 +46,7 @@ namespace FBMS3.Web.Controllers
             return View(ccvm);
         }
 
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Details(int id)
         {
             //retreive the client using the e mail address service method
@@ -62,6 +66,7 @@ namespace FBMS3.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Create([Bind("SecondName,PostCode,EmailAddress,NoOfPeople,FoodBankId")] ClientCreateViewModel c)
         {
             if(!ModelState.IsValid)
@@ -103,6 +108,7 @@ namespace FBMS3.Web.Controllers
         }*/
 
         //GET - Edit by e mail address
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Edit(int id)
         {
             //check the user exists through their e mail address
@@ -122,6 +128,7 @@ namespace FBMS3.Web.Controllers
 
         //GET Client // e mail address
         [HttpPost]
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Edit(int id, [Bind("Id,SecondName,PostCode, EmailAddress,NoOfPeople,FoodBankId")] Client c)
         {
             if(svc.IsDuplicateClient(c.EmailAddress))
@@ -142,6 +149,7 @@ namespace FBMS3.Web.Controllers
         }
 
         //GET - Client - email address
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Delete(int id)
         {
             //use the service method to retrive the client by e mail address
@@ -160,6 +168,7 @@ namespace FBMS3.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult DeleteConfirm(string email)
         {
             var c = svc.DeleteClient(email);

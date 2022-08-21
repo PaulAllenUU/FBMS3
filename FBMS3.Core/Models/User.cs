@@ -2,7 +2,7 @@
 namespace FBMS3.Core.Models
 {
     // Add User roles relevant to your application
-    public enum Role { admin, manager, guest }
+    public enum Role { admin, manager, staff }
     
     public class User
     {

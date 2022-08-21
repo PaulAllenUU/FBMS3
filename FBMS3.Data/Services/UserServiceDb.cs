@@ -29,15 +29,6 @@ namespace FBMS3.Data.Services
 
         public Queue<Client> TheQueue = new Queue<Client>(); 
 
-        //public Queue<Client> TheQueue = new Queue<Client>();
-
-        /*public UserServiceDb(Queue<Client> theQueue)
-        {
-            TheQueue = theQueue;
-        }*/
-
-        // ------------------ User Related Operations ------------------------
-
         // retrieve list of Users
         public IList<User> GetUsers()
         {
@@ -226,12 +217,6 @@ namespace FBMS3.Data.Services
             
             }
 
-            //verify this address registed or available to this user
-            /*if (IsDuplicateLocation(updated.Id, updated.StreetNumber, updated.PostCode)) 
-            {
-                return null;
-            }*/
-
             foodbank.StreetNumber = updated.StreetNumber;
             foodbank.Id = updated.Id;
             foodbank.PostCode = updated.PostCode;
@@ -262,6 +247,25 @@ namespace FBMS3.Data.Services
             return ctx.FoodBanks.FirstOrDefault(x => x.StreetNumber == streetNumber && 
                                                      x.PostCode == postCode);
         }
+
+        public IList<FoodBank> SearchFoodBanks(string query)
+        {
+            //ensure that the query is not null
+             query = query == null ? "" : query.ToLower();
+
+             //enable user to search food banks by street number, street name or post code
+             var results = ctx.FoodBanks
+                              .Include(x => x.Stock)
+                              .Where(x => (x.StreetName.ToLower().Contains(query) ||
+                                    
+                                    //street number must be cast to string
+                                     x.StreetNumber.ToString().Contains(query) ||
+                                     x.PostCode.ToLower().Contains(query))
+                              ).ToList();
+
+            return results;
+        }
+
 
         //------End of Food Bank Management Methods -----//
 
@@ -348,12 +352,7 @@ namespace FBMS3.Data.Services
                 s.Carbohydrate = true;
             }
 
-            /*if(s.Description == "Toileteries" || s.Description == "Pet Food"
-                                || s.Description == "Kitchen Cleaning" || s.Description == "Logs")
-            {
-                s.NonFood = true;
-            }*/
-
+        
             String [] NonFoodItems = new String[]{ "Toileteries", "Pet Food", "Logs", "Razors", "Kitchen Cleaning"};
 
             //for loop to traverse the array
@@ -448,24 +447,6 @@ namespace FBMS3.Data.Services
                                            range == StockRange.ALL
                                           )
                              ).ToList();
-            return results;
-        }
-
-        public IList<FoodBank> SearchFoodBanks(string query)
-        {
-            //ensure that the query is not null
-             query = query == null ? "" : query.ToLower();
-
-             //enable user to search food banks by street number, street name or post code
-             var results = ctx.FoodBanks
-                              .Include(x => x.Stock)
-                              .Where(x => (x.StreetName.ToLower().Contains(query) ||
-                                    
-                                    //street number must be cast to string
-                                     x.StreetNumber.ToString().Contains(query) ||
-                                     x.PostCode.ToLower().Contains(query))
-                              ).ToList();
-
             return results;
         }
 

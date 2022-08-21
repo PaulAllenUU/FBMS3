@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 using FBMS3.Core.Models;
 using FBMS3.Web.ViewModels;
@@ -10,6 +12,7 @@ using FBMS3.Core.Security;
 
 namespace FBMS3.Web.Controllers
 {
+    [Authorize]
     public class FoodBankController : BaseController
     {
         //private readonly IConfiguration _config;
@@ -22,6 +25,7 @@ namespace FBMS3.Web.Controllers
         }
 
         //index page will allow a search feature to search for food banks
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Index(FoodBankSearchViewModel f)
         {
             //call to the method will return any matching criteria for street number, 
@@ -31,6 +35,7 @@ namespace FBMS3.Web.Controllers
             return View (f);
         }
 
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Details(int id)
         {
             //retreive the foodbank with the specified id from the service methods
@@ -39,7 +44,7 @@ namespace FBMS3.Web.Controllers
             //if the foodbank is not and not found then cannot be retrieved
             if (f == null)
             {
-                Alert($"Foodbank {id} not found", AlertType.warning);
+                
                 return RedirectToAction(nameof(Index));
             }
 
@@ -48,12 +53,14 @@ namespace FBMS3.Web.Controllers
 
         }
 
+        [Authorize(Roles="admin,manager")]
         public IActionResult Create()
         {
             //display the a blank form to the view so user can create a food bank
             return View();
         }
-
+        
+        [Authorize(Roles="admin,manager")]
         [HttpPost]
         public IActionResult Create([Bind("StreetNumber, StreetName, PostCode")] FoodBank f)
         {
@@ -77,6 +84,7 @@ namespace FBMS3.Web.Controllers
         }
 
         //GET actions - FoodBank Id
+        [Authorize(Roles="admin,manager")]
         public IActionResult Edit(int id)
         {
 
@@ -94,8 +102,9 @@ namespace FBMS3.Web.Controllers
             return View(f);
 
         }
-
+         
         //POST - FoodBank/Edit/{id}
+        [Authorize(Roles="admin,manager")]
         [HttpPost]
         public IActionResult Edit(int id, [Bind("Id, StreetNumber, StreetName, PostCode")] FoodBank f)
         {
@@ -118,6 +127,7 @@ namespace FBMS3.Web.Controllers
         }
 
         //GET / FoodBank / Delete/ {id}
+        [Authorize(Roles="admin,manager")]
         public IActionResult Delete(int id)
         {
             var f = svc.GetFoodBankById(id);
@@ -133,6 +143,7 @@ namespace FBMS3.Web.Controllers
         }
 
         //POST // FoodBank / Delte / {id}
+        [Authorize(Roles="admin,manager")]
         [HttpPost]
         public IActionResult DeleteConfirm(int id)
         {
@@ -147,9 +158,11 @@ namespace FBMS3.Web.Controllers
         //=====Food Bank Stock Management ========
 
         //GET - Stock Create from the Food bank details page
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult StockCreate(int id)
         {
             var f = svc.GetFoodBankById(id);
+            var categorys = svc.GetAllCategorys();
 
             //check the returned food bank is not null
             if(f == null)
@@ -159,15 +172,22 @@ namespace FBMS3.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+             
             //create the new stock item and set the FoodBank id - foreign key
-            var s = new Stock { FoodBankId = id };
+            var s = new StockCreateViewModel
+            { 
+                FoodBankId = id,
+                Categorys = new SelectList(categorys, "Id", "Description")
+            
+            };
 
             return View (s);
         }
 
         //POST - filling in the form to create the new item of stock
         [HttpPost]
-        public IActionResult StockCreate([Bind("FoodBankId, Description, Quantity, ExpiryDate")] Stock s)
+        [Authorize(Roles="admin,manager,staff")]
+        public IActionResult StockCreate(int foodBankId, [Bind("FoodBankId, Description, Quantity, ExpiryDate, CategoryId")] StockCreateViewModel s)
         {
             if(ModelState.IsValid)
             {
@@ -181,6 +201,7 @@ namespace FBMS3.Web.Controllers
         }
 
         //GET - Stock DeleteConfirm
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult StockDelete(int id)
         {
             //load the stock item using the service method
@@ -199,6 +220,7 @@ namespace FBMS3.Web.Controllers
 
         //POST - STOCK DeleteConfirm
         [HttpPost]
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult StockDeleteConfirm(int id, int foodbankId)
         {
             //delete the stock item via the service methods

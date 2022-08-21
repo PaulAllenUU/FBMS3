@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 using FBMS3.Core.Models;
 using FBMS3.Web.ViewModels;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FBMS3.Web.Controllers
 {
+    [Authorize]
     public class ParcelController : BaseController
     {
         private IUserService svc;
@@ -22,14 +24,15 @@ namespace FBMS3.Web.Controllers
             svc = ss;
         }
 
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Index()
         {
             var parcels = svc.GetAllParcels();
 
             return View(parcels);
         }
-            
 
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Details(int id)
         {
             var p = svc.GetParcelById(id);
@@ -44,12 +47,14 @@ namespace FBMS3.Web.Controllers
         }
 
         //pass in the empty form to generate the parcel
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Create([Bind("UserId, ClientId, FoodBankId, NoOfPeople")] Parcel p)
         {
             if(ModelState.IsValid)

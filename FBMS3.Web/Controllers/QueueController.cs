@@ -21,7 +21,7 @@ namespace FBMS3.Web.Controllers
         {
             svc = ss;
         }
-
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Index()
         {
             var queue = svc.GetAllClients();
@@ -34,7 +34,8 @@ namespace FBMS3.Web.Controllers
 
             return View(queue);
         }
-
+        
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult CreateParcel(Queue<Client> theQueue)
         {
             var firstPersonInQueue = theQueue.Peek;

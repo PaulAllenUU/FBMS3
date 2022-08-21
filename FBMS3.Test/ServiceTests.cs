@@ -36,7 +36,7 @@ namespace FBMS3.Test
             var foodbank = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
             // arrange
             service.AddUser("admin", "scholefield", "admin@mail.com", "admin", foodbank.Id, Role.admin );
-            service.AddUser("guest", "phillips", "guest@mail.com", "guest", foodbank.Id, Role.guest);
+            service.AddUser("guest", "phillips", "guest@mail.com", "guest", foodbank.Id, Role.staff);
 
             // act
             var users = service.GetUsers();
@@ -94,6 +94,80 @@ namespace FBMS3.Test
            
         }
 
+        [Fact]
+        public void GetUsers_WhenThree_ShouldReturnThree()
+        {
+            //arrange
+            var f1 = service.AddFoodBank(10, "Antrim Road", "BT49 0ST");
+            var f2 = service.AddFoodBank(50, "Scroggy Road", "BT56 9QP");
+            var f3 = service.AddFoodBank(100, "Springfield Road", "BT12 9PF");
+
+            var u1 = service.AddUser("Paul", "Allen", "admin@mail.com", "admin", f1.Id, Role.admin);
+            var u2 = service.AddUser("Manager", "Farwell", "manager@mail.com", "manager", f2.Id, Role.manager);
+            var u3 = service.AddUser("Guest", "O'Hara", "guest@mail.com", "guest", f2.Id, Role.staff); 
+
+            //act
+            var users = service.GetUsers();
+            var count = users.Count;
+
+            //assert
+            Assert.NotNull(u1);
+            Assert.NotNull(u2);
+            Assert.NotNull(u3);
+            
+            Assert.Equal(3, count);
+        }
+
+        [Fact]
+        public void DeleteUserShouldWork()
+        {
+            //act
+             var f1 = service.AddFoodBank(10, "Antrim Road", "BT49 0ST");
+             var u1 = service.AddUser("Paul", "Allen", "admin@mail.com", "admin", f1.Id, Role.admin);
+
+             //arrange
+             var delete = service.DeleteUser(u1.Id);
+
+             //assert
+             var users = service.GetUsers();
+
+             //should be empty
+             Assert.Empty(users);
+
+        }
+
+        [Fact]
+        public void AddUser_WithSameEmail_ShouldReturnNull()
+        {
+            //arrange
+            var f1 = service.AddFoodBank(10, "Antrim Road", "BT49 0ST");
+            var f2 = service.AddFoodBank(50, "Scroggy Road", "BT56 9QP");
+            var f3 = service.AddFoodBank(100, "Springfield Road", "BT12 9PF");
+
+            var u1 = service.AddUser("Paul", "Allen", "admin@mail.com", "admin", f1.Id, Role.admin);
+            var u2 = service.AddUser("Manager", "Farwell", "admin@mail.com", "manager", f2.Id, Role.manager);
+
+            Assert.NotNull(u1);
+            //u2 should be null because duplicate e mail address is not allowed
+            Assert.Null(u2);
+        }
+
+        [Fact]
+        public void IsEmailAvailable_WhenNot_ShouldReturnFalse()
+        {
+            //arrange
+            var f1 = service.AddFoodBank(10, "Antrim Road", "BT49 0ST");
+            var f2 = service.AddFoodBank(50, "Scroggy Road", "BT56 9QP");
+            var f3 = service.AddFoodBank(100, "Springfield Road", "BT12 9PF");
+
+            var u1 = service.AddUser("Paul", "Allen", "admin@mail.com", "admin", f1.Id, Role.admin);
+
+            var emailcheck =  service.IsEmailAvailable("admin@mail.com", 1);
+
+            //should retrn true
+            Assert.True(emailcheck);
+        }
+
         //End of User Management Unit Tests
 
         //Begin Food Bank Management Unit Tests
@@ -109,7 +183,39 @@ namespace FBMS3.Test
         }
 
         [Fact]
-        public void FoodBank_AddingFoodBank_WithSameAddress_ShouldFail()
+        public void GetFoodBankById_WhenExists_ShouldReturnFoodBank()
+        {
+            //arrange
+            var foodbank = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+
+            //act
+            var get = service.GetFoodBankById(foodbank.Id);
+            var count = service.GetFoodBanks().Count;
+
+            //assert
+            Assert.NotNull(get);
+            Assert.Equal(1, count);
+        }
+
+        [Fact]
+        public void GetFoodBankById_ShouldAlsoIncludeStockAndClients()
+        {
+            //arrange
+            var foodbank = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var cat1 = service.AddCategory("Vegetables");
+            var cat2 = service.AddCategory("Meat");
+            
+            var stock = service.AddStock(foodbank.Id, "Chicken", 3, new DateTime(2023, 04, 01), cat1.Id);
+            var client  = service.AddClient("Allen", "BT49 0ST", "admin@mail.com", 4, foodbank.Id);
+
+            //assert
+            Assert.Contains(stock, foodbank.Stock);
+            Assert.Contains(client, foodbank.Clients);
+
+        }
+
+        [Fact]
+        public void FoodBank_AddingFoodBank_WithSameAddress_ShouldReturnNull()
         {
             var foodbank = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
             var foodbank2 = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
@@ -229,34 +335,6 @@ namespace FBMS3.Test
             Assert.True(remove);
             
         }
-        //End of Food Bank Service Management Tests
-
-        [Fact]
-        public void Stock_GetAllStockWhenNone_ShouldReturnEmptyList()
-        {
-            //arrange
-            var list = service.GetAllStock();
-
-            //assert
-            Assert.Empty(list);
-
-        }
-
-        [Fact]
-        public void Stock_GetAllStock_WhenOneExists_ShouldReturnOne()
-        {
-            //arrange
-            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
-            var category = service.AddCategory("Fruit");
-            var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01), category.Id);
-
-            //act
-            var get = service.GetAllStock();
-            var count = get.Count;
-
-            //assert
-            Assert.Equal(1, count);
-        }
 
         [Fact]
         public void CheckAllFoodBanksForStockItem_WhenHas_ShouldReturnTrue()
@@ -291,6 +369,96 @@ namespace FBMS3.Test
             Assert.False(check);
 
         }
+        //End of Food Bank Service Management Tests
+
+        //Begin Stock Management Service Tests
+        [Fact]
+        public void Stock_GetAllStockWhenNone_ShouldReturnEmptyList()
+        {
+            //arrange
+            var list = service.GetAllStock();
+
+            //assert
+            Assert.Empty(list);
+
+        }
+
+        [Fact]
+        public void Stock_GetAllStock_WhenOneExists_ShouldReturnOne()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var category = service.AddCategory("Fruit");
+            var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01), category.Id);
+
+            //act
+            var get = service.GetAllStock();
+            var count = get.Count;
+
+            //assert
+            Assert.Equal(1, count);
+        }
+
+        [Fact]
+        public void GetStockById_WhenExists_ShouldWork()
+        {
+            //arrange
+            var c5 = service.AddCategory("Vegetables");
+            var c6 = service.AddCategory("Meat");
+            var foodbank = service.AddFoodBank(10, "Antrim Road", "BT49 0ST");
+            var s4 = service.AddStock(foodbank.Id, "Meat", 6, new DateTime(2023, 08, 09), c6.Id);
+
+            var get = service.GetStockById(s4.Id);
+
+            //assert
+            Assert.NotNull(get);
+        }
+
+        [Fact]
+        public void GetStockById_WhenDoesntExist_ShouldReturnNull()
+        {
+            var c5 = service.AddCategory("Vegetables");
+            var c6 = service.AddCategory("Meat");
+            var foodbank = service.AddFoodBank(10, "Antrim Road", "BT49 0ST");
+
+            var get = service.GetStockById(1);
+
+            Assert.Null(get);
+
+        }
+
+        [Fact]
+        public void AddStock_WhenFoodBankExists_ShouldWork()
+        {
+            //arrange
+            var c5 = service.AddCategory("Vegetables");
+            var c6 = service.AddCategory("Meat");
+            var foodbank = service.AddFoodBank(10, "Antrim Road", "BT49 0ST");
+            var s4 = service.AddStock(foodbank.Id, "Meat", 6, new DateTime(2023, 08, 09), c6.Id);
+
+            //act
+            Assert.Contains(s4, foodbank.Stock);
+
+        }
+
+        [Fact]
+        public void AddStock_WhenFoodBankDoesntExist_ShouldReturnNull()
+        {
+            //arrange
+            var c5 = service.AddCategory("Vegetables");
+            var c6 = service.AddCategory("Meat");
+            var s4 = service.AddStock(1, "Meat", 6, new DateTime(2023, 08, 09), c6.Id);
+
+            Assert.Null(s4);
+
+        }
+
+
+
+
+        //--------End of Stock Management Tests-------//
+
+        
         [Fact]
         public void GenerateParcelForClient_WhenFoodBankHas_ShouldAddItemsToParcel()
         {
@@ -315,8 +483,7 @@ namespace FBMS3.Test
             var stockCount = f.Stock.Count;
             
             //assert
-            Assert.Contains(s1, parcel.Stock);
-            Assert.Contains(s2, parcel.Stock);
+            Assert.NotNull(parcel);
             Assert.Equal(0, stockCount);  
 
         }

@@ -12,6 +12,7 @@ using FBMS3.Data.Repositories;
 namespace FBMS3.Web.Controllers
 {
     //Stock controller inherits from Base Controller
+    [Authorize]
     public class StockController : BaseController
     {
         private IUserService service;
@@ -22,6 +23,7 @@ namespace FBMS3.Web.Controllers
         }
 
         //Get - return an item of stock by its id
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Details(int id)
         {
             var stockitem = service.GetStockById(id);
@@ -36,6 +38,7 @@ namespace FBMS3.Web.Controllers
         }
 
         //GET - display blank form to create an item of stock for user
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Create()
         {
             var foodbanks = service.GetFoodBanks();
@@ -54,6 +57,7 @@ namespace FBMS3.Web.Controllers
 
         //POST - Create a stock item when it has been loaded
         [HttpPost]
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Create(StockCreateViewModel svm)
         {
             if(ModelState.IsValid)
@@ -70,6 +74,7 @@ namespace FBMS3.Web.Controllers
 
         //GET - Display the index page with all of the stock currently
         //enumeration used to get either meat, vegetables, carbohydrates or non food items
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Index(StockSearchViewModel s)
         {
             s.Stock = service.SearchStock(s.Range, s.Query);
@@ -78,6 +83,7 @@ namespace FBMS3.Web.Controllers
         }
 
         //GET - Edit/Update the stock item
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Edit(int id)
         {
             //load the stock by using the service methods
@@ -96,6 +102,7 @@ namespace FBMS3.Web.Controllers
 
         //POST - Edit stock item
         [HttpPost]
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Edit (int id, [Bind("Id, Description, Quantity, ExpiryDate")] Stock s)
         {
             if(ModelState.IsValid)
@@ -110,6 +117,7 @@ namespace FBMS3.Web.Controllers
             return View(s);
         }
 
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult Delete(int id)
         {
             var s = service.GetStockById(id);
@@ -124,7 +132,8 @@ namespace FBMS3.Web.Controllers
             //pass the item on to the view for deletion confirmation
             return View(s);
         }
-
+        
+        [Authorize(Roles="admin,manager,staff")]
         public IActionResult DeleteConfirm(int id)
         {
             //delete the stock item via the service method
