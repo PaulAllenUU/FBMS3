@@ -155,7 +155,7 @@ namespace FBMS3.Core.Services
        IList<Category> GetAllCategorys();
 
        //----------Begin Parcel Management Methodds------//
-       Parcel GenerateParcelForClient(int userId, int clientId, int foodBankId, int noOfPeople);
+       Parcel GenerateParcelForClient(int userId, int clientId, int foodBankId);
 
        IList<Parcel> GetAllParcels();
 

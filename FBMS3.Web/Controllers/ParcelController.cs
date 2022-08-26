@@ -59,7 +59,7 @@ namespace FBMS3.Web.Controllers
         {
             if(ModelState.IsValid)
             {
-                p = svc.GenerateParcelForClient(p.UserId, p.ClientId, p.FoodBankId, p.NoOfPeople);
+                p = svc.GenerateParcelForClient(p.UserId, p.ClientId, p.FoodBankId);
             }
 
             return View(p);

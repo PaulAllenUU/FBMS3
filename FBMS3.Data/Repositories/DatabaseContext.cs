@@ -46,7 +46,7 @@ namespace FBMS3.Data.Repositories
         {
             modelBuilder.Entity<Stock>()
                         .HasOne(p => p.Parcel)
-                        .WithMany( b => b.Stock);
+                        .WithMany( b => b.Items);
         }
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

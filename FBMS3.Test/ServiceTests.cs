@@ -476,8 +476,8 @@ namespace FBMS3.Test
             var s2 = service.AddStock(f.Id, "Vegetables", 4, new DateTime(2022, 10, 01), c1.Id);
 
             //act
-            var parcel = service.GenerateParcelForClient(u.Id, cL1.Id, f.Id, cL1.NoOfPeople);
-            var parcelcount = parcel.Stock.Count;
+            var parcel = service.GenerateParcelForClient(u.Id, cL1.Id, f.Id);
+            var parcelcount = parcel.Items.Count;
 
             //check if it auto decrements from the database
             var stockCount = f.Stock.Count;

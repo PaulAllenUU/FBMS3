@@ -18,10 +18,7 @@ namespace FBMS3.Core.Models
         public DateTime Date { get; set; } = DateTime.Now;
 
         //the allocation of each item
-        public int Quantity => QuantityChanger();
-
-        //the size of each item included in the parcel
-        private string ItemSize => SizeChanger();
+        public int Quantity => SizeChanger();
 
         //navigation to the Client table
         public Client Client { get; set; }
@@ -36,52 +33,30 @@ namespace FBMS3.Core.Models
         public int FoodBankId { get; set; }
 
         //no of people that the parcel is for
-        public int NoOfPeople { get; set; }
+        public int NoOfPeople => Client.NoOfPeople;
 
         //every parcel will have a list of stock
-        public IList<Stock> Stock { get; set; } = new List<Stock>();
+        public IList<Stock> Items { get; set; } = new List<Stock>();
 
-        //size and quantity determined by number of people in family that the parcel is for
-        private string SizeChanger()
+        private int SizeChanger()
         {
             if(NoOfPeople == 1)
             {
-                return "small";
+                return 5;
             }
-            else if(NoOfPeople == 2)
+            else if (NoOfPeople == 2)
             {
-                return "medium";
+                return 10;
             }
-                 else if(NoOfPeople == 3)
-                 {
-                    return "large";
-                 }
-                        else
-                        {
-                            return "extra large";
-                        }
-        }
-
-        //larger family sizes will higher quantities of more stock
-        private int QuantityChanger()
-        {
-            if(NoOfPeople == 1)
-            {
-                return 1;
-            }
-            else if(NoOfPeople == 2)
-            {
-                return 2;
-            }
-                else if(NoOfPeople == 3)
+                else if (NoOfPeople == 3)
                 {
-                    return 3;
+                    return 15;
                 }
-                    else 
-                    {
-                        return 4;
-                    }
+                else
+                    return 20;
+
         }
+
     }
 
 }

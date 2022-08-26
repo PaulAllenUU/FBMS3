@@ -475,7 +475,7 @@ namespace FBMS3.Data.Services
         }
 
         //----Begin Parcel Management Methods
-        public Parcel GenerateParcelForClient(int userId, int clientId, int foodBankId, int noOfPeople)
+        public Parcel GenerateParcelForClient(int userId, int clientId, int foodBankId)
         {
             //get the 3 above parameters by their id method and check if null
             var user = GetUser(userId);
@@ -487,35 +487,21 @@ namespace FBMS3.Data.Services
             {
                 return null;
             }
+             
+            var listOfStock = foodbank.Stock.ToList();
 
             //add all properties
             var p = new Parcel
             {
-               UserId = userId,
-               ClientId = clientId,
-               FoodBankId = foodBankId,
-               NoOfPeople = noOfPeople
-               
+               UserId = user.Id,
+               ClientId = client.Id,
+               FoodBankId = foodbank.Id,
+               Items = foodbank.Stock
             };
+
             
-
-            var available = GetAvailableStockAtFoodBank(foodBankId);
-
-            //foreach loop to iterate over every item available at that foodbank
-            foreach (var item in available)
-            {
-                //add each item to the stock in the parcel
-                p.Stock.Add(item);
-
-                //remove that item from that foodbanks stock
-                foodbank.Stock.Remove(item);
-                
-            }
-
-            client.Parcels.Add(p);
-
+            ctx.Parcels.Add(p);
             ctx.SaveChanges();
-
             return p;
 
         }
@@ -523,11 +509,11 @@ namespace FBMS3.Data.Services
         public IList<Parcel> GetAllParcels()
         {
 
-            var parcels = ctx.Parcels.Include( p => p.User)
-                                     .Include( p => p.FoodBank)
-                                     .Include( p => p.Client)
-                                     .Include( p => p.Stock);
-
+            var parcels = ctx.Parcels
+                             .Include(x => x.User)
+                             .Include(x => x.FoodBank)
+                             .Include(x => x.Client)
+                             .Include( x => x.Items);
             
             return parcels.ToList();
         }
@@ -538,6 +524,7 @@ namespace FBMS3.Data.Services
                       .Include(x => x.Client)
                       .Include(x => x.FoodBank)
                       .Include(x => x.User)
+                      .Include(x => x.Items)
                       .FirstOrDefault(x => x.Id == id);
         }
 

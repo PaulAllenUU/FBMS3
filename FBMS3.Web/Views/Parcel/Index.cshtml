@@ -24,9 +24,12 @@
                 <td>@p.Quantity</td>
                 <td>@p.Client.SecondName</td>
                 <td>@p.FoodBank.StreetName</td>
-                <td>@p.Stock</td>
+                <td>
+                    @foreach (var item in p.Items)
+                    {
+                        @item.Description
+                    }</td>
                 
-
                 <td>
 
                     <a data-bs-toggle="tooltip" data-bs-placement="top" title="View Parcel Details" asp-controller="Parcel" 
