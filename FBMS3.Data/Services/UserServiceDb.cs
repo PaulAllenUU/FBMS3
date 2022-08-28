@@ -292,7 +292,7 @@ namespace FBMS3.Data.Services
             return ctx.Stock.FirstOrDefault ( x => x.Description.Equals(description));
         }
 
-        public Stock GetStockByExpiryDate(DateTime expiryDate)
+        public Stock GetStockByExpiryDate(DateOnly expiryDate)
         {
             return ctx.Stock.FirstOrDefault ( x => x.ExpiryDate == expiryDate);
         }
@@ -318,7 +318,7 @@ namespace FBMS3.Data.Services
 
         }
 
-        public Stock AddStock(int foodBankId, string description, int quantity, DateTime expiryDate, int categoryId)
+        public Stock AddStock(int foodBankId, string description, int quantity, DateOnly expiryDate, int categoryId)
         {
             //the food bank id is the foreign key so need to check it exists
             var foodbank = GetFoodBankById(foodBankId);
@@ -335,6 +335,7 @@ namespace FBMS3.Data.Services
                 ExpiryDate = expiryDate,
                 CategoryId = categoryId
             };
+
 
             //determine enumeration types from the object just create
             if(s.Description == "Meat")

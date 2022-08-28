@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 using FBMS3.Core.Models;
 using FBMS3.Core.Services;
@@ -54,7 +55,14 @@ namespace FBMS3.Web.Controllers
 
         public IActionResult Register()
         {
-            return View();
+            var foodbanks = _svc.GetFoodBanks();
+
+            var ucvm = new UserRegisterViewModel
+            {
+                FoodBanks = new SelectList(foodbanks,"Id","StreetName")
+            };
+
+            return View(ucvm);
         }
 
         [HttpPost]

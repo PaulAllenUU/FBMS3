@@ -15,7 +15,7 @@ namespace FBMS3.Web.ViewModels
 
         public int Quantity { get; set ; }
 
-        public DateTime ExpiryDate { get; set; } 
+        public DateOnly ExpiryDate { get; set; } 
 
         public SelectList Categorys { get; set; }
 

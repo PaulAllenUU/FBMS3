@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using FBMS3.Core.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 namespace FBMS3.Web.ViewModels
 {
     public class UserRegisterViewModel
@@ -23,6 +24,9 @@ namespace FBMS3.Web.ViewModels
         [Compare("Password", ErrorMessage = "Confirm password doesn't match, Type again !")]
         public string PasswordConfirm  { get; set; }
 
+        public SelectList FoodBanks { get; set ; }
+
+        [Display(Name = "Please confirm which food bank you are working at")]
         public int FoodBankId { get; set; }
 
         [Required]

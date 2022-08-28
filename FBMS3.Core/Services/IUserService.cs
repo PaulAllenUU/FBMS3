@@ -106,10 +106,10 @@ namespace FBMS3.Core.Services
         Stock GetStockByDescription(string description);
 
         //get stock by expiry date
-        Stock GetStockByExpiryDate(DateTime expiryDate);
+        Stock GetStockByExpiryDate(DateOnly expiryDate);
 
         //add stock using all properties
-        Stock AddStock(int foodBankId, string description, int quantity, DateTime expiryDate, int categoryId); 
+        Stock AddStock(int foodBankId, string description, int quantity, DateOnly expiryDate, int categoryId); 
 
         //update existing stock
         Stock UpdateStock(Stock updated);

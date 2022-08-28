@@ -121,18 +121,59 @@ namespace FBMS3.Test
         [Fact]
         public void DeleteUserShouldWork()
         {
-            //act
+            //arrange
              var f1 = service.AddFoodBank(10, "Antrim Road", "BT49 0ST");
              var u1 = service.AddUser("Paul", "Allen", "admin@mail.com", "admin", f1.Id, Role.admin);
 
-             //arrange
+             //
              var delete = service.DeleteUser(u1.Id);
 
-             //assert
+             //act
              var users = service.GetUsers();
 
-             //should be empty
+             //assert - list will show but should be empty
              Assert.Empty(users);
+
+        }
+
+        [Fact]
+        public void DeleteUser_WhenDoesntExist_ShouldReturnFalse()
+        {
+            //arrange
+            var f1 = service.AddFoodBank(10, "Antrim Road", "BT49 0ST");
+            var u1 = service.AddUser("Paul", "Allen", "admin@mail.com", "admin", f1.Id, Role.admin);
+
+            //act
+            var delete = service.DeleteUser(2);
+
+            //assert - var delete should be null
+            Assert.False(delete);
+
+        }
+
+        [Fact]
+        public void GetUser_WhenNone_ShouldReturnEmptyList()
+        {
+            //aarange & act
+            var users = service.GetUsers();
+
+            //asset - list will be returned but will be empty
+            Assert.Empty(users);
+        }
+
+        [Fact]
+        public void GetUserByEmail_WhenExists_ShouldWork()
+        {
+            //arrange
+            var f1 = service.AddFoodBank(10, "Antrim Road", "BT49 0ST");
+            var u1 = service.AddUser("Paul", "Allen", "admin@mail.com", "admin", f1.Id, Role.admin);
+
+            //act
+            var get = service.GetUserByEmail("admin@mail.com");
+
+            //assert
+            Assert.Contains(u1.Email, get.Email);
+
 
         }
 
@@ -167,6 +208,8 @@ namespace FBMS3.Test
             //should retrn true
             Assert.True(emailcheck);
         }
+
+
 
         //End of User Management Unit Tests
 
@@ -205,7 +248,7 @@ namespace FBMS3.Test
             var cat1 = service.AddCategory("Vegetables");
             var cat2 = service.AddCategory("Meat");
             
-            var stock = service.AddStock(foodbank.Id, "Chicken", 3, new DateTime(2023, 04, 01), cat1.Id);
+            var stock = service.AddStock(foodbank.Id, "Chicken", 3, new DateOnly(2023, 04, 01), cat1.Id);
             var client  = service.AddClient("Allen", "BT49 0ST", "admin@mail.com", 4, foodbank.Id);
 
             //assert
@@ -344,7 +387,7 @@ namespace FBMS3.Test
             var f2 = service.AddFoodBank(36, "Meadowvale", "bt61 7LK");
             var list = service.GetFoodBanks();
             var category = service.AddCategory("Fruit");
-            var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01), category.Id);
+            var s = service.AddStock(f.Id, "Apple", 4, new DateOnly(2023, 04, 01), category.Id);
 
             //act
             var check = service.CheckAllFoodBanksForStockItem(list, "Apple");
@@ -361,7 +404,7 @@ namespace FBMS3.Test
             var f2 = service.AddFoodBank(36, "Meadowvale", "bt61 7LK");
             var list = service.GetFoodBanks();
             var category = service.AddCategory("Fruit");
-            var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01), category.Id);
+            var s = service.AddStock(f.Id, "Apple", 4, new DateOnly(2023, 04, 01), category.Id);
 
             //act
             var check = service.CheckAllFoodBanksForStockItem(list, "Orange");
@@ -389,7 +432,7 @@ namespace FBMS3.Test
             //arrange
             var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
             var category = service.AddCategory("Fruit");
-            var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01), category.Id);
+            var s = service.AddStock(f.Id, "Apple", 4, new DateOnly(2023, 04, 01), category.Id);
 
             //act
             var get = service.GetAllStock();
@@ -406,7 +449,7 @@ namespace FBMS3.Test
             var c5 = service.AddCategory("Vegetables");
             var c6 = service.AddCategory("Meat");
             var foodbank = service.AddFoodBank(10, "Antrim Road", "BT49 0ST");
-            var s4 = service.AddStock(foodbank.Id, "Meat", 6, new DateTime(2023, 08, 09), c6.Id);
+            var s4 = service.AddStock(foodbank.Id, "Meat", 6, new DateOnly(2023, 08, 09), c6.Id);
 
             var get = service.GetStockById(s4.Id);
 
@@ -434,7 +477,7 @@ namespace FBMS3.Test
             var c5 = service.AddCategory("Vegetables");
             var c6 = service.AddCategory("Meat");
             var foodbank = service.AddFoodBank(10, "Antrim Road", "BT49 0ST");
-            var s4 = service.AddStock(foodbank.Id, "Meat", 6, new DateTime(2023, 08, 09), c6.Id);
+            var s4 = service.AddStock(foodbank.Id, "Meat", 6, new DateOnly(2023, 08, 09), c6.Id);
 
             //act
             Assert.Contains(s4, foodbank.Stock);
@@ -447,7 +490,7 @@ namespace FBMS3.Test
             //arrange
             var c5 = service.AddCategory("Vegetables");
             var c6 = service.AddCategory("Meat");
-            var s4 = service.AddStock(1, "Meat", 6, new DateTime(2023, 08, 09), c6.Id);
+            var s4 = service.AddStock(1, "Meat", 6, new DateOnly(2023, 08, 09), c6.Id);
 
             Assert.Null(s4);
 
@@ -472,19 +515,19 @@ namespace FBMS3.Test
             var c1 = service.AddCategory("Carbohydrates");
             var c2 = service.AddCategory("Vegetables");
             //add items of the same category
-            var s1 = service.AddStock(f.Id, "Potato", 3, new DateTime(2022, 10, 01), c1.Id);
-            var s2 = service.AddStock(f.Id, "Vegetables", 4, new DateTime(2022, 10, 01), c1.Id);
+            var s1 = service.AddStock(f.Id, "Potato", 3, new DateOnly(2022, 10, 01), c1.Id);
+            var s2 = service.AddStock(f.Id, "Vegetables", 4, new DateOnly(2022, 10, 01), c1.Id);
 
             //act
             var parcel = service.GenerateParcelForClient(u.Id, cL1.Id, f.Id);
             var parcelcount = parcel.Items.Count;
 
             //check if it auto decrements from the database
-            var stockCount = f.Stock.Count;
+            
             
             //assert
             Assert.NotNull(parcel);
-            Assert.Equal(0, stockCount);  
+            Assert.Equal(2, parcelcount);  
 
         }
 
