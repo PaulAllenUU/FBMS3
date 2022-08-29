@@ -625,7 +625,7 @@ namespace FBMS3.Test
 
             //act
             var getAll  = service.GetAllClients();
-            var count = getAll
+            var count = getAll.Count;
 
             //assert
             Assert.Equal(1, count);

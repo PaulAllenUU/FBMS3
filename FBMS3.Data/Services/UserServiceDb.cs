@@ -781,12 +781,6 @@ namespace FBMS3.Data.Services
             //get the clients from the DbSet
             var clients = ctx.Clients;
 
-            //for each loop to add every client in to the queue
-            foreach (var c in clients)
-            {
-                TheQueue.Enqueue(c);
-            }
-
             //return the queue
             return TheQueue;
         }
