@@ -209,8 +209,6 @@ namespace FBMS3.Test
             Assert.True(emailcheck);
         }
 
-
-
         //End of User Management Unit Tests
 
         //Begin Food Bank Management Unit Tests
@@ -223,6 +221,22 @@ namespace FBMS3.Test
             //assert
             Assert.NotNull(foodbank);
             
+        }
+
+        [Fact]
+        public void GetFoodBankList_When2Exist_ShouldReturn2()
+        {
+            //arrange
+            var f1 = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var f2 = service.AddFoodBank(36, "Taylor Park", "BT48 7KL");
+
+            //act
+            var both = service.GetFoodBanks();
+            var count = both.Count;
+
+            //assert
+            Assert.Equal(2, count);
+
         }
 
         [Fact]
@@ -342,7 +356,7 @@ namespace FBMS3.Test
         }
 
         [Fact]
-        public void FoodBank_DeleteFoodBank_WhenNull_ShouldReturnFalse()
+        public void FoodBank_DeleteFoodBank_WhenDoesntExist_ShouldReturnFalse()
         {
             var f = service.DeleteFoodBank(1);
 
@@ -412,6 +426,36 @@ namespace FBMS3.Test
             Assert.False(check);
 
         }
+
+        [Fact]
+        public void SearchFood_WhenSearchStringExists_ShouldReturnResult()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var f2 = service.AddFoodBank(36, "Meadowvale", "bt61 7LK");
+
+            //act
+            var search = service.SearchFoodBanks("Thorndale");
+
+            //assert
+            Assert.Contains(f, search);
+
+        }
+
+         [Fact]
+        public void SearchFood_WhenSearchStringDoesntExist_ShouldReturnEmpty()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var f2 = service.AddFoodBank(36, "Meadowvale", "bt61 7LK");
+
+            //act
+            var search = service.SearchFoodBanks("Taylor Park");
+
+            //assert
+            Assert.Empty(search);
+
+        }
         //End of Food Bank Service Management Tests
 
         //Begin Stock Management Service Tests
@@ -443,6 +487,41 @@ namespace FBMS3.Test
         }
 
         [Fact]
+        public void GetAllStock_WhenThreeExist_ShouldRetuenThree()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var category = service.AddCategory("Fruit");
+            var s1 = service.AddStock(f.Id, "Apple", 4, new DateOnly(2023, 04, 01), category.Id);
+            var s2 = service.AddStock(f.Id, "Banana", 10, new DateOnly(2023,10,09), category.Id);
+            var s3 = service.AddStock(f.Id, "Orange", 6, new DateOnly(2023, 04, 05), category.Id);
+
+            //act
+            var get = service.GetAllStock();
+            var count = get.Count;
+
+            //assert
+            Assert.Equal(3, count);
+
+
+        }
+
+        [Fact]
+        public void AddNonFoodItem_ShouldFilterBoolean()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var category = service.AddCategory("NonFood");
+
+            //act
+            var s1 = service.AddStock(f.Id, "Toileteries", 3, new DateOnly(2023,01,01), category.Id);
+
+            //assert
+            Assert.True(s1.NonFood == true);
+
+        }
+
+        [Fact]
         public void GetStockById_WhenExists_ShouldWork()
         {
             //arrange
@@ -451,6 +530,7 @@ namespace FBMS3.Test
             var foodbank = service.AddFoodBank(10, "Antrim Road", "BT49 0ST");
             var s4 = service.AddStock(foodbank.Id, "Meat", 6, new DateOnly(2023, 08, 09), c6.Id);
 
+            //act
             var get = service.GetStockById(s4.Id);
 
             //assert
@@ -460,12 +540,15 @@ namespace FBMS3.Test
         [Fact]
         public void GetStockById_WhenDoesntExist_ShouldReturnNull()
         {
+            //arrange
             var c5 = service.AddCategory("Vegetables");
             var c6 = service.AddCategory("Meat");
             var foodbank = service.AddFoodBank(10, "Antrim Road", "BT49 0ST");
 
+            //act
             var get = service.GetStockById(1);
 
+            //assert
             Assert.Null(get);
 
         }
@@ -490,17 +573,63 @@ namespace FBMS3.Test
             //arrange
             var c5 = service.AddCategory("Vegetables");
             var c6 = service.AddCategory("Meat");
+
+            //act
             var s4 = service.AddStock(1, "Meat", 6, new DateOnly(2023, 08, 09), c6.Id);
 
+            //assert
             Assert.Null(s4);
 
         }
 
+        [Fact]
+        public void UpdateStock_WhenExists_ShouldSetProperties()
+        {
+            //arrange
+            var c5 = service.AddCategory("Vegetables");
+            var c6 = service.AddCategory("Meat");
+            var foodbank = service.AddFoodBank(10, "Antrim Road", "BT49 0ST");
+            var s4 = service.AddStock(foodbank.Id, "Meat", 6, new DateOnly(2023, 08, 09), c6.Id);
 
+            //act
+            var update = service.UpdateStock(s4);
+            {
+                s4.Description = "Beef";
+                s4.Quantity = 10;
+            }
 
+            //assert
+            Assert.Equal("Beef", s4.Description);
+            Assert.Equal(10, s4.Quantity);
 
+        }
         //--------End of Stock Management Tests-------//
 
+        //-----Begin Client Management Tests-----//
+        [Fact]
+        public void GetClients_WhenNone_ShouldReturnEmptyList()
+        {
+            //arrange and act
+            var clients = service.GetAllClients();
+
+            //assert
+            Assert.Empty(clients);
+        }
+
+        [Fact]
+        public void GetClients_WhenOneExists_ShouldReturnOne()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var c = service.AddClient("Allen", "BT46 8KM", "paul@yahoo.co.uk", 3, f.Id);
+
+            //act
+            var getAll  = service.GetAllClients();
+            var count = getAll
+
+            //assert
+            Assert.Equal(1, count);
+        }
         
         [Fact]
         public void GenerateParcelForClient_WhenFoodBankHas_ShouldAddItemsToParcel()
