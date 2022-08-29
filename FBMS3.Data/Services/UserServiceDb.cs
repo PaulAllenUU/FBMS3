@@ -438,7 +438,9 @@ namespace FBMS3.Data.Services
             var results = ctx.Stock
                              .Include(x => x.FoodBank)
                              .Where(x => (x.Description.ToLower().Contains(query) ||
+                                          x.Quantity.ToString().Contains(query) ||
                                           x.FoodBank.StreetName.ToLower().Contains(query)
+
                                           ) &&
                                           //for the enumeration when the value of the boolean values are set they will come up
                                           (range == StockRange.NONFOOD && x.NonFood == true ||
@@ -844,6 +846,7 @@ namespace FBMS3.Data.Services
             var results = ctx.Clients
                              .Include(x => x.FoodBank)
                              .Where (x => (x.SecondName.ToLower().Contains(query) ||
+                                          x.FoodBank.StreetName.ToLower().Contains(query) ||
                                           x.PostCode.ToLower().Contains(query) ||
                                           x.NoOfPeople.ToString().Contains(query) ||
                                           x.EmailAddress.Contains(query) ||

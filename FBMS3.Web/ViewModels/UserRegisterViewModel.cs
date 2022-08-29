@@ -7,18 +7,18 @@ namespace FBMS3.Web.ViewModels
 {
     public class UserRegisterViewModel
     { 
-        [Required]
+        [Required(ErrorMessage ="First name is a required field")]
         public string FirstName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Second name is a required field")]
         public string SecondName { get; set; }
  
-        [Required]
+        [Required(ErrorMessage = "E-mail address is a required field")]
         [EmailAddress]
         [Remote(action: "VerifyEmailAvailable", controller: "User")]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Password is a required field")]
         public string Password { get; set; }
 
         [Compare("Password", ErrorMessage = "Confirm password doesn't match, Type again !")]
@@ -27,6 +27,7 @@ namespace FBMS3.Web.ViewModels
         public SelectList FoodBanks { get; set ; }
 
         [Display(Name = "Please confirm which food bank you are working at")]
+        [Required(ErrorMessage = "Password is a required field")]
         public int FoodBankId { get; set; }
 
         [Required]

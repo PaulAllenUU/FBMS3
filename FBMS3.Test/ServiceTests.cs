@@ -630,6 +630,119 @@ namespace FBMS3.Test
             //assert
             Assert.Equal(1, count);
         }
+
+        [Fact]
+        public void GetClientById_WhenExists_ShouldReturnClient()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var c = service.AddClient("Allen", "BT46 8KM", "paul@yahoo.co.uk", 3, f.Id);
+
+            //act
+            var getClient = service.GetClientById(f.Id);
+
+            //assert
+            Assert.NotNull(getClient);
+            Assert.Equal(c, getClient);
+
+        }
+
+        [Fact]
+        public void GetClientById_WhenDoesntExist_ShouldReturnNull()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+
+            //act
+            var get = service.GetClientById(1);
+
+            //assert
+            Assert.Null(get);
+
+
+        }
+
+        [Fact]
+        public void AddClient_WhenFoodBankExists_ShouldAddClient()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var c = service.AddClient("Allen", "BT46 8KM", "paul@yahoo.co.uk", 3, f.Id);
+
+            //act
+            var get = service.GetClientById(c.Id);
+
+            //assert
+            Assert.Equal(c, get);
+        }
+
+        [Fact]
+        public void UpdateClient_WhenExists_ShouldUpdateProperties()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var c = service.AddClient("Allen", "BT46 8KM", "paul@yahoo.co.uk", 3, f.Id);
+
+            //act
+            var update = service.UpdateClient(c);
+            {
+                c.SecondName = "O'Neill";
+                c.NoOfPeople = 5;
+            }
+            
+            //assert
+            Assert.True(c.SecondName == "O'Neill");
+            Assert.True(c.NoOfPeople == 5);
+
+        }
+
+        [Fact]
+        public void DeleteClient_WhenExists_ShouldReturnTrue()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var c = service.AddClient("Allen", "BT46 8KM", "paul@yahoo.co.uk", 3, f.Id);
+
+            //act
+            var delete = service.DeleteClient(c.EmailAddress);
+            
+            //assert
+            Assert.True(delete);
+
+        }
+
+        [Fact]
+        public void DeleteClient_WhenDoesntExist_ShouldReturnFalse()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var c = service.AddClient("Allen", "BT46 8KM", "paul@yahoo.co.uk", 3, f.Id);
+
+            //act
+            var delete = service.DeleteClient("doesntexist@mail.com");
+
+            //assert
+            Assert.False(delete);
+
+        }
+
+        [Fact]
+        public void SearchClients_WhenStringContains_ShouldReturnClients()
+        {
+             //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var c = service.AddClient("Allen", "BT46 8KM", "paul@yahoo.co.uk", 3, f.Id);
+            var c2 = service.AddClient("O'Neill", "bt56 9LM", "example@yahoo.com", 4, f.Id);
+
+            //act
+            var search = service.SearchClients("Thorndale");
+
+            //assert
+            Assert.Contains(c, search);
+            Assert.Contains(c2, search);
+
+        }
+
         
         [Fact]
         public void GenerateParcelForClient_WhenFoodBankHas_ShouldAddItemsToParcel()
