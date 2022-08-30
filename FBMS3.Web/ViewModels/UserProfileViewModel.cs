@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Serialization;
 using FBMS3.Core.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FBMS3.Web.ViewModels
 {
@@ -19,9 +21,11 @@ namespace FBMS3.Web.ViewModels
         [Remote(action: "VerifyEmailAvailable", controller: "User", AdditionalFields = nameof(Id))]
         public string Email { get; set; }
 
+        public SelectList FoodBanks { get; set; }
         public int FoodBankId { get; set; }
 
         [Required]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public Role Role { get; set; }
 
     }

@@ -65,6 +65,81 @@ namespace FBMS3.Web.Controllers
             return View(ucvm);
         }
 
+        [Authorize(Roles="admin")]
+        public IActionResult Index(UserSearchViewModel u)
+        {
+            u.Users = _svc.SearchUsers(u.Query);
+
+            return View(u);
+        }
+
+        [Authorize(Roles="admin")]
+        public IActionResult Details(int id)
+        {
+            var u = _svc.GetUser(id);
+
+            if(u == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(u);
+
+        }
+
+        [Authorize(Roles = "admin")]
+        public IActionResult Edit(int id)
+        {
+            //load all foodbanks into memmory using the SelectList feature on the ViewModel
+            var foodbanks = _svc.GetFoodBanks();
+            //load the food bank into memory using the service methods
+            var user = _svc.GetUser(id);
+
+            //check if f is not and if so alert the user
+            if (user == null)
+            {
+                Alert($"User {id} not found", AlertType.warning);
+                return RedirectToAction(nameof(Index));
+            }
+
+            var userViewModel = new UserProfileViewModel
+            {
+                FoodBanks = new SelectList(foodbanks,"Id,StreetName"),
+                Id = user.Id,
+                FirstName = user.FirstName,
+                SecondName = user.SecondName,
+                Email = user.Email,
+                FoodBankId = user.FoodBankId,
+                Role = user.Role
+
+            };
+
+            //pass to the view for editing
+            return View(userViewModel);
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        public IActionResult Edit(int id, [Bind("Id,FirstName,SecondName,Email,Role,FoodBankId")] UserProfileViewModel u)
+        {
+            var user = _svc.GetUser(u.Id);  
+
+            if(!ModelState.IsValid || user == null)
+            {
+                return View(u);         
+            }
+
+            user.FirstName = u.FirstName;
+            user.SecondName = u.SecondName;
+            user.Email = u.Email;
+            user.FoodBankId = u.FoodBankId;
+            user.Role = u.Role;
+
+
+            return View(u);
+
+        } 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         //Register a new user and bind the below attributes to that user 
@@ -90,9 +165,13 @@ namespace FBMS3.Web.Controllers
         [Authorize]
         public IActionResult UpdateProfile()
         {
+            //instantiate food banks from selectlist viewmodel
+            var foodbanks = _svc.GetFoodBanks();
            // use BaseClass helper method to retrieve Id of signed in user 
             var user = _svc.GetUser(User.GetSignedInUserId());
             var userViewModel = new UserProfileViewModel { 
+
+                FoodBanks = new SelectList(foodbanks, "Id","StreetName"),
                 Id = user.Id, 
                 FirstName = user.FirstName,
                 SecondName = user.SecondName,
@@ -100,6 +179,7 @@ namespace FBMS3.Web.Controllers
                 Email = user.Email,                 
                 Role = user.Role
             };
+
             return View(userViewModel);
         }
 
@@ -176,6 +256,32 @@ namespace FBMS3.Web.Controllers
 
             return RedirectToAction("Index","Home");
         }
+
+        [Authorize(Roles ="admin")]
+        public IActionResult Delete(int id)
+        {
+            var u = _svc.GetUser(id);
+
+            if(u == null)
+            {
+                Alert($"User {id} not found", AlertType.warning);
+                return RedirectToAction(nameof(Index));
+            }
+            
+            return View(u);
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        public IActionResult DeleteConfirm(int id)
+        {
+            var u = _svc.DeleteUser(id);
+
+            Alert("User deleted successfully", AlertType.info);
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Logout()

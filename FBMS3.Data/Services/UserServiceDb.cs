@@ -105,6 +105,33 @@ namespace FBMS3.Data.Services
             return User;
         }
 
+        public User EditUser(User updated)
+        {
+            var user = GetUser(updated.Id);
+
+            if(user == null)
+            {
+                return null;
+            }
+
+            if(!IsEmailAvailable(updated.Email, updated.Id))
+            {
+                return null;
+            }
+
+            //update the details
+            user.Id = updated.Id;
+            user.FirstName = updated.FirstName;
+            user.SecondName = updated.SecondName;
+            user.Email = updated.Email;
+            user.Role = updated.Role;
+            user.FoodBankId = updated.FoodBankId;
+
+            ctx.SaveChanges();
+            
+            return user;
+        }
+
         // Find a user with specified email address
         public User GetUserByEmail(string email)
         {
@@ -135,6 +162,24 @@ namespace FBMS3.Data.Services
             // Verify the user exists and Hashed User password matches the password provided
             return (user != null && Hasher.ValidateHash(user.Password, password)) ? user : null;
             //return (user != null && user.Password == password ) ? user: null;
+        }
+
+        public IList<User> SearchUsers(string query)
+        {
+            //ensure that the query for the user accounts is not null
+            query = query == null ? "" : query.ToLower();
+
+            var results = ctx.Users
+                             .Include(x => x.FoodBank)
+                             .Where( x => (x.FirstName.ToLower().Contains(query) ||
+                                           x.SecondName.ToLower().Contains(query) ||
+                                           x.FoodBank.StreetName.ToLower().Contains(query) ||
+                                           //x.Role.ToString().ToLower().Contains(query) ||
+                                           x.Email.ToLower().Contains(query))
+                                    ).ToList();
+
+            return results;
+
         }
 
         // End of User Management Methods

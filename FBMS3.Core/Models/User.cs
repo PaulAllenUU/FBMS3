@@ -36,6 +36,9 @@ namespace FBMS3.Core.Models
         [Required]
         public int FoodBankId { get; set; }
 
+        //give read only access to the street name property for it can be seen in the view
+        public string FoodBankStreetName => FoodBank?.StreetName;
+
         //each user will have multiple parcels they allocate to clients
         public IList<Parcel> Parcels { get; set; } = new List<Parcel>();
 

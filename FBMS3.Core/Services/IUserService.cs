@@ -31,11 +31,15 @@ namespace FBMS3.Core.Services
         //update an existing user on the database
         User UpdateUser(User user);
 
+        User EditUser(User user);
+
         //delete a user from the database
         bool DeleteUser(int id);
 
         //authenticate a user
         User Authenticate(string email, string password);
+
+        IList<User> SearchUsers(string query);
 
         // ---------- End User Management Interface ------//
 

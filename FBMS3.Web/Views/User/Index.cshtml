@@ -1,0 +1,50 @@
+@model UserSearchViewModel
+
+<partial name="_BreadCrumbs" model=@(new [] {
+    ("/","Home"),
+    ("","Users")
+}) />
+
+<h3 class="mb-3">List Of All Currently Registered Users</h3>
+
+<div class="my-4 d-flex flex-row justify-content-between align-items-center">  
+   <a asp-action="Create" class="btn btn-primary btn-sm">Add Food Bank</a>   
+   <partial name="_Search" /> <!-- add partial to search foodbanks -->
+</div>
+
+<table class="table table-hover">
+    <thead>
+
+        <tr>
+
+            <th>First Name</th>
+            <th>Second Name</th>
+            <th>E mail Address</th>
+            <th>Food Bank Location</th>
+
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var u in Model.Users)
+        {
+            <tr>
+
+                <td>@u.FirstName</td>
+                <td>@u.SecondName</td>
+                <td>@u.Email</td>
+                <td>@u.FoodBankStreetName</td>
+                <td>
+                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="View User Account" 
+                    asp-controller="User" asp-action="Details" asp-route-id=@u.Id>View</a>
+
+                    <a asp-controller="User" asp-action="Edit" asp-route-id=@u.Id>Edit</a>
+
+                    <a asp-controller="User" asp-action="Delete" asp-route-id=@u.Id>Delete</a>   
+
+                </td>
+            </tr>
+            
+        }
+    </tbody>
+</table>
