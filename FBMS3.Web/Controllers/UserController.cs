@@ -92,27 +92,19 @@ namespace FBMS3.Web.Controllers
         {
             //load all foodbanks into memmory using the SelectList feature on the ViewModel
             var foodbanks = _svc.GetFoodBanks();
-            //load the food bank into memory using the service methods
+           // use BaseClass helper method to retrieve Id of signed in user 
             var user = _svc.GetUser(id);
+            var userViewModel = new UserProfileViewModel { 
 
-            //check if f is not and if so alert the user
-            if (user == null)
-            {
-                Alert($"User {id} not found", AlertType.warning);
-                return RedirectToAction(nameof(Index));
-            }
-
-            var userViewModel = new UserProfileViewModel
-            {
-                FoodBanks = new SelectList(foodbanks,"Id,StreetName"),
-                Id = user.Id,
+                FoodBanks = new SelectList(foodbanks, "Id","StreetName"),
+                Id = user.Id, 
                 FirstName = user.FirstName,
                 SecondName = user.SecondName,
-                Email = user.Email,
-                FoodBankId = user.FoodBankId,
+                FoodBankId = user.FoodBankId, 
+                Email = user.Email,                 
                 Role = user.Role
 
-            };
+            }; 
 
             //pass to the view for editing
             return View(userViewModel);
@@ -120,7 +112,7 @@ namespace FBMS3.Web.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpPost]
-        public IActionResult Edit(int id, [Bind("Id,FirstName,SecondName,Email,Role,FoodBankId")] UserProfileViewModel u)
+        public IActionResult Edit(int id, [Bind("Id,FirstName,SecondName,Email,FoodBankId,Role")] UserProfileViewModel u)
         {
             var user = _svc.GetUser(u.Id);  
 
@@ -135,8 +127,18 @@ namespace FBMS3.Web.Controllers
             user.FoodBankId = u.FoodBankId;
             user.Role = u.Role;
 
+            var updated = _svc.UpdateUser(user);
 
-            return View(u);
+            if (updated == null) 
+            {
+                Alert("There was a problem Updating. Please try again", AlertType.warning);
+                return View(u);
+            }
+
+            Alert("Successfully Updated Account Details", AlertType.info);
+
+
+            return RedirectToAction(nameof(Index));
 
         } 
 

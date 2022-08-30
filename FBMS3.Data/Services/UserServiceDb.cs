@@ -813,7 +813,7 @@ namespace FBMS3.Data.Services
             ctx.Add(client);
 
             //call the add client to queue method from below
-            AddClientToQueue(client);
+            //AddClientToQueue(client);
 
             //save changes
             ctx.SaveChanges();
@@ -827,6 +827,11 @@ namespace FBMS3.Data.Services
         {
             //get the clients from the DbSet
             var clients = ctx.Clients;
+
+            foreach(var c in clients)
+            {
+                TheQueue.Enqueue(c);
+            }
 
             //return the queue
             return TheQueue;
