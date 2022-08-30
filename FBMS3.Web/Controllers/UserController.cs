@@ -65,7 +65,6 @@ namespace FBMS3.Web.Controllers
             return View(ucvm);
         }
 
-        [Authorize(Roles="admin")]
         public IActionResult Index(UserSearchViewModel u)
         {
             u.Users = _svc.SearchUsers(u.Query);
