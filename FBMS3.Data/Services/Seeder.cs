@@ -51,20 +51,20 @@ namespace FBMS3.Data.Services
             var c21 = svc.AddCategory("Logs");  
 
             //add some dummy stock to the database
-            var s1 = svc.AddStock(f1.Id, "Orange", 4, new DateOnly(2022, 10, 01), c9.Id);
-            var s2 = svc.AddStock(f2.Id, "Banana", 10, new DateOnly(2023, 12, 03), c9.Id);
-            var s3 = svc.AddStock(f3.Id, "Carbohydrates", 20, new DateOnly(2022, 12, 07), c11.Id);
-            var s4 = svc.AddStock(f1.Id, "Meat", 6, new DateOnly(2023, 08, 09), c6.Id);
-            var s11 = svc.AddStock(f3.Id, "Vegetables", 10, new DateOnly(2023, 10, 01), c5.Id);
-            var s5 = svc.AddStock(f2.Id, "Toileteries", 10, new DateOnly(2024, 10, 07), c18.Id);
-            var s6 = svc.AddStock(f2.Id, "Fish", 8, new DateOnly(2022, 11, 18), c8.Id);
-            var s7 = svc.AddStock(f3.Id, "Tinned Tomatoes", 4, new DateOnly(2024,01,01), c4.Id);
-            var s8 = svc.AddStock(f5.Id, "Meat", 2, new DateOnly(2022, 08, 08), c6.Id);
-            var s9 = svc.AddStock(f5.Id, "Carbohydrates", 10, new DateOnly(2022, 09, 01), c11.Id);
-            var s10 = svc.AddStock(f1.Id, "Vegetables", 12, new DateOnly(2022, 08, 30), c4.Id);
-            var s12 = svc.AddStock(f2.Id, "Vegetables", 8, new DateOnly(2023, 01, 01), c5.Id);
-            var s13 = svc.AddStock(f6.Id, "Vegetables", 6, new DateOnly(2022, 02,02), c5.Id);
-            var s14 = svc.AddStock(f6.Id, "Vegetables", 5, new DateOnly(2022, 09, 04), c5.Id);
+            var s1 = svc.AddStock(f1.Id, "Orange", 4, new DateTime(2022, 10, 01), c9.Id);
+            var s2 = svc.AddStock(f2.Id, "Banana", 10, new DateTime(2023, 12, 03), c9.Id);
+            var s3 = svc.AddStock(f3.Id, "Carbohydrates", 20, new DateTime(2022, 12, 07), c11.Id);
+            var s4 = svc.AddStock(f1.Id, "Meat", 6, new DateTime(2023, 08, 09), c6.Id);
+            var s11 = svc.AddStock(f3.Id, "Vegetables", 10, new DateTime(2023, 10, 01), c5.Id);
+            var s5 = svc.AddStock(f2.Id, "Toileteries", 10, new DateTime(2024, 10, 07), c18.Id);
+            var s6 = svc.AddStock(f2.Id, "Fish", 8, new DateTime(2022, 11, 18), c8.Id);
+            var s7 = svc.AddStock(f3.Id, "Tinned Tomatoes", 4, new DateTime(2024,01,01), c4.Id);
+            var s8 = svc.AddStock(f5.Id, "Meat", 2, new DateTime(2022, 08, 08), c6.Id);
+            var s9 = svc.AddStock(f5.Id, "Carbohydrates", 10, new DateTime(2022, 09, 01), c11.Id);
+            var s10 = svc.AddStock(f1.Id, "Vegetables", 12, new DateTime(2022, 08, 30), c4.Id);
+            var s12 = svc.AddStock(f2.Id, "Vegetables", 8, new DateTime(2023, 01, 01), c5.Id);
+            var s13 = svc.AddStock(f6.Id, "Vegetables", 6, new DateTime(2022, 02,02), c5.Id);
+            var s14 = svc.AddStock(f6.Id, "Vegetables", 5, new DateTime(2022, 09, 04), c5.Id);
 
             //add some dummy client data
             var cL1 = svc.AddClient("Allen", "BT45 7PL", "example@mail.com", 3, f1.Id);

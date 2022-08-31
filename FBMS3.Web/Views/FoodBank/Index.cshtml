@@ -31,11 +31,11 @@
                 <td>@f.PostCode</td>
                 <td>
 
-                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="View Foodbank Details" asp-controller="FoodBank" asp-action="Details" asp-route-id=@f.Id>View</a>
+                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="View Foodbank Details" asp-controller="FoodBank" asp-action="Details" asp-route-id=@f.Id><i class="bi bi-display"></i></a>
 
-                    <a asp-controller="FoodBank" asp-action="Edit" asp-route-id=@f.Id>Edit</a>
+                    <a asp-controller="FoodBank" asp-action="Edit" asp-route-id=@f.Id><i class="bi bi-pen"></i></a>
                     
-                    <a asp-controller="FoodBank" asp-action="Delete" asp-route-id=@f.Id>Delete</a>    
+                    <a asp-controller="FoodBank" asp-action="Delete" asp-route-id=@f.Id><i class="bi bi-trash"></i></a>    
 
                 </td>
             </tr>

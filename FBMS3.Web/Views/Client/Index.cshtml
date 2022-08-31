@@ -36,11 +36,12 @@
                 <td>@c.FoodBank.StreetName</td>
                 <td>
 
-                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="View Client Details" asp-controller="Client" asp-action="Details" asp-route-id=@c.Id>View</a>
+                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="View Client Details" asp-controller="Client" asp-action="Details" asp-route-id=@c.Id>
+                        <i class="bi bi-display"></i></a>
 
-                    <a asp-controller="Client" asp-action="Edit" asp-route-id=@c.Id>Edit</a>
+                    <a asp-controller="Client" asp-action="Edit" asp-route-id=@c.Id><i class="bi bi-pen"></i></a>
                     
-                    <a asp-controller="Client" asp-action="Delete" asp-route-id=@c.Id>Delete</a>
+                    <a asp-controller="Client" asp-action="Delete" asp-route-id=@c.Id><i class="bi bi-trash"></i></a>
                 </td>
             </tr>
 

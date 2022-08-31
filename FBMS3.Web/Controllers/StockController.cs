@@ -86,6 +86,9 @@ namespace FBMS3.Web.Controllers
         [Authorize(Roles="admin,manager,staff")]
         public IActionResult Edit(int id)
         {
+            //load the food banks and category in the view model as they are foreign keys
+            var foodbanks = service.GetFoodBanks();
+            var categorys = service.GetAllCategorys();
             //load the stock by using the service methods
             var s = service.GetStockById(id);
 
@@ -96,25 +99,54 @@ namespace FBMS3.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            var stockViewModel = new StockEditViewModel
+            {
+                FoodBanks = new SelectList(foodbanks,"Id","StreetName"),
+                Categorys = new SelectList(categorys,"Id","Description"),
+                Id = s.Id,
+                FoodBankId = s.FoodBankId,
+                Description = s.Description,
+                Quantity = s.Quantity,
+                ExpiryDate = s.ExpiryDate,
+                CategoryId = s.CategoryId
+            };
+
             //pass the stock item to the view for editing
-            return View(s);
+            return View(stockViewModel);
         }
 
         //POST - Edit stock item
         [HttpPost]
         [Authorize(Roles="admin,manager,staff")]
-        public IActionResult Edit (int id, [Bind("Id, Description, Quantity, ExpiryDate")] Stock s)
+        public IActionResult Edit ([Bind("Id,Description,Quantity,ExpiryDate,FoodBankId,CategoryId")] StockEditViewModel s)
         {
-            if(ModelState.IsValid)
+            var stock = service.GetStockById(s.Id);
+
+            if(!ModelState.IsValid || stock == null)
             {
-                service.UpdateStock(s);
-                Alert("Stock item update successfully", AlertType.info);
-
-                return RedirectToAction(nameof(Details), new { Id = s.Id});
+                //Alert the user to the error
+                Alert("There was a problem editing the stock item. Please try again", AlertType.warning);
+                //return the form for further editing
+                return View(s);
             }
+            
+            stock.FoodBankId = s.FoodBankId;
+            stock.Description = s.Description;
+            stock.Quantity = s.Quantity;
+            stock.ExpiryDate = s.ExpiryDate;
+            stock.CategoryId = s.CategoryId;
 
-            //model state not valid return the form for editing to correct the errors
-            return View(s);
+            var updated = service.UpdateStock(stock);
+
+            if(updated == null)
+            {
+                Alert("There was a problem updating the stock item. Please try again", AlertType.warning);
+                return View(s);
+            }
+            
+            Alert("Stock item updated successfully", AlertType.info);
+
+            return RedirectToAction(nameof(Details), new { Id = s.Id } );
         }
 
         [Authorize(Roles="admin,manager,staff")]

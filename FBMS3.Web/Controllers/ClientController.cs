@@ -169,9 +169,9 @@ namespace FBMS3.Web.Controllers
 
         [HttpPost]
         [Authorize(Roles="admin,manager,staff")]
-        public IActionResult DeleteConfirm(string email)
+        public IActionResult DeleteConfirm(int id)
         {
-            var c = svc.DeleteClient(email);
+            var c = svc.DeleteClient(id);
 
             Alert("Client deleted successfully", AlertType.info);
 

@@ -35,11 +35,14 @@
                 <td>@s.Quantity</td>
                 <td>@s.ExpiryDate.ToShortDateString()</td>
                 <td>
-                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="View Stock Details" asp-controller="Stock" asp-action="Details" asp-route-id=@s.Id>View</a>
+                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="View Stock Details" asp-controller="Stock" asp-action="Details" asp-route-id=@s.Id>
+                        <i class="bi bi-display"></i></a>
 
-                    <a asp-controller="Stock" asp-action="Edit" asp-route-id=@s.Id>Edit</a>
+                    <a asp-controller="Stock" asp-action="Edit" asp-route-id=@s.Id>
+                        <i class="bi bi-pen"></i></a>
                     
-                    <a asp-controller="Stock" asp-action="Delete" asp-route-id=@s.Id>Delete</a>  
+                    <a asp-controller="Stock" asp-action="Delete" asp-route-id=@s.Id>
+                        <i class="bi bi-trash"></i></a>  
                 </td>
 
             </tr>

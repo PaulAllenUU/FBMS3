@@ -8,7 +8,7 @@
 <h3 class="mb-3">List Of All Currently Registered Users</h3>
 
 <div class="my-4 d-flex flex-row justify-content-between align-items-center">  
-   <a asp-action="Create" class="btn btn-primary btn-sm">Add Food Bank</a>   
+   <a asp-action="Create" class="btn btn-primary btn-sm">Add New User</a>   
    <partial name="_Search" /> <!-- add partial to search foodbanks -->
 </div>
 
@@ -36,11 +36,11 @@
                 <td>@u.FoodBankStreetName</td>
                 <td>
                     <a data-bs-toggle="tooltip" data-bs-placement="top" title="View User Account" 
-                    asp-controller="User" asp-action="Details" asp-route-id=@u.Id>View</a>
+                    asp-controller="User" asp-action="Details" asp-route-id=@u.Id><i class="bi bi-display"></i></a>
 
-                    <a asp-controller="User" asp-action="Edit" asp-route-id=@u.Id>Edit</a>
+                    <a asp-controller="User" asp-action="Edit" asp-route-id=@u.Id><i class="bi bi-pen"></i></a>
 
-                    <a asp-controller="User" asp-action="Delete" asp-route-id=@u.Id>Delete</a>   
+                    <a asp-controller="User" asp-action="Delete" asp-route-id=@u.Id><i class="bi bi-trash"></i></a>   
 
                 </td>
             </tr>

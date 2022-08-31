@@ -110,10 +110,10 @@ namespace FBMS3.Core.Services
         Stock GetStockByDescription(string description);
 
         //get stock by expiry date
-        Stock GetStockByExpiryDate(DateOnly expiryDate);
+        Stock GetStockByExpiryDate(DateTime expiryDate);
 
         //add stock using all properties
-        Stock AddStock(int foodBankId, string description, int quantity, DateOnly expiryDate, int categoryId); 
+        Stock AddStock(int foodBankId, string description, int quantity, DateTime expiryDate, int categoryId); 
 
         //update existing stock
         Stock UpdateStock(Stock updated);
@@ -148,7 +148,7 @@ namespace FBMS3.Core.Services
 
         Client UpdateClient(Client updated);
 
-        bool DeleteClient(string email);
+        bool DeleteClient(int id);
 
         bool IsDuplicateClient(string email);
 

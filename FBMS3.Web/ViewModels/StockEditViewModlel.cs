@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FBMS3.Web.ViewModels
 {
-    public class StockCreateViewModel
+    public class StockEditViewModel
     {
+        public int Id { get; set; }
+
         public SelectList FoodBanks { get; set; }
 
         [Required(ErrorMessage = "Please select a foodbank")]

@@ -12,7 +12,7 @@ namespace FBMS3.Core.Models
 
         public string Description { get; set ; }
 
-        public DateOnly ExpiryDate { get; set; } 
+        public DateTime ExpiryDate { get; set; } 
 
         public int Quantity { get; set; }
         

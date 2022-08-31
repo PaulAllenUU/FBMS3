@@ -262,7 +262,7 @@ namespace FBMS3.Test
             var cat1 = service.AddCategory("Vegetables");
             var cat2 = service.AddCategory("Meat");
             
-            var stock = service.AddStock(foodbank.Id, "Chicken", 3, new DateOnly(2023, 04, 01), cat1.Id);
+            var stock = service.AddStock(foodbank.Id, "Chicken", 3, new DateTime(2023, 04, 01), cat1.Id);
             var client  = service.AddClient("Allen", "BT49 0ST", "admin@mail.com", 4, foodbank.Id);
 
             //assert
@@ -401,7 +401,7 @@ namespace FBMS3.Test
             var f2 = service.AddFoodBank(36, "Meadowvale", "bt61 7LK");
             var list = service.GetFoodBanks();
             var category = service.AddCategory("Fruit");
-            var s = service.AddStock(f.Id, "Apple", 4, new DateOnly(2023, 04, 01), category.Id);
+            var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01), category.Id);
 
             //act
             var check = service.CheckAllFoodBanksForStockItem(list, "Apple");
@@ -418,7 +418,7 @@ namespace FBMS3.Test
             var f2 = service.AddFoodBank(36, "Meadowvale", "bt61 7LK");
             var list = service.GetFoodBanks();
             var category = service.AddCategory("Fruit");
-            var s = service.AddStock(f.Id, "Apple", 4, new DateOnly(2023, 04, 01), category.Id);
+            var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01), category.Id);
 
             //act
             var check = service.CheckAllFoodBanksForStockItem(list, "Orange");
@@ -476,7 +476,7 @@ namespace FBMS3.Test
             //arrange
             var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
             var category = service.AddCategory("Fruit");
-            var s = service.AddStock(f.Id, "Apple", 4, new DateOnly(2023, 04, 01), category.Id);
+            var s = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01), category.Id);
 
             //act
             var get = service.GetAllStock();
@@ -492,9 +492,9 @@ namespace FBMS3.Test
             //arrange
             var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
             var category = service.AddCategory("Fruit");
-            var s1 = service.AddStock(f.Id, "Apple", 4, new DateOnly(2023, 04, 01), category.Id);
-            var s2 = service.AddStock(f.Id, "Banana", 10, new DateOnly(2023,10,09), category.Id);
-            var s3 = service.AddStock(f.Id, "Orange", 6, new DateOnly(2023, 04, 05), category.Id);
+            var s1 = service.AddStock(f.Id, "Apple", 4, new DateTime(2023, 04, 01), category.Id);
+            var s2 = service.AddStock(f.Id, "Banana", 10, new DateTime(2023,10,09), category.Id);
+            var s3 = service.AddStock(f.Id, "Orange", 6, new DateTime(2023, 04, 05), category.Id);
 
             //act
             var get = service.GetAllStock();
@@ -514,7 +514,7 @@ namespace FBMS3.Test
             var category = service.AddCategory("NonFood");
 
             //act
-            var s1 = service.AddStock(f.Id, "Toileteries", 3, new DateOnly(2023,01,01), category.Id);
+            var s1 = service.AddStock(f.Id, "Toileteries", 3, new DateTime(2023,01,01), category.Id);
 
             //assert
             Assert.True(s1.NonFood == true);
@@ -528,7 +528,7 @@ namespace FBMS3.Test
             var c5 = service.AddCategory("Vegetables");
             var c6 = service.AddCategory("Meat");
             var foodbank = service.AddFoodBank(10, "Antrim Road", "BT49 0ST");
-            var s4 = service.AddStock(foodbank.Id, "Meat", 6, new DateOnly(2023, 08, 09), c6.Id);
+            var s4 = service.AddStock(foodbank.Id, "Meat", 6, new DateTime(2023, 08, 09), c6.Id);
 
             //act
             var get = service.GetStockById(s4.Id);
@@ -560,7 +560,7 @@ namespace FBMS3.Test
             var c5 = service.AddCategory("Vegetables");
             var c6 = service.AddCategory("Meat");
             var foodbank = service.AddFoodBank(10, "Antrim Road", "BT49 0ST");
-            var s4 = service.AddStock(foodbank.Id, "Meat", 6, new DateOnly(2023, 08, 09), c6.Id);
+            var s4 = service.AddStock(foodbank.Id, "Meat", 6, new DateTime(2023, 08, 09), c6.Id);
 
             //act
             Assert.Contains(s4, foodbank.Stock);
@@ -575,7 +575,7 @@ namespace FBMS3.Test
             var c6 = service.AddCategory("Meat");
 
             //act
-            var s4 = service.AddStock(1, "Meat", 6, new DateOnly(2023, 08, 09), c6.Id);
+            var s4 = service.AddStock(1, "Meat", 6, new DateTime(2023, 08, 09), c6.Id);
 
             //assert
             Assert.Null(s4);
@@ -589,7 +589,7 @@ namespace FBMS3.Test
             var c5 = service.AddCategory("Vegetables");
             var c6 = service.AddCategory("Meat");
             var foodbank = service.AddFoodBank(10, "Antrim Road", "BT49 0ST");
-            var s4 = service.AddStock(foodbank.Id, "Meat", 6, new DateOnly(2023, 08, 09), c6.Id);
+            var s4 = service.AddStock(foodbank.Id, "Meat", 6, new DateTime(2023, 08, 09), c6.Id);
 
             //act
             var update = service.UpdateStock(s4);
@@ -704,7 +704,7 @@ namespace FBMS3.Test
             var c = service.AddClient("Allen", "BT46 8KM", "paul@yahoo.co.uk", 3, f.Id);
 
             //act
-            var delete = service.DeleteClient(c.EmailAddress);
+            var delete = service.DeleteClient(c.Id);
             
             //assert
             Assert.True(delete);
@@ -719,7 +719,7 @@ namespace FBMS3.Test
             var c = service.AddClient("Allen", "BT46 8KM", "paul@yahoo.co.uk", 3, f.Id);
 
             //act
-            var delete = service.DeleteClient("doesntexist@mail.com");
+            var delete = service.DeleteClient(2);
 
             //assert
             Assert.False(delete);
@@ -757,8 +757,8 @@ namespace FBMS3.Test
             var c1 = service.AddCategory("Carbohydrates");
             var c2 = service.AddCategory("Vegetables");
             //add items of the same category
-            var s1 = service.AddStock(f.Id, "Potato", 3, new DateOnly(2022, 10, 01), c1.Id);
-            var s2 = service.AddStock(f.Id, "Vegetables", 4, new DateOnly(2022, 10, 01), c1.Id);
+            var s1 = service.AddStock(f.Id, "Potato", 3, new DateTime(2022, 10, 01), c1.Id);
+            var s2 = service.AddStock(f.Id, "Vegetables", 4, new DateTime(2022, 10, 01), c1.Id);
 
             //act
             var parcel = service.GenerateParcelForClient(u.Id, cL1.Id, f.Id);

@@ -200,8 +200,9 @@ namespace FBMS3.Data.Services
         {
             return ctx.FoodBanks
                     //include the stock and clients that are associated with that food bank
-                     .Include(x => x.Stock)
                      .Include(x => x.Clients)
+                     .Include(x => x.Stock)
+                     .ThenInclude(x => x.Category)
                      .FirstOrDefault( x=> x.Id == id);
         }
 
@@ -337,7 +338,7 @@ namespace FBMS3.Data.Services
             return ctx.Stock.FirstOrDefault ( x => x.Description.Equals(description));
         }
 
-        public Stock GetStockByExpiryDate(DateOnly expiryDate)
+        public Stock GetStockByExpiryDate(DateTime expiryDate)
         {
             return ctx.Stock.FirstOrDefault ( x => x.ExpiryDate == expiryDate);
         }
@@ -363,7 +364,7 @@ namespace FBMS3.Data.Services
 
         }
 
-        public Stock AddStock(int foodBankId, string description, int quantity, DateOnly expiryDate, int categoryId)
+        public Stock AddStock(int foodBankId, string description, int quantity, DateTime expiryDate, int categoryId)
         {
             //the food bank id is the foreign key so need to check it exists
             var foodbank = GetFoodBankById(foodBankId);
@@ -434,6 +435,7 @@ namespace FBMS3.Data.Services
 
             s.NonFood = updated.NonFood;
             s.ExpiryDate = updated.ExpiryDate;
+            s.CategoryId = updated.CategoryId;
 
             //save changes and return the stock item just updated
             ctx.SaveChanges();
@@ -535,8 +537,6 @@ namespace FBMS3.Data.Services
             {
                 return null;
             }
-             
-            var listOfStock = foodbank.Stock.ToList();
 
             //add all properties
             var p = new Parcel
@@ -546,7 +546,6 @@ namespace FBMS3.Data.Services
                FoodBankId = foodbank.Id,
                Items = foodbank.Stock
             };
-
             
             ctx.Parcels.Add(p);
             ctx.SaveChanges();
@@ -872,10 +871,10 @@ namespace FBMS3.Data.Services
         
         }
 
-        public bool DeleteClient(string email)
+        public bool DeleteClient(int id)
         {
             //get the client by id to ensure they are already there
-            var client = GetClientByEmailAddress(email);
+            var client = GetClientById(id);
             
             if(client == null)
             {

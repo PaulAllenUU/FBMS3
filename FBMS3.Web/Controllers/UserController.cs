@@ -65,6 +65,19 @@ namespace FBMS3.Web.Controllers
             return View(ucvm);
         }
 
+        public IActionResult Create()
+        {
+            var foodbanks = _svc.GetFoodBanks();
+
+            var ucvm = new UserRegisterViewModel
+            {
+                FoodBanks = new SelectList(foodbanks,"Id","StreetName")
+            };
+
+            return View(ucvm);
+        }
+        [Authorize(Roles = "admin")]
+
         public IActionResult Index(UserSearchViewModel u)
         {
             u.Users = _svc.SearchUsers(u.Query);
@@ -93,6 +106,12 @@ namespace FBMS3.Web.Controllers
             var foodbanks = _svc.GetFoodBanks();
            // use BaseClass helper method to retrieve Id of signed in user 
             var user = _svc.GetUser(id);
+
+            if(user == null || foodbanks == null) 
+            { 
+                return null; 
+            }
+
             var userViewModel = new UserProfileViewModel { 
 
                 FoodBanks = new SelectList(foodbanks, "Id","StreetName"),
@@ -134,7 +153,7 @@ namespace FBMS3.Web.Controllers
                 return View(u);
             }
 
-            Alert("Successfully Updated Account Details", AlertType.info);
+            Alert($"Successfully updated the account details for {user.FirstName}", AlertType.info);
 
 
             return RedirectToAction(nameof(Index));
