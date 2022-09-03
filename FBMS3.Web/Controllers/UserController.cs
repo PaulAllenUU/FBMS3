@@ -65,6 +65,38 @@ namespace FBMS3.Web.Controllers
             return View(ucvm);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        //Register a new user and bind the below attributes to that user 
+        public IActionResult Register([Bind("FirstName,SecondName,Email,Password,PasswordConfirm,FoodBankId,Role")] UserRegisterViewModel m)       
+        {
+            //pass the properties from the SelectList in again in case of error
+            var foodbanks = _svc.GetFoodBanks();
+
+            //if not passed in this causes an error when the form is passed in the 2nd name
+            var ucvm = new UserRegisterViewModel
+            {
+                FoodBanks = new SelectList(foodbanks,"Id","StreetName")
+            };
+
+            if (!ModelState.IsValid)
+            {
+                //ensure the view model above is returned so that the foreign key select list property appears in case of first time error
+                return View(ucvm);
+            }
+            // add user via service
+            var user = _svc.AddUser(m.FirstName, m.SecondName, m.Email,m.Password, m.FoodBankId, m.Role);
+            // check if error adding user and display warning
+            if (user == null) {
+                Alert("There was a problem Registering. Please try again", AlertType.warning);
+                return View(ucvm);
+            }
+
+            Alert("Successfully Registered. Now login", AlertType.info);
+
+            return RedirectToAction(nameof(Login));
+        }
+
         public IActionResult Create()
         {
             var foodbanks = _svc.GetFoodBanks();
@@ -159,28 +191,6 @@ namespace FBMS3.Web.Controllers
             return RedirectToAction(nameof(Index));
 
         } 
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        //Register a new user and bind the below attributes to that user 
-        public IActionResult Register([Bind("FirstName,SecondName,Email,Password,PasswordConfirm,FoodBankId,Role")] UserRegisterViewModel m)       
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(m);
-            }
-            // add user via service
-            var user = _svc.AddUser(m.FirstName, m.SecondName, m.Email,m.Password, m.FoodBankId, m.Role);
-            // check if error adding user and display warning
-            if (user == null) {
-                Alert("There was a problem Registering. Please try again", AlertType.warning);
-                return View(m);
-            }
-
-            Alert("Successfully Registered. Now login", AlertType.info);
-
-            return RedirectToAction(nameof(Login));
-        }
 
         [Authorize]
         public IActionResult UpdateProfile()

@@ -53,14 +53,14 @@ namespace FBMS3.Web.Controllers
 
         }
 
-        [Authorize(Roles="admin,manager")]
+        [Authorize(Roles="admin")]
         public IActionResult Create()
         {
             //display the a blank form to the view so user can create a food bank
             return View();
         }
         
-        [Authorize(Roles="admin,manager")]
+        [Authorize(Roles="admin")]
         [HttpPost]
         public IActionResult Create([Bind("StreetNumber, StreetName, PostCode")] FoodBank f)
         {

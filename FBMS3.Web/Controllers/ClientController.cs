@@ -69,9 +69,16 @@ namespace FBMS3.Web.Controllers
         [Authorize(Roles="admin,manager,staff")]
         public IActionResult Create([Bind("SecondName,PostCode,EmailAddress,NoOfPeople,FoodBankId")] ClientCreateViewModel c)
         {
+            var foodbanks = svc.GetFoodBanks();
+
+            var ccvm = new ClientCreateViewModel
+            {
+                FoodBanks = new SelectList(foodbanks, "Id", "StreetName")
+            };
+
             if(!ModelState.IsValid)
             {
-                return View(c);
+                return View(ccvm);
             }
 
             //add the client via the methods in the service
@@ -81,7 +88,7 @@ namespace FBMS3.Web.Controllers
                 {
                     Alert("There was a problem registering this client. Please try again", AlertType.warning);
 
-                    return View(c);
+                    return View(ccvm);
                 }
 
                 //call duplicated client method to see if the e mail addres is already in use
@@ -90,7 +97,7 @@ namespace FBMS3.Web.Controllers
                     Alert($"The email address {c.EmailAddress} is already in use");
                 }
 
-                Alert("Client successfully added, please click next to view their food bank and parcel details");
+                Alert($"{client.SecondName} successfully added to {client.FoodBankStreetName}, please click next to view their food bank and parcel details");
                 
 
                 //change this to take the user to the assignment of the food bank and food parcel

@@ -93,6 +93,7 @@ namespace FBMS3.Data.Services
             {
                 return null;
             }
+
             // update the details of the User retrieved and save
             User.FirstName = updated.FirstName;
             User.SecondName = updated.SecondName;
@@ -147,6 +148,11 @@ namespace FBMS3.Data.Services
         public bool IsEmailAvailable(string email, int userId)
         {
             return ctx.Users.FirstOrDefault(u => u.Email == email && u.Id != userId) == null;
+        }
+
+        public bool IsClientEmailAvailable(string email, int clientId)
+        {
+            return ctx.Clients.FirstOrDefault(u => u.EmailAddress == email && u.Id != clientId) == null;
         }
 
         public IList<User> GetUsersQuery(Func<User,bool> q)
@@ -858,6 +864,11 @@ namespace FBMS3.Data.Services
             var client = GetClientById(updated.Id);
             
             if(client == null) { return null; }
+
+            if (!IsClientEmailAvailable(updated.EmailAddress, updated.Id))
+            {
+                return null;
+            }
 
             //update the details with all propeties
             client.SecondName = updated.SecondName;

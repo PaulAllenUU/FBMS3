@@ -1,10 +1,11 @@
 @model Client
 
-<partial name="_Breadcrumbs" model=@(new [] 
-{ 
-    ("/", "Home"), ("/stock", "Stock"), ("","Close") 
-
-})>
+<partial name="_BreadCrumbs" model=@(new [] {
+    ("/","Home"),
+    ("/client","Clients"),
+    ($"/client/details/{Model.Id}",$"{Model.Id}"),
+    ("","Details")
+}) />
 
 <div class="col card rounded shadow-lg p-4">
 

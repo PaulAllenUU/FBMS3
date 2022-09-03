@@ -25,6 +25,8 @@ namespace FBMS3.Core.Services
         //check if a users e mail address is available
         bool IsEmailAvailable(string email, int userId);
 
+        bool IsClientEmailAvailable(string email, int userId);
+
         //add a user to the database
         User AddUser(string firstName, string secondName, string email, string password, int foodBankId, Role role);
 

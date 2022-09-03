@@ -43,6 +43,8 @@ namespace FBMS3.Core.Models
         //foreign key to the foodbank table
         public FoodBank FoodBank { get; set; }
 
+        public string FoodBankStreetName => FoodBank?.StreetName;
+
         //navigation properto to parcel
         public Parcel Parcel { get; set; }
 

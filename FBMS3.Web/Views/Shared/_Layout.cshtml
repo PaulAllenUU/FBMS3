@@ -18,39 +18,74 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse d-sm-inline-flex" id="navbarNavAltMarkup">
-
-                    <!--                   
-                    <div class="navbar-nav flex-grow-1">
-                        <a class="nav-link text-dark active" asp-controller="Home" asp-action="Index">Home</a
-                        <a class="nav-link text-dark" asp-controller="FoodBank" asp-action="Index">Food Bank Management</a>
-                        <a class="nav-link text-dark" asp-controller="Stock" asp-action="Index">Stock Management</a>     
-                        <a class="nav-link text-dark" asp-controller="Home" asp-action="Secure">Secure</a>
-                    </div>-->         
+                <div class="collapse navbar-collapse d-sm-inline-flex" id="navbarNavAltMarkup">      
 
                     <!-- AMC The login partial is added here for authentication flex-sm-row-reverse-->
                     <partial name="_LoginPartial" />      
 
                     <!--Service drop down menu for food banks, stock and recipes-->
                     <div class="navbar-nav flex-grow-1">
+
+                    <!--User can only gain access to navigation when they are authenticated-->
+                    @if(User.Identity.IsAuthenticated)
+                    {
+                        <!-- Only admin and user have acess to user navigation -->
+                        @if(User.HasOneOfRoles("admin,manager"))
+                        {
+                            <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" 
+                                    role="button" aria-expanded="false">Users</a>
+                                    <ul class="dropdown-menu">
+                                        <li> <a class="dropdown-item" asp-controller="User" asp-action="Create">Add</a></li>
+
+                                        @if(User.IsInRole("admin"))
+                                        {
+                                        <!-- Admin can view all where manager users can only add -->
+                                        <li> <a class="dropdown-item" asp-controller="User" asp-action="Index">View All</a></li>
+                                        }
+                                        
+                                    </ul>
+                            </li>
+                        
+
+                            <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" 
+                                    role="button" aria-expanded="false">Food Banks</a>
+                                    <ul class="dropdown-menu">
+                                        <li> <a class="dropdown-item" asp-controller="FoodBank" asp-action="Create">Add</a></li>
+                                        <li> <a class="dropdown-item" asp-controller="FoodBank" asp-action="Index">View All</a></li>
+                                        
+                                    </ul>
+                            </li>
+
+                        }
                         <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" 
-                                role="button" aria-expanded="false">Services</a>
+                                role="button" aria-expanded="false">Stock</a>
                                 <ul class="dropdown-menu">
-                                    <li> <a class="dropdown-item" asp-controller="FoodBank" asp-action="Index">Food Bank Management</a></li>
-                                    <li> <a class="dropdown-item" asp-controller="Stock" asp-action="Index">Stock Management</a></li>
-                                    <li> <a class="dropdown-item" asp-controller="Recipe" asp-action="Index">Recipe Management</a></li>
-                                    
+                                    <li> <a class="dropdown-item" asp-controller="Stock" asp-action="Create">Add</a></li>
+                                    <li> <a class="dropdown-item" asp-controller="Stock" asp-action="Index">View All</a></li>
                                 </ul>
                         </li>
-                        <a class="nav-link text-dark" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        <a class="nav-link text-dark" asp-controller="Parcel" asp-action="Index">Parcels</a>
-                        <a class="nav-link text-dark" asp-controller="Client" asp-action="Index">Clients</a>
-                        <a class="nav-link text-dark" asp-controller="Queue" asp-action="Index">The Queue</a>
 
-                        <a class="dropdown-item" asp-controller="User" asp-action="Index">User Account Management</a></li>
+                        <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" 
+                                role="button" aria-expanded="false">Clients</a>
+                                <ul class="dropdown-menu">
+                                    <li> <a class="dropdown-item" asp-controller="Client" asp-action="Create">Add</a></li>
+                                    <li> <a class="dropdown-item" asp-controller="Client" asp-action="Index">View All</a></li>
+                                </ul>
+                        </li>
 
-
+                        <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" 
+                                role="button" aria-expanded="false">Parcels</a>
+                                <ul class="dropdown-menu">
+                                    <li> <a class="dropdown-item" asp-controller="Parcel" asp-action="Create">Add</a></li>
+                                    <li> <a class="dropdown-item" asp-controller="Parcel" asp-action="Index">View All</a></li>
+                                </ul>
+                        </li>
+                    }
                         
                     </div>
 

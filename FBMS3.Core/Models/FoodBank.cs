@@ -11,10 +11,13 @@ namespace FBMS3.Core.Models
         //set suitable properties for each FoodBank location
         public int Id { get; set; }
 
+        [Required(ErrorMessage ="Street number is required")]
         public int StreetNumber { get; set; }
 
+        [Required(ErrorMessage ="Street name is required")]
         public string StreetName { get; set; }
 
+        [Required(ErrorMessage = "Post code is required")]
         public string PostCode { get; set; }
 
         //keep track of number of clients that are currently registered with the food bank

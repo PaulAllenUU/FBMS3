@@ -27,7 +27,7 @@ namespace FBMS3.Web.ViewModels
         public SelectList FoodBanks { get; set ; }
 
         [Display(Name = "Please confirm which food bank you are working at")]
-        [Required(ErrorMessage = "Password is a required field")]
+        [Required(ErrorMessage = "Food bank is a required field")]
         public int FoodBankId { get; set; }
 
         [Required]

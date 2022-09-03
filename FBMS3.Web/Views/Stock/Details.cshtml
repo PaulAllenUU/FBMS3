@@ -1,9 +1,11 @@
 @model Stock
 
-<partial name="_Breadcrumbs" model=@(new [] 
-{ 
-    ("/", "Home"), ("/stock", "Stock"), ("","Close") 
-})>
+<partial name="_BreadCrumbs" model=@(new [] {
+    ("/","Home"),
+    ("/stock","Stock"),
+    ($"/stock/details/{Model.Id}",$"{Model.Id}"),
+    ("","Details")
+}) />
 
 <div class="col card rounded shadow-lg p-4">
 
@@ -32,8 +34,8 @@
         <dt class="col-4">Carbohydrate</dt>
         <dd class="col-8">@Model.Carbohydrate</dd>
 
-        <dt class="col-4">Food Bank Id</dt>
-        <dd class="col-8">@Model.FoodBankId</dd>
+        <dt class="col-4">Location</dt>
+        <dd class="col-8">@Model.FoodBank.StreetName</dd>
     </dl>
 
     <div class="mt-4"> 

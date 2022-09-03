@@ -21,5 +21,6 @@ namespace FBMS3.Web.ViewModels
 
         [Required(ErrorMessage = "Please select a category for your stock")]
         public int CategoryId { get; set; }
+
     }
 }

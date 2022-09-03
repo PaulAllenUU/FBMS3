@@ -60,16 +60,28 @@ namespace FBMS3.Web.Controllers
         [Authorize(Roles="admin,manager,staff")]
         public IActionResult Create(StockCreateViewModel svm)
         {
+            //view model properties need to be included in case they are not selected in the first form
+
+            var foodbanks = service.GetFoodBanks();
+            var categorys = service.GetAllCategorys();
+
+            //populate viewmodel stock select list prperty
+            var scvm = new StockCreateViewModel
+            {
+                FoodBanks = new SelectList(foodbanks,"Id","StreetName"),
+                Categorys = new SelectList(categorys, "Id", "Description")
+            };
+
             if(ModelState.IsValid)
             {
                 service.AddStock(svm.FoodBankId, svm.Description, svm.Quantity, svm.ExpiryDate, svm.CategoryId);
 
-                Alert($"{svm.Quantity} of {svm.Description} added to food bank no. {svm.FoodBankId}");
+                Alert($"{svm.Quantity} {svm.Description} added to food bank no. {svm.FoodBankId}");
                 return RedirectToAction(nameof(Index));
             }
 
-            //in case of error re display the form for editing
-            return View(svm);
+            //in case of error re display the form which includes the view model for re editing
+            return View(scvm);
         }
 
         //GET - Display the index page with all of the stock currently
