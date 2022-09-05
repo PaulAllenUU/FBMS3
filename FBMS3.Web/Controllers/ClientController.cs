@@ -185,5 +185,40 @@ namespace FBMS3.Web.Controllers
             //redirect to the index view of all of the clients
             return RedirectToAction(nameof(Index));
         }
+
+        [Authorize(Roles="admin,manager,staff")]
+        public IActionResult ParcelCreate(int id)
+        {
+            //retreive each of the entities required
+            var c = svc.GetClientById(id);
+
+
+            //if the client is null then return null
+            if(c == null)
+            {
+                Alert("Could not find client, please try again", AlertType.warning);
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles="admin,manager,staff")]
+        public IActionResult ParcelCreate([Bind("ParcelId,StockId,ClientId,Quantity")] ParcelItemViewModel pvm)
+        {
+
+            if(ModelState.IsValid)
+            {
+                svc.AddItemToParcel(pvm.ParcelId, pvm.StockId, pvm.Quantity);
+                return RedirectToAction(nameof(Details));
+
+            }
+
+            //pass the view model back into the form in case of error
+            return View(pvm);
+
+        }
+
     }
 }

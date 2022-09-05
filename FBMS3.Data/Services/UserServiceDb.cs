@@ -425,6 +425,14 @@ namespace FBMS3.Data.Services
             return s;
         }
 
+        public IList<Stock> GetStockAtFoodBank(int foodBankId)
+        {
+            var foodbank = GetFoodBankById(foodBankId);
+            var stockinFoodBank = foodbank.Stock;
+
+            return stockinFoodBank;
+        }
+
 
         public Stock UpdateStock(Stock updated)
         {
@@ -461,6 +469,7 @@ namespace FBMS3.Data.Services
             ctx.SaveChanges();
             return true;
         }
+
 
         public IList<Stock> GetAllNonFoodItems(bool nonFood)
         {
@@ -531,7 +540,90 @@ namespace FBMS3.Data.Services
         }
 
         //----Begin Parcel Management Methods
-        public Parcel GenerateParcelForClient(int userId, int clientId, int foodBankId)
+        public Parcel AddParcel(int clientId, int userId, int foodbankId)
+        {
+            var u = GetUser(userId);
+            //check all the parameters passed in are not null
+            var c = GetClientById(clientId);
+            //if any are null then return return null
+            if(c == null || u == null)
+            {
+                return null;
+            }
+
+            //create the empty parcel with the foreign key properties set
+            var p = new Parcel
+            {
+                UserId = userId,
+                ClientId = clientId,
+                FoodBankId = foodbankId
+            };
+            
+            //add the new parcel item to the database
+            ctx.Parcels.Add(p);
+            //save the changes
+            ctx.SaveChanges();
+            //return the newly created parcel
+            return p;
+
+        }
+
+        public ParcelItem AddItemToParcel(int parcelId, int stockId, int quantity)
+        {
+            //check the parcel does not already contain stock with the stock id passed in
+            var pi = ctx.ParcelItems
+                        .FirstOrDefault(x => x.ParcelId == parcelId &&
+                                             x.StockId == stockId);
+            
+            //if these are not null then return null 
+            if(pi != null) { return null; }
+
+            //locate the parcel and the stock item
+            var p = ctx.Parcels.FirstOrDefault(p => p.Id == parcelId);
+            var s = ctx.Stock.FirstOrDefault(s => s.Id == stockId);
+            //check that the food bank we are taking from has the stock in it or else return null
+
+            //if either are null then return null
+            if(p == null || s == null) { return null ;}
+
+            //create the parcel item and add to database
+            var npi = new ParcelItem { 
+                                        ParcelId = parcelId,
+                                        StockId = stockId,
+                                        Quantity = quantity };
+
+            
+            //add the new parcel item to the database
+            ctx.ParcelItems.Add(npi);
+            
+            //save changes and return the new parcel item
+            ctx.SaveChanges();
+            return npi;
+
+        }
+
+        /*public ParcelItem AddManyItemsToParcel(int parcelId, int stockId, int quantity)
+        {
+            //check the parcel does not already contain stock with the stock id passed in
+            var pi = ctx.ParcelItems
+                        .FirstOrDefault(x => x.ParcelId == parcelId &&
+                                             x.StockId == stockId);
+
+            //get all food banks
+            var foodbanks = GetFoodBanks();
+
+            //get available stock that is in the food bank of the parcel
+            var availablestock = ctx.Parcels.Where(x => x.FoodBankId == foodbanks.)
+
+            //if these are not null then return null 
+            if(pi != null) { return null; }
+
+            IList<ParcelItem> stockItemList = new List<ParcelItem>();
+
+        }*/
+
+
+       /* public Parcel GenerateParcelForClient(int userId, int clientId, int foodBankId, int parcelitem)
         {
             //get the 3 above parameters by their id method and check if null
             var user = GetUser(userId);
@@ -550,23 +642,31 @@ namespace FBMS3.Data.Services
                UserId = user.Id,
                ClientId = client.Id,
                FoodBankId = foodbank.Id,
-               Items = foodbank.Stock
+               Items = 
             };
             
             ctx.Parcels.Add(p);
             ctx.SaveChanges();
             return p;
 
-        }
+        }*/
+
+        //parcel management methods
+
+
+
 
         public IList<Parcel> GetAllParcels()
         {
 
             var parcels = ctx.Parcels
-                             .Include(x => x.User)
-                             .Include(x => x.FoodBank)
-                             .Include(x => x.Client)
-                             .Include( x => x.Items);
+                             .Include(p => p.User)
+                             .Include(p => p.FoodBank)
+                             .Include(p => p.Client)
+                             //get the parcelitems
+                             .Include(p => p.Items)
+                             //for each parcel item get the item
+                             .ThenInclude(pi => pi.Item);
             
             return parcels.ToList();
         }
@@ -574,15 +674,16 @@ namespace FBMS3.Data.Services
         public Parcel GetParcelById(int id)
         {
             return ctx.Parcels
-                      .Include(x => x.Client)
-                      .Include(x => x.FoodBank)
-                      .Include(x => x.User)
-                      .Include(x => x.Items)
+                      .Include(p => p.Client)
+                      .Include(p => p.FoodBank)
+                      .Include(p => p.User)
+                      .Include(p => p.Items)
+                      .ThenInclude(pi => pi.Item)
                       .FirstOrDefault(x => x.Id == id);
         }
 
         //add a recipe checking that is doesnt already exist using title
-        public Recipe AddRecipe(string title, int noOfIngredients, int cookingTime)
+        /*public Recipe AddRecipe(string title, int noOfIngredients, int cookingTime)
         {
             var existing = GetRecipeByTitle(title);
 
@@ -605,7 +706,7 @@ namespace FBMS3.Data.Services
             return recipe;
         }
 
-        public bool DeleteRecipe(int id)
+        /*public bool DeleteRecipe(int id)
         {
             //check the recipe exists by loading it into memory using the service method previously created
             var recipe = GetRecipeById(id);
@@ -621,7 +722,7 @@ namespace FBMS3.Data.Services
             return true;
         }
 
-        public bool IsRecipeVegetarian(RecipeStock recipeStock)
+        /*public bool IsRecipeVegetarian(RecipeStock recipeStock)
         {
             //check the recipe exists through the get recipe by title method
             var exists = GetRecipeStockById(recipeStock.Id);
@@ -686,7 +787,7 @@ namespace FBMS3.Data.Services
             return ctx.Recipes.ToList();
         }
 
-        public RecipeStock AddStockItemToRecipe(int stockId, int recipeId, int stockItemQuantity)
+        /*public RecipeStock AddStockItemToRecipe(int stockId, int recipeId, int stockItemQuantity)
         {
             //check that the recipe stock already exists and return null if found
             var rs = ctx.RecipeStock
@@ -731,9 +832,9 @@ namespace FBMS3.Data.Services
             ctx.RecipeStock.Remove(rs);
             ctx.SaveChanges();
             return true;
-        }
+        }*/
 
-        public IList<Recipe> GetAvailableRecipesForStockItem(int id)
+        /*public IList<Recipe> GetAvailableRecipesForStockItem(int id)
         {
             var stockitem = GetStockById(id);
             var rs = stockitem.RecipeStock.ToList();
@@ -768,7 +869,7 @@ namespace FBMS3.Data.Services
         }
 
         //method to determine if recipe already exists with the same title
-        public bool IsDuplicateRecipe(string title)
+        /*public bool IsDuplicateRecipe(string title)
         {
             //get all of the existing recipes using the service method
             var recipes = GetAllRecipes();
@@ -788,7 +889,7 @@ namespace FBMS3.Data.Services
 
             //if none of the elements in the array contain the same title then return false;
             return false;
-        }
+        }*/
 
         public Client AddClient(string secondName, string postCode, string email, int noOfPeople, int foodBankId)
         {
@@ -828,18 +929,10 @@ namespace FBMS3.Data.Services
 
         }
        
-        public Queue<Client> GetAllClients()
+        public IList<Client> GetAllClients()
         {
-            //get the clients from the DbSet
-            var clients = ctx.Clients;
+            return ctx.Clients.ToList();
 
-            foreach(var c in clients)
-            {
-                TheQueue.Enqueue(c);
-            }
-
-            //return the queue
-            return TheQueue;
         }
 
         public Client GetClientById(int id)
@@ -942,6 +1035,14 @@ namespace FBMS3.Data.Services
         public IList<Category> GetAllCategorys()
         {
             return ctx.Categorys.ToList();
+        }
+
+        public IList<String> GetAllCategoryDescriptions()
+        {
+            var categoryDescriptions = ctx.Categorys
+                                         .Select(d => d.Description).ToList();
+            
+            return categoryDescriptions;
         }
 
         /*public Parcel GenerateParcelForClient(Queue<Client> clients, int FoodBankId)
@@ -1075,6 +1176,20 @@ namespace FBMS3.Data.Services
             }
             
             return found;
+        }
+
+        public ParcelItem GetParcelItemById(int id)
+        {
+            return ctx.ParcelItems.FirstOrDefault(pi => pi.Id == id);
+        }
+
+        public IList<Stock> GetAvailableStockForParcel(int id)
+        {
+            var parcel = GetParcelById(id);
+            var pi = parcel.Items.ToList();
+            var stock = ctx.Stock.ToList();
+
+            return stock.Where(s => pi.Any(x => x.ParcelId != s.Id)).ToList();
         }
 
 

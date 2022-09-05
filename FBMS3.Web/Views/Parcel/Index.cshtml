@@ -6,11 +6,10 @@
 
 <thead>
         <tr>
-            <th>Staff Member</th>
-            <th>Quantity of Items</th>
+            <th>Parcel Added By</th>
             <th>Client Family Name</th>
-            <th>Food Bank Location</th>
-            <th>Stock Included</th>
+            <th>No. Of People</th>
+            <th>Location</th>
             
         </tr>
     </thead>
@@ -21,14 +20,9 @@
         {
             <tr>
                 <td>@p.User.FirstName</td>
-                <td>@p.Quantity</td>
                 <td>@p.Client.SecondName</td>
+                <td>@p.Client.NoOfPeople</td>
                 <td>@p.FoodBank.StreetName</td>
-                <td>
-                    @foreach (var item in p.Items)
-                    {
-                        @item.Description<br/>
-                    }</td>
                 
                 <td>
 

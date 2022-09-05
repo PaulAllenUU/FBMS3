@@ -1,0 +1,36 @@
+@if(Model.Items.Count == 0)
+{
+    <h5>There is no stock in this parcel , please add some </h5>
+}
+else
+{
+    <table class="card rounded shadow">
+
+        <thead>
+            <tr>
+
+                <th class="w-75">Items In Parcel</th>
+                <th>Item Description</th>
+                <th>Quantity</th>
+
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+            @foreach (var pi in Model.Items)
+            {
+                <tr>
+
+                    <td>@pi.Item.Description</td>
+                    <td>@pi.Item.Quantity</td>
+
+                </tr>
+                
+            }
+        </tbody>
+    </table>
+
+
+}

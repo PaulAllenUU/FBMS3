@@ -45,13 +45,8 @@ namespace FBMS3.Core.Models
 
         public string FoodBankStreetName => FoodBank?.StreetName;
 
-        //navigation properto to parcel
-        public Parcel Parcel { get; set; }
-
-        //each item of stock will have one and only parcel
-        public Parcel ParcelId { get; set; }
-
-        //Relationship M:N Stock - Recipes
-        public IList<RecipeStock> RecipeStock { get; set; } = new List<RecipeStock>();
+        //list of relationships to the bridging table for parcel and item
+        public IList<ParcelItem> Items { get; set; } = new List<ParcelItem>();
+        
     }
 }

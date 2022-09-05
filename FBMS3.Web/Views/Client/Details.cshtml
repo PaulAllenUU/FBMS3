@@ -30,17 +30,27 @@
     
     </dl>
 
-    <div class="mt-4"> 
-        <a class="btn btn-link" asp-action="Index">Cancel</a>
-    
-    </div>
+    <div class="mt-4 d-flex flex-row justify-content-between">
+        <div>
 
-    <div>
+            <div class="mt-4"> 
+                <a class="btn btn-link" asp-action="Index">Cancel</a>
+            
+            </div>
 
-        <button type="button" class="btn btn-sm btn-danger"
-        data-bs-toggle="modal" data-bs-target="#deleteClientModal">
-        <i class="bi bi-trash"></i> Delete
-        </button>
+            <a asp-action="ParcelCreate" asp-route-id=@Model.Id  class="me-3">
+                <i class="bi bi-plus"></i> Add Parcel
+                </a> 
+            
+            <div>
+                <button type="button" class="btn btn-sm btn-danger"
+                data-bs-toggle="modal" data-bs-target="#deleteClientModal">
+                <i class="bi bi-trash"></i> Delete
+                </button>
+                
+            </div>
+
+        </div>
 
     </div>
 

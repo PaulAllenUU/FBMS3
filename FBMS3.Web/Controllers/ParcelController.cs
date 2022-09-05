@@ -39,7 +39,7 @@ namespace FBMS3.Web.Controllers
 
             if(p == null)
             {
-                Alert($"Parcel {id} not found", AlertType.warning);
+                //Alert($"Parcel {id} not found", AlertType.warning);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -48,22 +48,75 @@ namespace FBMS3.Web.Controllers
 
         //pass in the empty form to generate the parcel
         [Authorize(Roles="admin,manager,staff")]
-        public IActionResult Create()
+        public IActionResult Create(int userId)
         {
-            return View();
+            var clients = svc.GetAllClients();
+            var users = svc.GetUsers();
+            var foodbanks = svc.GetFoodBanks();
+
+            var pcvm = new ParcelCreateViewModel
+            {
+               Clients = new SelectList(clients,"Id","SecondName"),
+               Users = new SelectList(users,"Id","FirstName"),
+               FoodBanks = new SelectList(foodbanks,"Id","StreetName")
+            };
+
+            return View(pcvm);
         }
 
         [HttpPost]
         [Authorize(Roles="admin,manager,staff")]
-        public IActionResult Create([Bind("UserId, ClientId, FoodBankId, NoOfPeople")] Parcel p)
+        public IActionResult Create(ParcelCreateViewModel pcvm)
+        {
+            var clients = svc.GetAllClients();
+        
+
+            if(ModelState.IsValid)
+            {
+                svc.AddParcel(pcvm.ClientId, pcvm.UserId, pcvm.FoodBankId);
+
+                Alert($"Parcel added successfully for client {pcvm.ClientId}");
+                return RedirectToAction(nameof(Details));
+            }
+
+            return View(pcvm);
+        }
+
+        public IActionResult ParcelFill(int id)
+        {
+            var items = svc.GetAllStock();
+            var parcel = svc.GetParcelById(id);
+
+            var pvm = new ParcelItemViewModel
+            {
+                Items = new SelectList(items,"Id","Description"),
+                ParcelId = id
+            };
+
+            return View(pvm);
+        }
+
+        [HttpPost]
+        [Authorize(Roles ="admin,manager,staff")]
+        public IActionResult ParcelFill([Bind("ParcelId,StockId,Quantity")] ParcelItemViewModel pivm)
         {
             if(ModelState.IsValid)
             {
-                p = svc.GenerateParcelForClient(p.UserId, p.ClientId, p.FoodBankId);
+               var parcelitem = svc.AddItemToParcel(pivm.ParcelId, pivm.StockId, pivm.Quantity);
+               Alert($"Item successfully added to parcel {pivm.ParcelId}", AlertType.info);
+
+               return RedirectToAction(nameof(Details), new { Id = pivm.ParcelId });
             }
 
-            return View(p);
+            var items = svc.GetAllStock();
+            var pvm = new ParcelItemViewModel
+            {
+                Items = new SelectList(items,"Id","Description"),
+            };
 
+            Alert("Something went wrong please try again");
+            return View(pvm);
+            
         }
     }
 }

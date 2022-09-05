@@ -1,5 +1,5 @@
 
-using Microsoft.AspNetCore.Mvc;
+/*using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -46,4 +46,4 @@ namespace FBMS3.Web.Controllers
 
 
     }
-}
+}*/

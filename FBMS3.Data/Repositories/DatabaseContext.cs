@@ -24,7 +24,7 @@ namespace FBMS3.Data.Repositories
         public DbSet<Recipe> Recipes { get; set; }
 
         //configure the Db set for Recipe Ingredients
-        public DbSet<RecipeStock> RecipeStock { get; set; }
+        public DbSet<ParcelItem> ParcelItems { get; set; }
 
         //congfigure the dbSet for Clients - entity which are added when they come to the food bank
         public DbSet<Client> Clients { get; set; }
@@ -40,14 +40,13 @@ namespace FBMS3.Data.Repositories
         // FBMS3 configured to allow use of MySql and Postgres
         // ideally connections strings should be stored in appsettings.json
 
-        //manually map the relationship between parcel and stock
-        //one parcel has many items of stock with stock having one parcel
+        //create the composite key for the parcelitem bridging table
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Stock>()
-                        .HasOne(p => p.Parcel)
-                        .WithMany( b => b.Items);
+            modelBuilder.Entity<ParcelItem>()
+                        .HasKey( x => new { x.ParcelId, x.StockId });
         }
+       
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

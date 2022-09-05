@@ -105,6 +105,8 @@ namespace FBMS3.Core.Services
         //get stock by id - id passed in as parameter from the user
         Stock GetStockById(int id);
 
+        IList<Stock> GetStockAtFoodBank(int foodBankId);
+
         //get stock available at foodbank
         IList<Stock> GetAvailableStockAtFoodBank(int id);
 
@@ -140,7 +142,7 @@ namespace FBMS3.Core.Services
         //method that will remove someone from the queue
         void RemoveClientFromTheQueue();
 
-        Queue<Client> GetAllClients();
+        IList<Client> GetAllClients();
 
         IList<Client> SearchClients (string query);
 
@@ -155,13 +157,20 @@ namespace FBMS3.Core.Services
         bool IsDuplicateClient(string email);
 
         //--------Begin Parcel Management Methods---------///
+        Parcel AddParcel(int clientId, int userId, int foodbankId);
+
+        ParcelItem AddItemToParcel(int parcelId, int stockId, int quantity);
+
+        ParcelItem GetParcelItemById(int id);
+
+        IList<Stock> GetAvailableStockForParcel(int id);
     
 
-        //-------Begin Category Management Methods
+        //-------Begin Category Management 
        IList<Category> GetAllCategorys();
 
        //----------Begin Parcel Management Methodds------//
-       Parcel GenerateParcelForClient(int userId, int clientId, int foodBankId);
+       //Parcel GenerateParcelForClient(int userId, int clientId, int foodBankId);
 
        IList<Parcel> GetAllParcels();
 
@@ -170,7 +179,7 @@ namespace FBMS3.Core.Services
         //--------Begin Recipe Management Methods------//
 
         //add recipe to the database
-        Recipe AddRecipe(string title, int noOfIngredients, int cookingTime);
+        /*Recipe AddRecipe(string title, int noOfIngredients, int cookingTime);
 
         //delete recipe
         bool DeleteRecipe(int id);
@@ -206,7 +215,7 @@ namespace FBMS3.Core.Services
         IList<Recipe> GetAvailableRecipesForStockItem(int id);
 
         //update recipeingredient stock item quantity
-        RecipeStock UpdateStockItemQuantity(int stockId, int recipeId, int stockItemQuantity);
+        RecipeStock UpdateStockItemQuantity(int stockId, int recipeId, int stockItemQuantity);*/
 
         bool checkFoodBankForStockItem(int FoodBankId, string description);
 
