@@ -4,33 +4,38 @@
 }
 else
 {
-    <table class="card rounded shadow">
+    <h3 class="mt-4 mb-4">Items Currently In This Parcel</h3>
 
-        <thead>
-            <tr>
+    <div class="card rounded shadow p-4">
 
-                <th class="w-75">Items In Parcel</th>
-                <th>Item Description</th>
-                <th>Quantity</th>
+        <table class="table table-sm">
 
-
-            </tr>
-
-        </thead>
-
-        <tbody>
-            @foreach (var pi in Model.Items)
-            {
+            <thead>
                 <tr>
 
-                    <td>@pi.Item.Description</td>
-                    <td>@pi.Item.Quantity</td>
+                    <th>Category</th>
+                    <th>Quantity</th>
+
 
                 </tr>
-                
-            }
-        </tbody>
-    </table>
+
+            </thead>
+
+            <tbody>
+                @foreach (var pi in Model.Items)
+                {
+                    <tr>
+
+                        <td>@pi.Item.Description</td>
+                        <td>@pi.Quantity</td>
+
+                    </tr>
+                    
+                }
+            </tbody>
+        </table>
+
+    </div>    
 
 
 }

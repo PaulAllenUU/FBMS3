@@ -326,6 +326,7 @@ namespace FBMS3.Data.Services
         {
             return ctx.Stock
                       .Include(s => s.FoodBank)
+                      .Include(s => s.Category)
                       .ToList();
         }
 
@@ -568,9 +569,116 @@ namespace FBMS3.Data.Services
 
         }
 
-        public ParcelItem AddItemToParcel(int parcelId, int stockId, int quantity)
+        public ParcelItem AddItemToParcel(int parcelId, int stockId, int categoryId, int quantity)
         {
             //check the parcel does not already contain stock with the stock id passed in
+            var pi = ctx.ParcelItems
+                        .FirstOrDefault(x => x.ParcelId == parcelId &&
+                                             x.StockId == stockId &&
+                                             x.CategoryId == categoryId);
+
+                                             
+            //if these are not null then return null 
+            if(pi != null) { return null; }
+
+            //locate the parcel and the stock item
+            var p = ctx.Parcels.FirstOrDefault(p => p.Id == parcelId);
+            var s = ctx.Stock.FirstOrDefault(s => s.Id == stockId);
+            var c = ctx.Categorys.FirstOrDefault(c => c.Id == categoryId);
+           
+
+            //if either are null then return null
+            if(p == null || s == null || c == null) { return null ;}
+            //create the parcel item and add to database
+            var npi = new ParcelItem { 
+                                        ParcelId = parcelId,
+                                        StockId = stockId,
+                                        CategoryId = categoryId,
+                                        Quantity = quantity
+                                     };
+
+            
+            //add the new parcel item to the database
+            ctx.ParcelItems.Add(npi);
+            
+            //save changes and return the new parcel item
+            ctx.SaveChanges();
+            return npi;
+
+        }
+
+        public IList<ParcelItem> PopulateParcel(int parcelId, int stockId, int categoryId, int quantity)
+        {
+             //check the parcel does not already contain stock with the stock id passed in
+            var pi = ctx.ParcelItems
+                        .FirstOrDefault(x => x.ParcelId == parcelId &&
+                                             x.StockId == stockId &&
+                                             x.CategoryId == categoryId);
+
+                                             
+            //if these are not null then return null 
+            if(pi != null) { return null; }
+
+            //locate the parcel and the stock item
+            var p = ctx.Parcels.FirstOrDefault(p => p.Id == parcelId);
+            var s = ctx.Stock.FirstOrDefault(s => s.Id == stockId);
+            var c = ctx.Categorys.FirstOrDefault(c => c.Id == categoryId);
+            
+             //if either are null then return null
+            if (p == null || s == null || c == null) { return null ; }
+
+            var catIds = ctx.Categorys.Select(x => x.Id).ToList();
+
+            IList <ParcelItem> npiList = new List<ParcelItem>(2);
+
+            for (int i = 0; i < npiList.Count; i++)
+            {
+                if(p.FoodBank.Stock.Any(x => x.Category.Id == catIds[i]))
+                {
+                    npiList.Add( new ParcelItem
+                                              {
+                                                ParcelId = parcelId,
+                                                StockId = catIds[i],
+                                                Quantity = quantity
+                                              });
+                }
+            }
+
+            return npiList;
+
+        }
+
+        public ParcelItem UpdateParcelItemQuantity(int parcelId, int stockId, int quantity, int catgeoryId)
+        {
+            var parcel = GetParcelById(parcelId);
+            //check the parcel exists
+            if(parcel == null)
+            {
+                return null;
+            }
+            var pi = parcel.Items.FirstOrDefault(s => s.StockId == stockId);
+
+            if(pi == null)
+            {
+                return null;
+            }
+
+            pi.Quantity = quantity;
+
+            ctx.SaveChanges();
+            return pi;
+        }
+
+        public IList<String> CategoryDescriptions()
+        {
+            var descriptions = ctx.Categorys.Select(x => x.Description).ToList();
+
+            return descriptions;
+        }
+
+        /*public  IList<ParcelItem> AddMultipleItemsToParcel(int parcelId, int stockId, int quantity)
+        {
+             //check the parcel does not already contain stock with the stock id passed in
             var pi = ctx.ParcelItems
                         .FirstOrDefault(x => x.ParcelId == parcelId &&
                                              x.StockId == stockId);
@@ -586,21 +694,28 @@ namespace FBMS3.Data.Services
             //if either are null then return null
             if(p == null || s == null) { return null ;}
 
-            //create the parcel item and add to database
+            //get the categorys table
+            var categories = ctx.Categorys.Select(x => x.Description).ToList();
+
             var npi = new ParcelItem { 
-                                        ParcelId = parcelId,
-                                        StockId = stockId,
-                                        Quantity = quantity };
+                                        ParcelId = p.Id,
+                                        StockId = s.Id,
+                                        Quantity = quantity
+                                     };
+
+            IList<ParcelItem> npiList = new List<ParcelItem> ();
+            
+
+            foreach (var item in p.FoodBank.Stock.Where(x => x.Description.))
+            {
+                npi
+            }*/
 
             
-            //add the new parcel item to the database
-            ctx.ParcelItems.Add(npi);
             
-            //save changes and return the new parcel item
-            ctx.SaveChanges();
-            return npi;
 
-        }
+
+        
 
         /*public ParcelItem AddManyItemsToParcel(int parcelId, int stockId, int quantity)
         {

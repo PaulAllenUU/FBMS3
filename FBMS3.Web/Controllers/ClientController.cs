@@ -203,9 +203,9 @@ namespace FBMS3.Web.Controllers
             return View();
         }
 
-        [HttpPost]
-        [Authorize(Roles="admin,manager,staff")]
-        public IActionResult ParcelCreate([Bind("ParcelId,StockId,ClientId,Quantity")] ParcelItemViewModel pvm)
+        //[HttpPost]
+        //[Authorize(Roles="admin,manager,staff")]
+        /*public IActionResult ParcelCreate([Bind("ParcelId,StockId,ClientId,Quantity")] ParcelItemViewModel pvm)
         {
 
             if(ModelState.IsValid)
@@ -218,7 +218,7 @@ namespace FBMS3.Web.Controllers
             //pass the view model back into the form in case of error
             return View(pvm);
 
-        }
+        }*/
 
     }
 }

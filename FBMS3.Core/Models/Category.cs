@@ -14,6 +14,8 @@ namespace FBMS3.Core.Models
         //each stock category has many items of stock
         public IList<Stock> Stock { get; set; } = new List<Stock>();
 
+        public IList<ParcelItem> Items { get; set; } = new List<ParcelItem>();
+
     }
 }
 

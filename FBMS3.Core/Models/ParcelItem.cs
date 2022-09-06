@@ -20,5 +20,10 @@ namespace FBMS3.Core.Models
 
         //navigation property to the parcel table
         public Parcel Parcel { get; set; }
+
+        public int CategoryId { get; set; }
+
+        public Category Category { get; set; }
+
     }
 }

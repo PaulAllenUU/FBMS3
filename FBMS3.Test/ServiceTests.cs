@@ -755,7 +755,7 @@ namespace FBMS3.Test
 
             //act
             var p = service.AddParcel(c1.Id, user.Id, f.Id);
-            var pi = service.AddItemToParcel(p.Id, s1.Id, cL1.NoOfPeople);
+            var pi = service.AddItemToParcel(p.Id, s1.Id, cL1.NoOfPeople, c1.Id);
 
             //assert
             Assert.NotNull(pi);
@@ -766,6 +766,7 @@ namespace FBMS3.Test
             Assert.Equal(3, pi.Quantity);
             //assert right quantity has been removed from stock item
             Assert.Equal(0, s1.Quantity);
+            Assert.Equal(s1.Description, pi.Item.Description);
             
         }
         [Fact]
@@ -794,6 +795,26 @@ namespace FBMS3.Test
             //assert
             //Assert.NotNull(parcel);
             //Assert.Equal(2, parcelcount);  
+
+        }
+        [Fact]
+        public void PopulateParcel_ShouldWork()
+        {
+             //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var cL1 = service.AddClient("Allen", "BT45 7PL", "example@mail.com", 3, f.Id);
+            var c1 = service.AddCategory("Carbohydrates");
+            var c2 = service.AddCategory("Tinned Tomatoes");
+            var user = service.AddUser("Joanne", "McCracken", "jo@mail.com", "1234", f.Id, Role.admin);
+            var s1 = service.AddStock(f.Id, "Carbohydrates", 100, new DateTime(2022, 10, 01), c1.Id);
+            var s2 = service.AddStock(f.Id, "Tomatoes", 100, new DateTime(2024,02,02), c2.Id);
+
+            //act
+            var parcel = service.AddParcel(cL1.Id, user.Id, f.Id);
+            var fillParcel = service.PopulateParcel(c1.Id, s1.Id, c1.Id, 1);
+
+            Assert.NotNull(fillParcel);
+            //Assert.Contains(s1, fillParcel);
 
         }
 
