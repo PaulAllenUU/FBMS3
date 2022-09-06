@@ -1,5 +1,12 @@
 @model ParcelItemViewModel
 
+<partial name="_BreadCrumbs" model=@(new [] {
+    ("/","Home"),
+    ("/parcel","Parcels"),
+    ($"/parcel/details/{Model.ParcelId}",$"{Model.ParcelId}"),
+    ("","Add Items To Parcel")
+}) />
+
 <h3 class="mt-4 mb-4">Fill Parcel</h3>
 
 <form asp-action="ParcelFill">

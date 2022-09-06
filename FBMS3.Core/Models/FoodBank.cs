@@ -20,9 +20,6 @@ namespace FBMS3.Core.Models
         [Required(ErrorMessage = "Post code is required")]
         public string PostCode { get; set; }
 
-        //keep track of number of clients that are currently registered with the food bank
-        public int NoOfClients { get; set; }
-
         //Many side of the relaton with users - 1 food bank will have many users
         public IList<User> Users { get ; set; } = new List <User>();
 

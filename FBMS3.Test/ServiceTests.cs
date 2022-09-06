@@ -174,7 +174,6 @@ namespace FBMS3.Test
             //assert
             Assert.Contains(u1.Email, get.Email);
 
-
         }
 
         [Fact]
@@ -363,7 +362,7 @@ namespace FBMS3.Test
             Assert.False(f);
         }
 
-        [Fact]
+        /*[Fact]
         public void AddFoodBank_WhenDuplicateAddress_ShouldReturnNull()
         {
             //act
@@ -377,7 +376,7 @@ namespace FBMS3.Test
 
             //f2 should not be added
             Assert.Null(f2);
-        }
+        }*/
 
         [Fact]
         public void FoodBank_RemoveFoodBankThatExists_ShouldReturnTrue()
@@ -487,7 +486,7 @@ namespace FBMS3.Test
         }
 
         [Fact]
-        public void GetAllStock_WhenThreeExist_ShouldRetuenThree()
+        public void GetAllStock_WhenThreeExist_ShouldReturnThree()
         {
             //arrange
             var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
@@ -502,7 +501,6 @@ namespace FBMS3.Test
 
             //assert
             Assert.Equal(3, count);
-
 
         }
 
@@ -659,7 +657,6 @@ namespace FBMS3.Test
             //assert
             Assert.Null(get);
 
-
         }
 
         [Fact]
@@ -754,69 +751,54 @@ namespace FBMS3.Test
             var s1 = service.AddStock(f.Id, "Carbohydrates", 3, new DateTime(2022, 10, 01), c1.Id);
 
             //act
-            var p = service.AddParcel(c1.Id, user.Id, f.Id);
-            var pi = service.AddItemToParcel(p.Id, s1.Id, cL1.NoOfPeople, c1.Id);
+            var p = service.AddParcel(cL1.Id, user.Id, f.Id);
+            var pi = service.AddItemToParcel(p.Id, s1.Id, c1.Id, cL1.NoOfPeople);
 
             //assert
             Assert.NotNull(pi);
             Assert.Equal(s1.Id, pi.StockId);
             Assert.Equal(p.Id, pi.ParcelId);
-
-            //assert correct quantity of stock has been added to parcel item
             Assert.Equal(3, pi.Quantity);
-            //assert right quantity has been removed from stock item
-            Assert.Equal(0, s1.Quantity);
             Assert.Equal(s1.Description, pi.Item.Description);
             
         }
+
         [Fact]
-        public void GenerateParcelForClient_WhenFoodBankHas_ShouldAddItemsToParcel()
+        public void PopulateParcel_WhenParcelThere_ShouldWork()
         {
-            //arrange - add food bank
-            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
-            var u = service.AddUser("Paul", "Allen", "allen@gmail.com", "password", f.Id, Role.admin);
-
-            //add client
-            var cL1 = service.AddClient("Allen", "BT45 7PL", "example@mail.com", 3, f.Id);
-            //add stock category
-            var c1 = service.AddCategory("Carbohydrates");
-            var c2 = service.AddCategory("Vegetables");
-            //add items of the same category
-            var s1 = service.AddStock(f.Id, "Potato", 3, new DateTime(2022, 10, 01), c1.Id);
-            var s2 = service.AddStock(f.Id, "Vegetables", 4, new DateTime(2022, 10, 01), c1.Id);
-
-            //act
-            //var parcel = service.GenerateParcelForClient(u.Id, cL1.Id, f.Id);
-            //var parcelcount = parcel.Items.Count;
-
-            //check if it auto decrements from the database
-            
-            
-            //assert
-            //Assert.NotNull(parcel);
-            //Assert.Equal(2, parcelcount);  
-
-        }
-        [Fact]
-        public void PopulateParcel_ShouldWork()
-        {
-             //arrange
             var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
             var cL1 = service.AddClient("Allen", "BT45 7PL", "example@mail.com", 3, f.Id);
             var c1 = service.AddCategory("Carbohydrates");
-            var c2 = service.AddCategory("Tinned Tomatoes");
             var user = service.AddUser("Joanne", "McCracken", "jo@mail.com", "1234", f.Id, Role.admin);
-            var s1 = service.AddStock(f.Id, "Carbohydrates", 100, new DateTime(2022, 10, 01), c1.Id);
-            var s2 = service.AddStock(f.Id, "Tomatoes", 100, new DateTime(2024,02,02), c2.Id);
+            var s1 = service.AddStock(f.Id, "Carbohydrates", 3, new DateTime(2022, 10, 01), c1.Id);
 
             //act
-            var parcel = service.AddParcel(cL1.Id, user.Id, f.Id);
-            var fillParcel = service.PopulateParcel(c1.Id, s1.Id, c1.Id, 1);
+            var p = service.AddParcel(cL1.Id, user.Id, f.Id);
 
-            Assert.NotNull(fillParcel);
-            //Assert.Contains(s1, fillParcel);
+            var pop = service.PopulateParcel(p.Id, s1.Id, c1.Id, 1);
 
         }
 
+        [Fact]
+        public void GetAvailableStockForParcel_ShouldReturnAvailableStock()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var cL1 = service.AddClient("Allen", "BT45 7PL", "example@mail.com", 3, f.Id);
+            var c1 = service.AddCategory("Carbohydrates");
+            var user = service.AddUser("Joanne", "McCracken", "jo@mail.com", "1234", f.Id, Role.admin);
+            var s1 = service.AddStock(f.Id, "Carbohydrates", 3, new DateTime(2022, 10, 01), c1.Id);
+
+            //act
+            var p = service.AddParcel(cL1.Id, user.Id, f.Id);
+            var stockavailable = service.GetAvailableStockForParcel(p.Id);
+            var count = stockavailable.Count;
+
+            //assert
+            Assert.NotEmpty(stockavailable);
+            
+
+        }
+       
     }
 }

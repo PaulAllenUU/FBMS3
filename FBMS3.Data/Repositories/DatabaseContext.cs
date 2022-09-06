@@ -20,9 +20,6 @@ namespace FBMS3.Data.Repositories
         //configure the data base set for stock
         public DbSet<Stock> Stock { get ; set ; }
 
-        //configure the data base sey for recipes
-        public DbSet<Recipe> Recipes { get; set; }
-
         //configure the Db set for Recipe Ingredients
         public DbSet<ParcelItem> ParcelItems { get; set; }
 
@@ -40,7 +37,7 @@ namespace FBMS3.Data.Repositories
         // FBMS3 configured to allow use of MySql and Postgres
         // ideally connections strings should be stored in appsettings.json
 
-        //create the composite key for the parcelitem bridging table
+        //create the composite key for the parcelitem bridging table so that ParcelId and StocKId are both the foriegn key
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ParcelItem>()

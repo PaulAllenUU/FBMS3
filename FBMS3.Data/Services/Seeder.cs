@@ -19,6 +19,10 @@ namespace FBMS3.Data.Services
             var f4 = svc.AddFoodBank(90, "Strand Road", "BT48 0AE");
             var f5 = svc.AddFoodBank(98, "Malone Avenue", "BT9 6ES");
             var f6 = svc.AddFoodBank(30, "Evergreen Terrace", "TW78 2PL"); 
+            var f7 = svc.AddFoodBank(45, "Hillside Way", "BT78 3FG");
+            var f8 = svc.AddFoodBank(89, "University Street", "BT41 4JL");
+            var f9 = svc.AddFoodBank(60, "Limavady Road", "BT123 8YT");
+            var f10 = svc.AddFoodBank(82, "Main Street", "BT89 3OP");
 
             // add users
             var u1 = svc.AddUser("Paul", "Allen", "admin@mail.com", "admin", f1.Id, Role.admin);
@@ -73,7 +77,6 @@ namespace FBMS3.Data.Services
             var s19 = svc.AddStock(f1.Id, "Dog Food", 100, new DateTime(2023, 02, 03), c19.Id);
             var s20 = svc.AddStock(f1.Id, "Kitchen Towels", 100, new DateTime(2025,01,01), c20.Id);
             var s21 = svc.AddStock(f1.Id, "Logs", 100, new DateTime(2023, 04, 08), c21.Id);
-
             var s22 = svc.AddStock(f2.Id, "Banana", 10, new DateTime(2023, 12, 03), c9.Id);
             var s23 = svc.AddStock(f3.Id, "Carbohydrates", 20, new DateTime(2022, 12, 07), c11.Id);
             var s24 = svc.AddStock(f1.Id, "Meat", 6, new DateTime(2023, 08, 09), c6.Id);
@@ -94,25 +97,13 @@ namespace FBMS3.Data.Services
             var cL3 = svc.AddClient("Johnston", "BT72 9PO", "jjopl@yahoo.co.uk", 1, f3.Id);
             var cL4 = svc.AddClient("O'Neill", "BT31 0NM", "oneill@hotmail.co.uk", 2, f3.Id);
             var cL5 = svc.AddClient("Campbell", "BT56 7KM", "cmp@hotmail.co.uk", 4, f2.Id);
+            var cL6 = svc.AddClient("Marquess", "BT68 7KL", "nm@outlook.com", 3, f2.Id);
+            var cL7 = svc.AddClient("Brownlow", "BT73 5QW", "wolyaj@btinternet.com", 4, f1.Id);
 
             //create some empty parcels
             var parcel1 = svc.AddParcel(cL1.Id, u1.Id, f1.Id);
 
-            //add dummy parcel data
-            //var p1 = svc.GenerateParcelForClient(u1.Id, cL1.Id, f1.Id);
-
-            //add some dummy recipe data
-            /*var r1 = svc.AddRecipe("Carrot & Tomato Soup", 2, 30);
-            var r2 = svc.AddRecipe("Vegetable Stir Fry", 4, 20);
-            var r3 = svc.AddRecipe("Chilli Con Carne", 4, 20);
-            var r4 = svc.AddRecipe("Chicken Curry", 5, 30);*/
-
-            //add the stock to each recipe
-
-            //for recipe 1 you use carrots and tomatoes, add those to the recipe along with the quantity of each
-        
-
-            //add some
+            var populate = svc.PopulateParcel(parcel1.Id, s1.Id, c1.Id, 2);
             
             
         }

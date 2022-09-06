@@ -43,6 +43,7 @@ namespace FBMS3.Web.Controllers
                 FoodBanks = new SelectList(foodbanks, "Id", "StreetName")
             };
 
+            //pass the blank form to the view for completion in the POST action
             return View(ccvm);
         }
 

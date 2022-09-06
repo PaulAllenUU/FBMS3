@@ -6,36 +6,36 @@ else
 {
     <h3 class="mt-4 mb-4">Items Currently In This Parcel</h3>
 
-    <div class="card rounded shadow p-4">
+        <div class="card rounded shadow p-4">
 
-        <table class="table table-sm">
+            <table class="table table-sm">
 
-            <thead>
-                <tr>
-
-                    <th>Category</th>
-                    <th>Quantity</th>
-
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-                @foreach (var pi in Model.Items)
-                {
+                <thead>
                     <tr>
 
-                        <td>@pi.Item.Description</td>
-                        <td>@pi.Quantity</td>
+                        <th>Category</th>
+                        <th>Quantity</th>
+
 
                     </tr>
-                    
-                }
-            </tbody>
-        </table>
 
-    </div>    
+                </thead>
 
+                <tbody>
+                    @foreach (var pi in Model.Items)
+                    {
+                        <tr>
+
+                            <td>@pi.Item.Description</td>
+                            <td>@pi.Quantity</td>
+
+                        </tr>
+                            
+                    }
+                </tbody>
+            </table>
+
+        </div>  
+        
 
 }

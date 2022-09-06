@@ -68,8 +68,6 @@ namespace FBMS3.Web.Controllers
         [Authorize(Roles="admin,manager,staff")]
         public IActionResult Create([Bind("ClientId, UserId, FoodBankId")] ParcelCreateViewModel pcvm)
         {
-            var clients = svc.GetAllClients();
-        
 
             if(ModelState.IsValid)
             {
@@ -79,7 +77,20 @@ namespace FBMS3.Web.Controllers
                 return RedirectToAction(nameof(Details));
             }
 
-            return View(pcvm);
+            var clients = svc.GetAllClients();
+            var users = svc.GetUsers();
+            var foodbanks = svc.GetFoodBanks();
+
+            //return the view model to the form in case re editing is needed
+            var pvm = new ParcelCreateViewModel
+            {
+               Clients = new SelectList(clients,"Id","SecondName"),
+               Users = new SelectList(users,"Id","FirstName"),
+               FoodBanks = new SelectList(foodbanks,"Id","StreetName")
+            };
+
+
+            return View(pvm);
         }
 
         public IActionResult ParcelFill(int id)

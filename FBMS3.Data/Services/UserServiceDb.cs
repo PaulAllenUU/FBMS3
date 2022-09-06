@@ -27,8 +27,6 @@ namespace FBMS3.Data.Services
            ctx.Initialise(); 
         }
 
-        public Queue<Client> TheQueue = new Queue<Client>(); 
-
         // retrieve list of Users
         public IList<User> GetUsers()
         {
@@ -139,11 +137,6 @@ namespace FBMS3.Data.Services
             return ctx.Users.FirstOrDefault(u => u.Email == email);
         }
 
-        public User GetUserByFirstName(string firstName)
-        {
-            return ctx.Users.FirstOrDefault(u => u.FirstName == firstName);
-        }
-
         // Verify if email is available or registered to specified user
         public bool IsEmailAvailable(string email, int userId)
         {
@@ -197,18 +190,16 @@ namespace FBMS3.Data.Services
             return ctx.FoodBanks.ToList();
         }
 
-        public IList<FoodBank> GetFoodBanksWithSameStreetName(string streetName)
-        {
-            return ctx.FoodBanks.Where(x => x.StreetName == streetName).ToList();
-        }
-
         public FoodBank GetFoodBankById(int id)
         {
             return ctx.FoodBanks
                     //include the stock and clients that are associated with that food bank
                      .Include(x => x.Clients)
+                     //include the stock that is currently at that food bank
                      .Include(x => x.Stock)
+                     //include the category that the stock at the food bank belongs to 
                      .ThenInclude(x => x.Category)
+                     //first or default will find the first value or defauled
                      .FirstOrDefault( x=> x.Id == id);
         }
 
@@ -216,11 +207,6 @@ namespace FBMS3.Data.Services
         {
             return ctx.FoodBanks.FirstOrDefault( x => x.StreetNumber == streetNumber
                                                 && x.StreetName == streetName);
-        }
-
-        public FoodBank GetFoodBankByPostCode(string postCode)
-        {
-            return ctx.FoodBanks.FirstOrDefault ( x => x.PostCode == postCode);
         }
 
         public bool IsDuplicateLocation(int id, int streetNumber, string postCode)
@@ -251,11 +237,6 @@ namespace FBMS3.Data.Services
             ctx.Add(foodbank);
             ctx.SaveChanges();
             return foodbank;
-        }
-
-        public FoodBank GetFoodBankByStreetName(string streetName)
-        {
-            return ctx.FoodBanks.FirstOrDefault(x => x.StreetName == streetName);
         }
 
         public FoodBank UpdateFoodBank(FoodBank updated)
@@ -345,11 +326,6 @@ namespace FBMS3.Data.Services
             return ctx.Stock.FirstOrDefault ( x => x.Description.Equals(description));
         }
 
-        public Stock GetStockByExpiryDate(DateTime expiryDate)
-        {
-            return ctx.Stock.FirstOrDefault ( x => x.ExpiryDate == expiryDate);
-        }
-
         public Category AddCategory(string description)
         {
             var exists = GetCategoryByDescription(description);
@@ -375,9 +351,10 @@ namespace FBMS3.Data.Services
         {
             //the food bank id is the foreign key so need to check it exists
             var foodbank = GetFoodBankById(foodBankId);
+            var category = GetCategoryById(categoryId);
 
             //if the food bank is null - does not exist then return null
-            if (foodbank == null) return null;
+            if (foodbank == null || category == null) return null;
 
             //otherwise create the new item of stock
             var s = new Stock
@@ -396,17 +373,19 @@ namespace FBMS3.Data.Services
                 s.Meat = true;
             }
 
+            //use for the enum for vegetables
             if(s.Description == "Vegetables")
             {
                 s.Vegetable = true;
             }
 
+            //use in the enum for carbohydrates
             if(s.Description == "Carbohydrates")
             {
                 s.Carbohydrate = true;
             }
 
-        
+            //use in the enum for non food items
             String [] NonFoodItems = new String[]{ "Toileteries", "Pet Food", "Logs", "Razors", "Kitchen Cleaning"};
 
             //for loop to traverse the array
@@ -424,14 +403,6 @@ namespace FBMS3.Data.Services
             ctx.Stock.Add(s);
             ctx.SaveChanges();
             return s;
-        }
-
-        public IList<Stock> GetStockAtFoodBank(int foodBankId)
-        {
-            var foodbank = GetFoodBankById(foodBankId);
-            var stockinFoodBank = foodbank.Stock;
-
-            return stockinFoodBank;
         }
 
 
@@ -469,27 +440,6 @@ namespace FBMS3.Data.Services
             ctx.Stock.Remove(s);
             ctx.SaveChanges();
             return true;
-        }
-
-
-        public IList<Stock> GetAllNonFoodItems(bool nonFood)
-        {
-            return ctx.Stock.Where(x => x.NonFood == true).ToList();
-        }
-
-        public IList<Stock> GetAllMeatFoodItems(bool meat)
-        {
-            return ctx.Stock.Where(x => x.Meat == true).ToList();
-        }
-
-        public IList<Stock> GetAllVegetablesFromStock(bool vegetable)
-        {
-            return ctx.Stock.Where( x => x.Vegetable == true).ToList();
-        }
-
-        public IList<Stock> GetAllCarbohydratesFromStock(bool carbs)
-        {
-            return ctx.Stock.Where( x => x.Carbohydrate == true).ToList();
         }
 
         public IList <Stock> SearchStock(StockRange range, string query)
@@ -615,7 +565,7 @@ namespace FBMS3.Data.Services
                                              x.StockId == stockId &&
                                              x.CategoryId == categoryId);
 
-                                             
+           
             //if these are not null then return null 
             if(pi != null) { return null; }
 
@@ -623,27 +573,32 @@ namespace FBMS3.Data.Services
             var p = ctx.Parcels.FirstOrDefault(p => p.Id == parcelId);
             var s = ctx.Stock.FirstOrDefault(s => s.Id == stockId);
             var c = ctx.Categorys.FirstOrDefault(c => c.Id == categoryId);
-            
+
              //if either are null then return null
             if (p == null || s == null || c == null) { return null ; }
 
-            var catIds = ctx.Categorys.Select(x => x.Id).ToList();
+            //get categorie ids
+            IList<int> categories = ctx.Categorys.Select(x => x.Id).ToList();
+            IList<int> stockids = ctx.Stock.Select(x => x.Id).ToList();
 
-            IList <ParcelItem> npiList = new List<ParcelItem>(2);
+            //list of stock items to be populated
+            IList <ParcelItem> npiList = new List<ParcelItem>(categories.Count);
 
-            for (int i = 0; i < npiList.Count; i++)
+            for(int i = 0; i < npiList.Count; i++)
             {
-                if(p.FoodBank.Stock.Any(x => x.Category.Id == catIds[i]))
-                {
-                    npiList.Add( new ParcelItem
-                                              {
-                                                ParcelId = parcelId,
-                                                StockId = catIds[i],
-                                                Quantity = quantity
-                                              });
-                }
-            }
+                npiList.Add( new ParcelItem
+                                    {
+                                        ParcelId = parcelId,
+                                        CategoryId = categoryId,
+                                        StockId = stockId,
+                                        Quantity = quantity
+                                    });
 
+            };
+
+            ctx.ParcelItems.AddRange(npiList);
+            ctx.SaveChanges();
+       
             return npiList;
 
         }
@@ -676,101 +631,6 @@ namespace FBMS3.Data.Services
             return descriptions;
         }
 
-        /*public  IList<ParcelItem> AddMultipleItemsToParcel(int parcelId, int stockId, int quantity)
-        {
-             //check the parcel does not already contain stock with the stock id passed in
-            var pi = ctx.ParcelItems
-                        .FirstOrDefault(x => x.ParcelId == parcelId &&
-                                             x.StockId == stockId);
-            
-            //if these are not null then return null 
-            if(pi != null) { return null; }
-
-            //locate the parcel and the stock item
-            var p = ctx.Parcels.FirstOrDefault(p => p.Id == parcelId);
-            var s = ctx.Stock.FirstOrDefault(s => s.Id == stockId);
-            //check that the food bank we are taking from has the stock in it or else return null
-
-            //if either are null then return null
-            if(p == null || s == null) { return null ;}
-
-            //get the categorys table
-            var categories = ctx.Categorys.Select(x => x.Description).ToList();
-
-            var npi = new ParcelItem { 
-                                        ParcelId = p.Id,
-                                        StockId = s.Id,
-                                        Quantity = quantity
-                                     };
-
-            IList<ParcelItem> npiList = new List<ParcelItem> ();
-            
-
-            foreach (var item in p.FoodBank.Stock.Where(x => x.Description.))
-            {
-                npi
-            }*/
-
-            
-            
-
-
-        
-
-        /*public ParcelItem AddManyItemsToParcel(int parcelId, int stockId, int quantity)
-        {
-            //check the parcel does not already contain stock with the stock id passed in
-            var pi = ctx.ParcelItems
-                        .FirstOrDefault(x => x.ParcelId == parcelId &&
-                                             x.StockId == stockId);
-
-            //get all food banks
-            var foodbanks = GetFoodBanks();
-
-            //get available stock that is in the food bank of the parcel
-            var availablestock = ctx.Parcels.Where(x => x.FoodBankId == foodbanks.)
-
-            //if these are not null then return null 
-            if(pi != null) { return null; }
-
-            IList<ParcelItem> stockItemList = new List<ParcelItem>();
-
-        }*/
-
-
-       /* public Parcel GenerateParcelForClient(int userId, int clientId, int foodBankId, int parcelitem)
-        {
-            //get the 3 above parameters by their id method and check if null
-            var user = GetUser(userId);
-            var client = GetClientById(clientId);
-            var foodbank = GetFoodBankById(foodBankId);
-
-            //check that none of the above are null and if they are then return null
-            if(user == null || client == null || foodbank == null)
-            {
-                return null;
-            }
-
-            //add all properties
-            var p = new Parcel
-            {
-               UserId = user.Id,
-               ClientId = client.Id,
-               FoodBankId = foodbank.Id,
-               Items = 
-            };
-            
-            ctx.Parcels.Add(p);
-            ctx.SaveChanges();
-            return p;
-
-        }*/
-
-        //parcel management methods
-
-
-
-
         public IList<Parcel> GetAllParcels()
         {
 
@@ -797,215 +657,7 @@ namespace FBMS3.Data.Services
                       .FirstOrDefault(x => x.Id == id);
         }
 
-        //add a recipe checking that is doesnt already exist using title
-        /*public Recipe AddRecipe(string title, int noOfIngredients, int cookingTime)
-        {
-            var existing = GetRecipeByTitle(title);
-
-            //if it does not null, already exists so return null
-            if(existing != null)
-            {
-                return null;
-            }
-
-            var recipe = new Recipe
-            {
-                Title = title,
-                NoOfIngredients = noOfIngredients,
-                CookingTimeMins = cookingTime,
-            };
-
-            //return the recipe, add to database and save changes
-            ctx.Add(recipe);
-            ctx.SaveChanges();
-            return recipe;
-        }
-
-        /*public bool DeleteRecipe(int id)
-        {
-            //check the recipe exists by loading it into memory using the service method previously created
-            var recipe = GetRecipeById(id);
-
-            //if it is null then it does not exist so cannot delete - therefore return false
-            if (recipe == null)
-            {
-                return false;
-            }
-
-            ctx.Remove(recipe);
-            ctx.SaveChanges();
-            return true;
-        }
-
-        /*public bool IsRecipeVegetarian(RecipeStock recipeStock)
-        {
-            //check the recipe exists through the get recipe by title method
-            var exists = GetRecipeStockById(recipeStock.Id);
-
-            //if the recipe is null then cannot check so return false
-            if(exists == null) { return false; };
-
-            //use the list of possible meatTypes from previous method
-            List<String> MeatTypes = new List<String>();
-            MeatTypes.Add("Chicken");
-            MeatTypes.Add("Pork");
-            MeatTypes.Add("Beef");
-            MeatTypes.Add("Fish");
-
-            //if stock recipe contains any items with the description above then return false
-            if (MeatTypes.Contains(exists.Stock.Description))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public Recipe GetRecipeById(int id)
-        {
-            return ctx.Recipes.FirstOrDefault( x => x.Id == id);
-        }
-
-        public Recipe UpdateRecipe(Recipe updated)
-        {
-            //check that recipe exists using the get recipe by id method
-            var recipe = GetRecipeById(updated.Id);
-
-            //if it is null, it does not exist therefore return null
-            if(recipe == null)
-            {
-                return null;
-            }
-
-            //otherwise update all properties and then save changes
-            recipe.Title = updated.Title;
-            recipe.NoOfIngredients = updated.NoOfIngredients;
-            recipe.CookingTimeMins = updated.CookingTimeMins;
-
-            //save changes and return the recipe
-            ctx.SaveChanges();
-            return recipe;
-        }
-
-        public Recipe GetRecipeByTitle(string title)
-        {
-            return ctx.Recipes
-                        //include the recipe stock associated with that recipe
-                        //avoids eager loading
-                      .Include( x => x.RecipeStock)
-                      .FirstOrDefault( x => x.Title == title);
-        }
-
-        public IList<Recipe> GetAllRecipes()
-        {
-            //return all recipes but include recipestock
-            return ctx.Recipes.ToList();
-        }
-
-        /*public RecipeStock AddStockItemToRecipe(int stockId, int recipeId, int stockItemQuantity)
-        {
-            //check that the recipe stock already exists and return null if found
-            var rs = ctx.RecipeStock
-                        .FirstOrDefault( x => x.StockId == stockId &&
-                                              x.RecipeId == recipeId);
-
-            //if these are not null then stock iteam already in recipe - return null
-            if (rs != null) { return null; }
-
-            //locate the stock item and the recipe
-            var s = ctx.Stock.FirstOrDefault(s => s.Id == stockId);
-            var r = ctx.Recipes.FirstOrDefault(r => r.Id == recipeId);
-
-            //if either do not exist then cannot add so return null
-            if(s == null || s == null) { return null; }
-
-            //otherwise create the recipestock and add to the database
-            var nrs = new RecipeStock { StockId = s.Id, RecipeId = r.Id, StockItemQuantity = stockItemQuantity };
-
-            //save changes and return the recipe stock
-            ctx.RecipeStock.Add(nrs);
-            ctx.SaveChanges();
-            return nrs;
-        }
-
-        public RecipeStock GetRecipeStockById(int id)
-        {
-            return ctx.RecipeStock.FirstOrDefault(x => x.Id == id);
-        }
-
-        public bool RemoveStockItemFromRecipe(int stockId, int recipeId)
-        {
-            //check that the stock item is already in the recipe before it can be removed
-            var rs = ctx.RecipeStock.FirstOrDefault(
-                s => s.StockId == stockId && s.RecipeId == recipeId
-            );
-
-            //if it is not already there then cannot remove to return false
-            if (rs == null) { return false; }
-
-            //remove the stock item from the recipe
-            ctx.RecipeStock.Remove(rs);
-            ctx.SaveChanges();
-            return true;
-        }*/
-
-        /*public IList<Recipe> GetAvailableRecipesForStockItem(int id)
-        {
-            var stockitem = GetStockById(id);
-            var rs = stockitem.RecipeStock.ToList();
-            var recipes = ctx.Recipes.ToList();
-
-            return recipes.Where(r => rs.Any( x => x.RecipeId != r.Id)).ToList();
-        }
-
-        public RecipeStock UpdateStockItemQuantity(int stockId, int recipeId, int stockItemQuantity)
-        {
-            var stockitem = GetStockById(stockId);
-
-            //check that the stock item exists and if not, return null
-            if(stockitem == null)
-            {
-                return null;
-            }
-
-            //check the recipe stock id exists
-            var rs = stockitem.RecipeStock.FirstOrDefault(o => o.StockId == stockId);
-
-            if(rs == null)
-            {
-                return null;
-            }
-
-            //update the stock item quantity
-            rs.StockItemQuantity = stockItemQuantity;
-
-            ctx.SaveChanges();
-            return rs;
-        }
-
-        //method to determine if recipe already exists with the same title
-        /*public bool IsDuplicateRecipe(string title)
-        {
-            //get all of the existing recipes using the service method
-            var recipes = GetAllRecipes();
-
-            //convert list to an array so it can be iterated through using for loop
-            var recipesArray = recipes.ToArray();
-
-            for(int i=0; i<recipesArray.Length; i++)
-            {
-                //check if the array index [i] equals the title passed in as parameter, if so it is a duplicate
-                if(recipesArray[i].Title == title)
-                {
-                    return true;
-                }
-                
-            }
-
-            //if none of the elements in the array contain the same title then return false;
-            return false;
-        }*/
-
+       
         public Client AddClient(string secondName, string postCode, string email, int noOfPeople, int foodBankId)
         {
             //check that the client does not exist already using email address
@@ -1160,85 +812,8 @@ namespace FBMS3.Data.Services
             return categoryDescriptions;
         }
 
-        /*public Parcel GenerateParcelForClient(Queue<Client> clients, int FoodBankId)
-        {
-            int QueueSize = clients.Count();
 
-            for(int i=0; i<QueueSize; i++)
-            {
-                
-            }
-
-            
-            
-        }*/
-
-        /*public bool checkFoodBankForStockItem(FoodBank foodbank, string stockitem)
-        {
-            foreach (var s in foodbank)
-            {
-                
-            }
-        }*/
-
-        //using the built in methods to dequeue a client from the queue
-        public void RemoveClientFromTheQueue()
-        {
-            //dequeue the client at the head of the queue and then save changes
-            TheQueue.Dequeue();
-
-            ctx.SaveChanges();
-        }
-
-        //using the built in DeQueue method we can add clients to the queue
-        public void AddClientToQueue(Client client)
-        {
-            //pass in the client to be added to the queue
-            TheQueue.Enqueue(client);
-
-            //save changes
-            ctx.SaveChanges();
-        }
-
-        /*public Parcel GenerateParcelFromStock(int userId, DateTime date, string item, int clientId, int foodBankId, int noOfPeople)
-        {
-            var Parcel = new Parcel
-            {
-                UserId = userId,
-                Date = DateTime.Now,
-                Item = item,
-                ClientId = clientId,
-                FoodBankId = foodBankId,
-                NoOfPeople = noOfPeople,
-            };
-            
-        }*/
-
-        //method to check a specific food bank for specific item of stock
-        public bool checkFoodBankForStockItem(int FoodBankId, string description)
-        {
-            //call the food bank by id into memory
-            var foodbank = GetFoodBankById(FoodBankId);
-
-            //call the stock item by description in to memory
-            var stockitem = GetStockByDescription(description);
-
-            //if either of the above are null then return false
-            if(foodbank == null || stockitem == null)
-            {
-                return false;
-            }
-
-            //if the foodbank contains the stock item return true if 
-            if(foodbank.Stock.Contains(stockitem))
-            {
-                return true;
-            }
-
-            return false;
-
-        }
-
+        
         public bool CheckAllFoodBanksForStockItem(IList<FoodBank> f, string description)
         {
             //load all of the food banks in to memory using one of the above methods
@@ -1259,39 +834,6 @@ namespace FBMS3.Data.Services
             return found;
         }
 
-        public bool checkFoodBankForListOfStockItems(int FoodBankId, IList<Stock> s)
-        {
-            var fb = GetFoodBankById(FoodBankId);
-            var items = GetAllStock();
-            bool found = false;
-
-            //for loop to through all of the items
-            for(int i =0 ; i < items.Count(); i++)
-            {
-                if(fb.Stock.Contains(items[i]))
-                {
-                    found = true;
-                }
-            }
-
-            return found;
-        }
-
-        bool IUserService.checkAllFoodBanksForListOfStockItems(IList<FoodBank> f, IList<Stock> s)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool DetermineEnumerationType(Stock s, string categorydescription)
-        {
-            bool found = false;
-            if(s.Category.Description.Contains(categorydescription))
-            {
-                found = true;
-            }
-            
-            return found;
-        }
 
         public ParcelItem GetParcelItemById(int id)
         {
@@ -1304,34 +846,8 @@ namespace FBMS3.Data.Services
             var pi = parcel.Items.ToList();
             var stock = ctx.Stock.ToList();
 
-            return stock.Where(s => pi.Any(x => x.ParcelId != s.Id)).ToList();
+            return stock.Where(s => pi.Any(x => x.StockId != s.Id)).ToList();
         }
 
-
-        /*public Parcel GenerateParcelFromStock(int userId, DateTime date, string item, int quantity, 
-                                            string itemSize, int clientId, int foodBankId, int noOfPeople)
-        {
-            var foodBank = GetFoodBankById(foodBankId);
-
-            var stock = 
-            
-        }*/
-
-        /*public bool CheckFoodBanksForRecipeItem(int foodBankId, int stockId)
-        {
-            //check both the foodBank and and the stock item passed in both exist
-            //if either of them returns not null then cannot find so return false
-            var f = GetFoodBankById(foodBankId);
-            var s = GetStockById(stockId);
-
-            //if either of the above is null then return false
-            if(f == null || s == null) { return false; }
-
-            //otherwise check the recipestock stock id for the 
-            
-
-
-
-        }*/
     }
 }
