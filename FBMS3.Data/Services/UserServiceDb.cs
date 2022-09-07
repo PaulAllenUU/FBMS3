@@ -493,11 +493,15 @@ namespace FBMS3.Data.Services
         //----Begin Parcel Management Methods
         public Parcel AddParcel(int clientId, int userId, int foodbankId)
         {
+            //use user defined methods to retrieve the entities
             var u = GetUser(userId);
-            //check all the parameters passed in are not null
+            
             var c = GetClientById(clientId);
+            //check the food bank is not null
+            var f = GetFoodBankById(foodbankId);
             //if any are null then return return null
-            if(c == null || u == null)
+
+            if(c == null || u == null || f == null)
             {
                 return null;
             }
@@ -519,13 +523,12 @@ namespace FBMS3.Data.Services
 
         }
 
-        public ParcelItem AddItemToParcel(int parcelId, int stockId, int categoryId, int quantity)
+        public ParcelItem AddItemToParcel(int parcelId, int stockId, int quantity)
         {
             //check the parcel does not already contain stock with the stock id passed in
             var pi = ctx.ParcelItems
                         .FirstOrDefault(x => x.ParcelId == parcelId &&
-                                             x.StockId == stockId &&
-                                             x.CategoryId == categoryId);
+                                             x.StockId == stockId);
 
                                              
             //if these are not null then return null 
@@ -534,16 +537,14 @@ namespace FBMS3.Data.Services
             //locate the parcel and the stock item
             var p = ctx.Parcels.FirstOrDefault(p => p.Id == parcelId);
             var s = ctx.Stock.FirstOrDefault(s => s.Id == stockId);
-            var c = ctx.Categorys.FirstOrDefault(c => c.Id == categoryId);
            
 
             //if either are null then return null
-            if(p == null || s == null || c == null) { return null ;}
+            if(p == null || s == null) { return null ;}
             //create the parcel item and add to database
             var npi = new ParcelItem { 
                                         ParcelId = parcelId,
                                         StockId = stockId,
-                                        CategoryId = categoryId,
                                         Quantity = quantity
                                      };
 
@@ -557,7 +558,7 @@ namespace FBMS3.Data.Services
 
         }
 
-        public IList<ParcelItem> PopulateParcel(int parcelId, int stockId, int categoryId, int quantity)
+        /*public IList<ParcelItem> PopulateParcel(int parcelId, int stockId, int categoryId, int quantity)
         {
              //check the parcel does not already contain stock with the stock id passed in
             var pi = ctx.ParcelItems
@@ -601,9 +602,9 @@ namespace FBMS3.Data.Services
        
             return npiList;
 
-        }
+        }*/
 
-        public ParcelItem UpdateParcelItemQuantity(int parcelId, int stockId, int quantity, int catgeoryId)
+        public ParcelItem UpdateParcelItemQuantity(int parcelId, int stockId, int quantity)
         {
             var parcel = GetParcelById(parcelId);
             //check the parcel exists

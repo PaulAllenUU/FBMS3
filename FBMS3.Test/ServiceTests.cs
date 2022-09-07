@@ -95,7 +95,7 @@ namespace FBMS3.Test
         }
 
         [Fact]
-        public void GetUsers_WhenThree_ShouldReturnThree()
+        public void GetUsers_WhenThreeExist_ShouldReturnThree()
         {
             //arrange
             var f1 = service.AddFoodBank(10, "Antrim Road", "BT49 0ST");
@@ -752,7 +752,7 @@ namespace FBMS3.Test
 
             //act
             var p = service.AddParcel(cL1.Id, user.Id, f.Id);
-            var pi = service.AddItemToParcel(p.Id, s1.Id, c1.Id, cL1.NoOfPeople);
+            var pi = service.AddItemToParcel(p.Id, s1.Id, cL1.NoOfPeople);
 
             //assert
             Assert.NotNull(pi);
@@ -761,43 +761,6 @@ namespace FBMS3.Test
             Assert.Equal(3, pi.Quantity);
             Assert.Equal(s1.Description, pi.Item.Description);
             
-        }
-
-        [Fact]
-        public void PopulateParcel_WhenParcelThere_ShouldWork()
-        {
-            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
-            var cL1 = service.AddClient("Allen", "BT45 7PL", "example@mail.com", 3, f.Id);
-            var c1 = service.AddCategory("Carbohydrates");
-            var user = service.AddUser("Joanne", "McCracken", "jo@mail.com", "1234", f.Id, Role.admin);
-            var s1 = service.AddStock(f.Id, "Carbohydrates", 3, new DateTime(2022, 10, 01), c1.Id);
-
-            //act
-            var p = service.AddParcel(cL1.Id, user.Id, f.Id);
-
-            var pop = service.PopulateParcel(p.Id, s1.Id, c1.Id, 1);
-
-        }
-
-        [Fact]
-        public void GetAvailableStockForParcel_ShouldReturnAvailableStock()
-        {
-            //arrange
-            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
-            var cL1 = service.AddClient("Allen", "BT45 7PL", "example@mail.com", 3, f.Id);
-            var c1 = service.AddCategory("Carbohydrates");
-            var user = service.AddUser("Joanne", "McCracken", "jo@mail.com", "1234", f.Id, Role.admin);
-            var s1 = service.AddStock(f.Id, "Carbohydrates", 3, new DateTime(2022, 10, 01), c1.Id);
-
-            //act
-            var p = service.AddParcel(cL1.Id, user.Id, f.Id);
-            var stockavailable = service.GetAvailableStockForParcel(p.Id);
-            var count = stockavailable.Count;
-
-            //assert
-            Assert.NotEmpty(stockavailable);
-            
-
         }
        
     }

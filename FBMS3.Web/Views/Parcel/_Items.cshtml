@@ -12,8 +12,8 @@ else
 
                 <thead>
                     <tr>
-
                         <th>Category</th>
+                        <th>Description</th>
                         <th>Quantity</th>
 
 
@@ -25,7 +25,7 @@ else
                     @foreach (var pi in Model.Items)
                     {
                         <tr>
-
+                            <td>@pi.Description</td>
                             <td>@pi.Item.Description</td>
                             <td>@pi.Quantity</td>
 

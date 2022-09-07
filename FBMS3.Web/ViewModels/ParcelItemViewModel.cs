@@ -17,9 +17,5 @@ namespace FBMS3.Web.ViewModels
 
         public int Quantity { get; set; } 
 
-        public SelectList Categorys { get; set ;}
-
-        public int CategoryId { get; set; }
-
     }
 }

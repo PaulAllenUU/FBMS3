@@ -96,13 +96,12 @@ namespace FBMS3.Web.Controllers
         public IActionResult ParcelFill(int id)
         {
             var items = svc.GetAllStock();
-            var categorys = svc.GetAllCategorys();
+           
             var parcel = svc.GetParcelById(id);
 
             var pvm = new ParcelItemViewModel
             {
                 Items = new SelectList(items,"Id","Description"),
-                Categorys = new SelectList(categorys,"Id","Description"),
                 ParcelId = id
             };
 
@@ -115,8 +114,8 @@ namespace FBMS3.Web.Controllers
         {
             if(ModelState.IsValid)
             {
-               svc.AddItemToParcel(pivm.ParcelId, pivm.StockId, pivm.Quantity, pivm.CategoryId);
-               svc.UpdateParcelItemQuantity(pivm.ParcelId, pivm.StockId, pivm.Quantity, pivm.CategoryId);
+               svc.AddItemToParcel(pivm.ParcelId, pivm.StockId, pivm.Quantity);
+               svc.UpdateParcelItemQuantity(pivm.ParcelId, pivm.StockId, pivm.Quantity);
                Alert($"Item successfully added to parcel {pivm.ParcelId}", AlertType.info);
 
                return RedirectToAction(nameof(Details), new { Id = pivm.ParcelId });
@@ -127,7 +126,6 @@ namespace FBMS3.Web.Controllers
             var pvm = new ParcelItemViewModel
             {
                 Items = new SelectList(items,"Id","Description"),
-                Categorys = new SelectList(categorys,"Id", "Description")
             };
 
             Alert("Something went wrong please try again");
