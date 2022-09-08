@@ -362,22 +362,6 @@ namespace FBMS3.Test
             Assert.False(f);
         }
 
-        /*[Fact]
-        public void AddFoodBank_WhenDuplicateAddress_ShouldReturnNull()
-        {
-            //act
-            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
-
-            //arrange - duplicate food bank address details
-            var f2 = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
-
-            //assert
-            Assert.NotNull(f);
-
-            //f2 should not be added
-            Assert.Null(f2);
-        }*/
-
         [Fact]
         public void FoodBank_RemoveFoodBankThatExists_ShouldReturnTrue()
         {
@@ -427,7 +411,7 @@ namespace FBMS3.Test
         }
 
         [Fact]
-        public void SearchFood_WhenSearchStringExists_ShouldReturnResult()
+        public void SearchFoodBank_WhenSearchStringExists_ShouldReturnResult()
         {
             //arrange
             var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
@@ -741,7 +725,139 @@ namespace FBMS3.Test
         }
 
         [Fact]
-        public void ParcelItem_AddParcelItem_ShouldAddToParcel()
+        public void AddParcelToClient_ParcelIdShouldContainClientId()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var cL1 = service.AddClient("Allen", "BT45 7PL", "example@mail.com", 3, f.Id);
+            var c1 = service.AddCategory("Carbohydrates");
+            var user = service.AddUser("Joanne", "McCracken", "jo@mail.com", "1234", f.Id, Role.admin);
+            var s1 = service.AddStock(f.Id, "Carbohydrates", 3, new DateTime(2022, 10, 01), c1.Id);
+
+            //act
+            var p = service.AddParcel(cL1.Id, user.Id, f.Id);
+
+            //assert
+            Assert.NotNull(p);
+            Assert.Equal(c1.Id, p.ClientId);
+        }
+
+        [Fact]
+        public void AddParcelToUser_ParcelShouldContainUserId()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var cL1 = service.AddClient("Allen", "BT45 7PL", "example@mail.com", 3, f.Id);
+            var c1 = service.AddCategory("Carbohydrates");
+            var user = service.AddUser("Joanne", "McCracken", "jo@mail.com", "1234", f.Id, Role.admin);
+            var s1 = service.AddStock(f.Id, "Carbohydrates", 3, new DateTime(2022, 10, 01), c1.Id);
+
+            //act
+            var p = service.AddParcel(cL1.Id, user.Id, f.Id);
+
+            //assert
+            Assert.NotNull(p);
+            Assert.Equal(user.Id, p.UserId);
+
+        }
+
+        [Fact]
+        public void AddParcelToFoodBank_ParcelShouldContainFoodBankId()
+        {
+              //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var cL1 = service.AddClient("Allen", "BT45 7PL", "example@mail.com", 3, f.Id);
+            var c1 = service.AddCategory("Carbohydrates");
+            var user = service.AddUser("Joanne", "McCracken", "jo@mail.com", "1234", f.Id, Role.admin);
+            var s1 = service.AddStock(f.Id, "Carbohydrates", 3, new DateTime(2022, 10, 01), c1.Id);
+
+            //act
+            var p = service.AddParcel(cL1.Id, user.Id, f.Id);
+
+            //assert
+            Assert.NotNull(p);
+            Assert.Equal(f.Id, p.FoodBankId);
+
+        }
+
+        [Fact]
+        public void DeleteParcel_WhenExists_ShouldReturnTrue()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var cL1 = service.AddClient("Allen", "BT45 7PL", "example@mail.com", 3, f.Id);
+            var c1 = service.AddCategory("Carbohydrates");
+            var user = service.AddUser("Joanne", "McCracken", "jo@mail.com", "1234", f.Id, Role.admin);
+            var s1 = service.AddStock(f.Id, "Carbohydrates", 3, new DateTime(2022, 10, 01), c1.Id);
+
+            //act
+            var p = service.AddParcel(cL1.Id, user.Id, f.Id);
+            var delete = service.DeleteParcel(p.Id);
+
+            //assert
+            Assert.True(delete);
+
+        }
+
+        [Fact]
+        public void DeleteParcel_WhenDoesnExist_ShouldReturnFalse()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var cL1 = service.AddClient("Allen", "BT45 7PL", "example@mail.com", 3, f.Id);
+            var c1 = service.AddCategory("Carbohydrates");
+            var user = service.AddUser("Joanne", "McCracken", "jo@mail.com", "1234", f.Id, Role.admin);
+            var s1 = service.AddStock(f.Id, "Carbohydrates", 3, new DateTime(2022, 10, 01), c1.Id);
+
+            //act
+            var delete = service.DeleteParcel(1);
+
+            //assert
+            Assert.False(delete);
+
+        }
+
+        [Fact]
+        public void RemoveItemFromParcel_WhenItemInParcel_ShouldReturnTrue()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var cL1 = service.AddClient("Allen", "BT45 7PL", "example@mail.com", 3, f.Id);
+            var c1 = service.AddCategory("Carbohydrates");
+            var user = service.AddUser("Joanne", "McCracken", "jo@mail.com", "1234", f.Id, Role.admin);
+            var s1 = service.AddStock(f.Id, "Carbohydrates", 3, new DateTime(2022, 10, 01), c1.Id);
+
+            //act
+            var p = service.AddParcel(cL1.Id, user.Id, f.Id);
+            var pi = service.AddItemToParcel(p.Id, s1.Id, cL1.NoOfPeople);
+            var remove = service.RemoveItemFromParcel(s1.Id, p.Id);
+
+            //assert
+            Assert.True(remove);
+        }
+
+        [Fact]
+        public void RemoveItemFromParcel_WhenItemNotInParcel_ShouldReturnFalse()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var cL1 = service.AddClient("Allen", "BT45 7PL", "example@mail.com", 3, f.Id);
+            var c1 = service.AddCategory("Carbohydrates");
+            var user = service.AddUser("Joanne", "McCracken", "jo@mail.com", "1234", f.Id, Role.admin);
+            var s1 = service.AddStock(f.Id, "Carbohydrates", 3, new DateTime(2022, 10, 01), c1.Id);
+
+            //act
+            var p = service.AddParcel(cL1.Id, user.Id, f.Id);
+            var remove = service.RemoveItemFromParcel(s1.Id, p.Id);
+
+            //assert
+            Assert.False(remove);
+        }
+
+        
+
+        [Fact]
+        public void ParcelItem_AddParcelItem_ShouldAddItemToParcel()
         {
             //arrange
             var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");

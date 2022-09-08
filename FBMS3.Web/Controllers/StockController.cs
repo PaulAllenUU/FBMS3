@@ -57,6 +57,7 @@ namespace FBMS3.Web.Controllers
 
         //POST - Create a stock item when it has been loaded
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize(Roles="admin,manager,staff")]
         public IActionResult Create(StockCreateViewModel svm)
         {
@@ -129,6 +130,7 @@ namespace FBMS3.Web.Controllers
 
         //POST - Edit stock item
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize(Roles="admin,manager,staff")]
         public IActionResult Edit ([Bind("Id,Description,Quantity,ExpiryDate,FoodBankId,CategoryId")] StockEditViewModel s)
         {

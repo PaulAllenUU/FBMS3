@@ -1,0 +1,39 @@
+@model ParcelItem
+
+<partial name="_BreadCrumbs" model=@(new [] {
+    ("/","Home"),
+    ("/parcel","Parcel"),
+    ($"/parcel/details/{Model.Id}",$"{Model.Id}"),
+    ("","Delete Item From Parcel")
+}) /> 
+
+<h3 class="mt-4 mb-4">Delete Item From Parcel</h3>
+
+<h4 class="mb-4">Are you sure you want to delete this item from the parcel?</h4>
+
+<div>
+
+    <div class="col card rounded shadow p-3">
+        <dl class="row">       
+            <dt class="col-5">Item Description</dt>
+            <dd class="col-7">@Model.Item.Description</dd>
+
+            <dt class="col-5">Quantity</dt>
+            <dd class="col-7">@Model.Item.Quantity</dd>
+                 
+        </dl>
+    </div>
+
+    <div class="mt-4">
+        <form asp-action="ItemRemoveConfirm" type="post">
+            <input type="hidden" asp-for="Id"/>
+            <input type="hidden" asp-for="ParcelId"/>
+            
+            <input type="submit" value="Confirm" class="btn btn-danger" />
+            <a class="btn btn-secondary" asp-controller="ParcelItem" asp-action="Details" asp-route-id="@Model.Parcel.Id" >Cancel</a>
+
+        </form>
+
+</div>
+
+

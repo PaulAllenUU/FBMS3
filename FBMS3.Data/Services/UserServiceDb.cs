@@ -523,6 +523,43 @@ namespace FBMS3.Data.Services
 
         }
 
+        public bool DeleteParcel(int id)
+        {
+            //get parcel by id
+            var p = GetParcelById(id);
+            //if the parcel is null then cannot be deleted so return false
+            if(p == null)
+            {
+                return false;
+            }
+
+            //remove the parcel and save changes
+            ctx.Parcels.Remove(p);
+            ctx.SaveChanges();
+            return true;
+
+        }
+
+        public IList<Parcel> SearchParcels(string query)
+        {
+            //ensure that the query for the user accounts is not null
+            query = query == null ? "" : query.ToLower();
+
+            var results = ctx.Parcels
+                             .Include(x => x.Client)
+                             .Include(x => x.FoodBank)
+                             .Include(x => x.User)
+                             .Where( x => (x.Client.SecondName.ToLower().Contains(query) ||
+                                           x.User.FirstName.ToLower().Contains(query) ||
+                                           x.FoodBank.StreetName.ToLower().Contains(query) ||
+                                           //x.Role.ToString().ToLower().Contains(query) ||
+                                           x.Items.ToString().Contains(query))
+                                    ).ToList();
+
+            return results;
+
+        }
+
         public ParcelItem AddItemToParcel(int parcelId, int stockId, int quantity)
         {
             //check the parcel does not already contain stock with the stock id passed in
@@ -556,6 +593,27 @@ namespace FBMS3.Data.Services
             ctx.SaveChanges();
             return npi;
 
+        }
+
+        public bool RemoveItemFromParcel(int stockId, int parcelId)
+        {
+            //check the item is in the parcel already, if not then return false
+            var pi = ctx.ParcelItems.FirstOrDefault(
+                p => p.StockId == stockId && p.ParcelId == parcelId  
+            );
+
+            //if the parcel item is null then cannot remove so return false
+            if(pi == null)
+            {
+                return false;
+            }
+
+            //remove the parcel item
+            ctx.ParcelItems.Remove(pi);
+
+            //save changes and return true
+            ctx.SaveChanges();
+            return true;
         }
 
         /*public IList<ParcelItem> PopulateParcel(int parcelId, int stockId, int categoryId, int quantity)

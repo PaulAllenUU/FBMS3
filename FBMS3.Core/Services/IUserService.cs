@@ -124,11 +124,14 @@ namespace FBMS3.Core.Services
         //--------Begin Parcel Management Methods---------///
         Parcel AddParcel(int clientId, int userId, int foodbankId);
 
+        //delete porcel
+        bool DeleteParcel(int id);
+
+        IList<Parcel> SearchParcels(string query);
+
         ParcelItem AddItemToParcel(int parcelId, int stockId, int quantity);
 
-     
-        //IList<ParcelItem> PopulateParcel(int parcelId, int stockId, int categoryId, int quantity);
-
+        bool RemoveItemFromParcel(int stockId, int parcelId);
         ParcelItem UpdateParcelItemQuantity(int parcelId, int stockId, int quantity);
 
         ParcelItem GetParcelItemById(int id);

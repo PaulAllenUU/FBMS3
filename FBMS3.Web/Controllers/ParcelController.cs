@@ -65,6 +65,7 @@ namespace FBMS3.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize(Roles="admin,manager,staff")]
         public IActionResult Create([Bind("ClientId, UserId, FoodBankId")] ParcelCreateViewModel pcvm)
         {
@@ -109,6 +110,7 @@ namespace FBMS3.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize(Roles ="admin,manager,staff")]
         public IActionResult ParcelFill([Bind("ParcelId,StockId,Quantity")] ParcelItemViewModel pivm)
         {
@@ -131,6 +133,19 @@ namespace FBMS3.Web.Controllers
             Alert("Something went wrong please try again");
             return View(pvm);
             
+        }
+
+        [Authorize(Roles = "admin,manager,staff")]
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public IActionResult ItemRemove(int id, int parcelId)
+        {
+            //delete the parcel item via the service
+            svc.RemoveItemFromParcel(id, parcelId);
+            Alert($"Item removed from parcel {parcelId}", AlertType.info);
+
+            return RedirectToAction(nameof(Details), new { Id = parcelId });
+
         }
     }
 }

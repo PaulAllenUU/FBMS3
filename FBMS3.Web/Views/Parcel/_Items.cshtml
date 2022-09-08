@@ -12,7 +12,6 @@ else
 
                 <thead>
                     <tr>
-                        <th>Category</th>
                         <th>Description</th>
                         <th>Quantity</th>
 
@@ -25,9 +24,15 @@ else
                     @foreach (var pi in Model.Items)
                     {
                         <tr>
-                            <td>@pi.Description</td>
                             <td>@pi.Item.Description</td>
                             <td>@pi.Quantity</td>
+
+                            <td>
+                                <a asp-action="ItemRemove" type="post"
+                                    asp-route-id="@pi.Item.Id" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                        </td>
 
                         </tr>
                             

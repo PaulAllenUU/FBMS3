@@ -99,6 +99,10 @@ namespace FBMS3.Data.Services
             var cL5 = svc.AddClient("Campbell", "BT56 7KM", "cmp@hotmail.co.uk", 4, f2.Id);
             var cL6 = svc.AddClient("Marquess", "BT68 7KL", "nm@outlook.com", 3, f2.Id);
             var cL7 = svc.AddClient("Brownlow", "BT73 5QW", "wolyaj@btinternet.com", 4, f1.Id);
+            var cL8 = svc.AddClient("Mullan", "BT90 1DF", "mullans@hotmail.co.uk", 2, f9.Id);
+            var cL9 = svc.AddClient("Scott", "BT78 23JK", "scottsy@ymail.com", 2, f2.Id);
+            var cL10 = svc.AddClient("Gillen", "BT78 2OP", "pgillen4@msn.com", 3, f2.Id);
+            
 
             //create some empty parcels
             var parcel1 = svc.AddParcel(cL1.Id, u1.Id, f1.Id);

@@ -61,6 +61,7 @@ namespace FBMS3.Web.Controllers
         }
         
         [Authorize(Roles="admin")]
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult Create([Bind("StreetNumber, StreetName, PostCode")] FoodBank f)
         {
@@ -105,6 +106,7 @@ namespace FBMS3.Web.Controllers
          
         //POST - FoodBank/Edit/{id}
         [Authorize(Roles="admin,manager")]
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult Edit(int id, [Bind("Id, StreetNumber, StreetName, PostCode")] FoodBank f)
         {
@@ -144,6 +146,7 @@ namespace FBMS3.Web.Controllers
 
         //POST // FoodBank / Delte / {id}
         [Authorize(Roles="admin,manager")]
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult DeleteConfirm(int id)
         {
@@ -186,6 +189,7 @@ namespace FBMS3.Web.Controllers
 
         //POST - filling in the form to create the new item of stock
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize(Roles="admin,manager,staff")]
         public IActionResult StockCreate(int foodBankId, [Bind("FoodBankId, Description, Quantity, ExpiryDate, CategoryId")] StockCreateViewModel s)
         {
@@ -220,6 +224,7 @@ namespace FBMS3.Web.Controllers
 
         //POST - STOCK DeleteConfirm
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize(Roles="admin,manager,staff")]
         public IActionResult StockDeleteConfirm(int id, int foodbankId)
         {
