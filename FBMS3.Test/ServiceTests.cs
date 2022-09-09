@@ -829,7 +829,7 @@ namespace FBMS3.Test
 
             //act
             var p = service.AddParcel(cL1.Id, user.Id, f.Id);
-            var pi = service.AddItemToParcel(p.Id, s1.Id, cL1.NoOfPeople);
+            var pi = service.AddItemToParcel(p.Id, s1.Id);
             var remove = service.RemoveItemFromParcel(s1.Id, p.Id);
 
             //assert
@@ -868,7 +868,7 @@ namespace FBMS3.Test
 
             //act
             var p = service.AddParcel(cL1.Id, user.Id, f.Id);
-            var pi = service.AddItemToParcel(p.Id, s1.Id, cL1.NoOfPeople);
+            var pi = service.AddItemToParcel(p.Id, s1.Id);
 
             //assert
             Assert.NotNull(pi);
@@ -877,6 +877,69 @@ namespace FBMS3.Test
             Assert.Equal(3, pi.Quantity);
             Assert.Equal(s1.Description, pi.Item.Description);
             
+        }
+
+        [Fact]
+        public void AutoPopulateParcelWith2Item_ShouldWork()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var cL1 = service.AddClient("Allen", "BT45 7PL", "example@mail.com", 1, f.Id);
+            var c1 = service.AddCategory("Carbohydrates");
+            var c2 = service.AddCategory("Meat");
+            var user = service.AddUser("Joanne", "McCracken", "jo@mail.com", "1234", f.Id, Role.admin);
+            var s1 = service.AddStock(f.Id, "Carbohydrates", 3, new DateTime(2022, 10, 01), c1.Id);
+            var s2 = service.AddStock(f.Id, "Meat", 3, new DateTime(2023,02,02), c2.Id);
+
+            //act
+            var p = service.AddParcel(cL1.Id, user.Id, f.Id);
+            var pi = service.AutoPopulateParcel(p.Id);
+
+            //assert - pi is not null
+            Assert.NotNull(pi);
+
+            //should contain 2 items
+            Assert.Equal(2, pi.Count);
+
+        }
+
+        [Fact]
+        public void AutoPopulateWith10Items_ShouldWork()
+        {
+            //arrange
+            var f = service.AddFoodBank(28, "Thorndale", "BT49 0ST");
+            var cL1 = service.AddClient("Allen", "BT45 7PL", "example@mail.com", 1, f.Id);
+            var cat1 = service.AddCategory("Cereal");
+            var cat2 = service.AddCategory("Soup");
+            var cat3 = service.AddCategory("Baked Beans");
+            var cat4 = service.AddCategory("Tomatoes");
+            var cat5 = service.AddCategory("Vegetables");
+            var cat6 = service.AddCategory("Meat");
+            var cat7 = service.AddCategory("Veggie Option");
+            var cat8 = service.AddCategory("Fish");
+            var cat9 = service.AddCategory("Fruit");
+            var cat10 = service.AddCategory("Pudding");
+            var user = service.AddUser("Joanne", "McCracken", "jo@mail.com", "1234", f.Id, Role.admin);
+            var s1 = service.AddStock(f.Id, "Corn Flakes", 100, new DateTime(2022, 10, 01), cat1.Id);
+            var s2 = service.AddStock(f.Id, "Vegetable Broth", 100, new DateTime(2023,01,01), cat2.Id);
+            var s3 = service.AddStock(f.Id, "Baked Beans", 100, new DateTime(2023,01,01), cat3.Id);
+            var s4 = service.AddStock(f.Id, "Tinned Tomastoes", 100, new DateTime(2022,01,01), cat4.Id);
+            var s5 = service.AddStock(f.Id, "Peppers", 100, new DateTime(2022,01,02), cat5.Id);
+            var s6 = service.AddStock(f.Id, "Chicken", 100, new DateTime(2022, 09,09), cat6.Id);
+            var s7 = service.AddStock(f.Id, "Kidney Beans", 100, new DateTime(2022,10,12), cat7.Id);
+            var s8 = service.AddStock(f.Id, "Frozen Cod", 100, new DateTime(2022,10,30), cat8.Id);
+            var s9 = service.AddStock(f.Id, "Banana", 100, new DateTime(2022, 09, 01), cat9.Id);
+            var s10 = service.AddStock(f.Id, "Angel Delight", 100, new DateTime(2022, 05, 07), cat10.Id);
+
+            
+            //act
+            var p = service.AddParcel(cL1.Id, user.Id, f.Id);
+            var pi = service.AutoPopulateParcel(p.Id);
+
+            //assert
+            Assert.NotNull(pi);
+            Assert.Equal(10, pi.Count);
+
         }
        
     }

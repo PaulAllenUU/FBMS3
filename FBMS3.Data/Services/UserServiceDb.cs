@@ -560,7 +560,7 @@ namespace FBMS3.Data.Services
 
         }
 
-        public ParcelItem AddItemToParcel(int parcelId, int stockId, int quantity)
+        public ParcelItem AddItemToParcel(int parcelId, int stockId)
         {
             //check the parcel does not already contain stock with the stock id passed in
             var pi = ctx.ParcelItems
@@ -582,7 +582,6 @@ namespace FBMS3.Data.Services
             var npi = new ParcelItem { 
                                         ParcelId = parcelId,
                                         StockId = stockId,
-                                        Quantity = quantity
                                      };
 
             
@@ -592,6 +591,45 @@ namespace FBMS3.Data.Services
             //save changes and return the new parcel item
             ctx.SaveChanges();
             return npi;
+
+        }
+
+        public IList <ParcelItem> AutoPopulateParcel (int parcelId)
+        {
+            //check the parcel item is not inside the parcel already
+             //check the parcel does not already contain stock with the stock id passed in
+            var p = ctx.Parcels.FirstOrDefault(p => p.Id == parcelId);
+            var stockAvailableForParcel = p.FoodBank.Stock.Select(s => s.Category.Id).ToList();
+
+            //create the list of parcelitems
+            IList<ParcelItem> itemsToAdd = new List<ParcelItem>();
+            
+            var npi = new ParcelItem
+            {
+
+                ParcelId = parcelId
+            };
+
+
+            for(int i = 0 ; i < stockAvailableForParcel.Count; i++)
+            {
+                
+                itemsToAdd.Add( new ParcelItem
+                {
+                    ParcelId = parcelId,
+                    StockId = stockAvailableForParcel[i],
+                    
+                });
+                
+                
+            }
+
+            ctx.ParcelItems.AddRange(itemsToAdd);
+
+            //add the new parcelitem and save changes
+            ctx.SaveChanges();
+
+            return itemsToAdd;
 
         }
 
@@ -662,7 +700,7 @@ namespace FBMS3.Data.Services
 
         }*/
 
-        public ParcelItem UpdateParcelItemQuantity(int parcelId, int stockId, int quantity)
+        public ParcelItem UpdateParcelItemQuantity(int parcelId, int stockId)
         {
             var parcel = GetParcelById(parcelId);
             //check the parcel exists
@@ -676,8 +714,6 @@ namespace FBMS3.Data.Services
             {
                 return null;
             }
-
-            pi.Quantity = quantity;
 
             ctx.SaveChanges();
             return pi;

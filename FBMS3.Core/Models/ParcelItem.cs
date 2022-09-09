@@ -12,8 +12,8 @@ namespace FBMS3.Core.Models
         //foreign key to the stock table
         public int StockId { get; set; }
 
-        //quantity of each stock item
-        public int Quantity { get; set; }
+        //quantity of each stock item is determined by number in family of parcel.client.noofPeople
+        public int Quantity => Quantify();
 
         //foreign key to the parcel table
         public int ParcelId { get; set; }
@@ -21,5 +21,29 @@ namespace FBMS3.Core.Models
         //navigation property to the parcel table
         public Parcel Parcel { get; set; }
 
+        //the family size of the client will determine the quantity of each parcel item served in the parcel
+        private int Quantify()
+        {
+            //if there is 1 person they get 2 of each item
+            if(Parcel.Client.NoOfPeople == 1)
+            {
+                return 2;
+            }
+            //else if there is 2 people they get 3 of each item in the parcel
+            else if(Parcel.Client.NoOfPeople == 2)
+            {
+                return 3;
+            }
+                //if there is 3 people they get 5 of each item in the parcel
+                else if(Parcel.Client.NoOfPeople == 3)
+                {
+                    return 5;
+                }
+                    //if there is more than 4 people they get 6 of item in each parcel
+                    else
+                    {
+                        return 6;
+                    }
+        }
     }
 }

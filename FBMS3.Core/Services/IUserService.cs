@@ -129,10 +129,13 @@ namespace FBMS3.Core.Services
 
         IList<Parcel> SearchParcels(string query);
 
-        ParcelItem AddItemToParcel(int parcelId, int stockId, int quantity);
+        ParcelItem AddItemToParcel(int parcelId, int stockId);
+
+        IList <ParcelItem> AutoPopulateParcel (int parcelId);
 
         bool RemoveItemFromParcel(int stockId, int parcelId);
-        ParcelItem UpdateParcelItemQuantity(int parcelId, int stockId, int quantity);
+
+        ParcelItem UpdateParcelItemQuantity(int parcelId, int stockId);
 
         ParcelItem GetParcelItemById(int id);
 

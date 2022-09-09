@@ -116,8 +116,8 @@ namespace FBMS3.Web.Controllers
         {
             if(ModelState.IsValid)
             {
-               svc.AddItemToParcel(pivm.ParcelId, pivm.StockId, pivm.Quantity);
-               svc.UpdateParcelItemQuantity(pivm.ParcelId, pivm.StockId, pivm.Quantity);
+               svc.AddItemToParcel(pivm.ParcelId, pivm.StockId);
+               svc.UpdateParcelItemQuantity(pivm.ParcelId, pivm.StockId);
                Alert($"Item successfully added to parcel {pivm.ParcelId}", AlertType.info);
 
                return RedirectToAction(nameof(Details), new { Id = pivm.ParcelId });
@@ -145,6 +145,26 @@ namespace FBMS3.Web.Controllers
             Alert($"Item removed from parcel {parcelId}", AlertType.info);
 
             return RedirectToAction(nameof(Details), new { Id = parcelId });
+
+        }
+
+        [Authorize(Roles = "admin,manager,staff")]
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public IActionResult AutoPopulateParcel(int id, [Bind("ParcelId")] ParcelItemViewModel pivm)
+        {
+            var p = svc.GetParcelById(id);
+
+            if(p == null)
+            {
+                Alert($"Parcel {id} not found", AlertType.info);
+                return View(pivm);
+            }
+
+            svc.AutoPopulateParcel(id);
+            Alert($"Parcel number {pivm.ParcelId} successfully populated. Please review", AlertType.success);
+
+            return RedirectToAction(nameof(Details), new { Id = pivm.ParcelId });
 
         }
     }
