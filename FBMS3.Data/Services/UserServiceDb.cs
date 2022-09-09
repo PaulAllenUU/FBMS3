@@ -583,7 +583,7 @@ namespace FBMS3.Data.Services
                                         ParcelId = parcelId,
                                         StockId = stockId,
                                      };
-
+                                     
             
             //add the new parcel item to the database
             ctx.ParcelItems.Add(npi);
@@ -598,8 +598,9 @@ namespace FBMS3.Data.Services
         {
             //check the parcel item is not inside the parcel already
              //check the parcel does not already contain stock with the stock id passed in
-            var p = ctx.Parcels.FirstOrDefault(p => p.Id == parcelId);
-            var stockAvailableForParcel = p.FoodBank.Stock.Select(s => s.Category.Id).ToList();
+            var p = ctx.Parcels.FirstOrDefault(p => p.Id == parcelId); 
+
+            var stockAvailableForParcel = p.FoodBank.Stock.OrderBy(s => s.Category.Id).Select(s => s.Category.Id).ToList();
 
             //create the list of parcelitems
             IList<ParcelItem> itemsToAdd = new List<ParcelItem>();
@@ -653,52 +654,6 @@ namespace FBMS3.Data.Services
             ctx.SaveChanges();
             return true;
         }
-
-        /*public IList<ParcelItem> PopulateParcel(int parcelId, int stockId, int categoryId, int quantity)
-        {
-             //check the parcel does not already contain stock with the stock id passed in
-            var pi = ctx.ParcelItems
-                        .FirstOrDefault(x => x.ParcelId == parcelId &&
-                                             x.StockId == stockId &&
-                                             x.CategoryId == categoryId);
-
-           
-            //if these are not null then return null 
-            if(pi != null) { return null; }
-
-            //locate the parcel and the stock item
-            var p = ctx.Parcels.FirstOrDefault(p => p.Id == parcelId);
-            var s = ctx.Stock.FirstOrDefault(s => s.Id == stockId);
-            var c = ctx.Categorys.FirstOrDefault(c => c.Id == categoryId);
-
-             //if either are null then return null
-            if (p == null || s == null || c == null) { return null ; }
-
-            //get categorie ids
-            IList<int> categories = ctx.Categorys.Select(x => x.Id).ToList();
-            IList<int> stockids = ctx.Stock.Select(x => x.Id).ToList();
-
-            //list of stock items to be populated
-            IList <ParcelItem> npiList = new List<ParcelItem>(categories.Count);
-
-            for(int i = 0; i < npiList.Count; i++)
-            {
-                npiList.Add( new ParcelItem
-                                    {
-                                        ParcelId = parcelId,
-                                        CategoryId = categoryId,
-                                        StockId = stockId,
-                                        Quantity = quantity
-                                    });
-
-            };
-
-            ctx.ParcelItems.AddRange(npiList);
-            ctx.SaveChanges();
-       
-            return npiList;
-
-        }*/
 
         public ParcelItem UpdateParcelItemQuantity(int parcelId, int stockId)
         {
