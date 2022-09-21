@@ -28,10 +28,14 @@ else
                             <td>@pi.Quantity</td>
 
                             <td>
-                                <a asp-action="ItemRemove" type="post"
-                                    asp-route-id="@pi.Item.Id" class="btn btn-sm btn-danger">
-                                    <i class="bi bi-trash"></i>
-                                </a>
+                                <form asp-action="ItemRemove" asp-route-id="@pi.Id">
+                                    <button class=class="btn btn-sm btn-danger" type="submit">
+                                        <i class="bi bi-trash"></i>
+
+                                    </button>
+                                </form>
+                                    
+                                
                         </td>
 
                         </tr>

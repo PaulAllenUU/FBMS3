@@ -116,8 +116,8 @@ namespace FBMS3.Web.Controllers
         {
             if(ModelState.IsValid)
             {
-               svc.AddItemToParcel(pivm.ParcelId, pivm.StockId);
-               svc.UpdateParcelItemQuantity(pivm.ParcelId, pivm.StockId);
+               svc.AddItemToParcel(pivm.ParcelId, pivm.StockId, pivm.Quantity);
+               svc.UpdateParcelItemQuantity(pivm.ParcelId, pivm.StockId, pivm.Quantity);
                Alert($"Item successfully added to parcel {pivm.ParcelId}", AlertType.info);
 
                return RedirectToAction(nameof(Details), new { Id = pivm.ParcelId });
@@ -140,11 +140,20 @@ namespace FBMS3.Web.Controllers
         [HttpPost]
         public IActionResult ItemRemove(int id, int parcelId)
         {
-            //delete the parcel item via the service
-            svc.RemoveItemFromParcel(id, parcelId);
-            Alert($"Item removed from parcel {parcelId}", AlertType.info);
-
-            return RedirectToAction(nameof(Details), new { Id = parcelId });
+            //check the item is already inside the parcel
+            var pi = svc.GetParcelItemById(id);
+            if(pi == null)
+            {
+                Alert("Item not found in parcel", AlertType.warning);
+                return RedirectToAction(nameof(Index));
+            }
+            //delete the parcel item via the service method
+            svc.RemoveItemFromParcel(pi.StockId, pi.ParcelId);
+            //alert the user to the successful action
+            Alert($"Item removed from parcel {pi.ParcelId}", AlertType.info);
+            
+            //return the user to the details of the parcel id
+            return RedirectToAction(nameof(Details), new { Id = pi.ParcelId });
 
         }
 

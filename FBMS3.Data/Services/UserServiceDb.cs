@@ -560,7 +560,7 @@ namespace FBMS3.Data.Services
 
         }
 
-        public ParcelItem AddItemToParcel(int parcelId, int stockId)
+        public ParcelItem AddItemToParcel(int parcelId, int stockId, int quantity)
         {
             //check the parcel does not already contain stock with the stock id passed in
             var pi = ctx.ParcelItems
@@ -582,9 +582,11 @@ namespace FBMS3.Data.Services
             var npi = new ParcelItem { 
                                         ParcelId = parcelId,
                                         StockId = stockId,
+                                        Quantity = quantity
                                      };
-                                     
-            
+
+            s.Quantity -= npi.Quantity;
+
             //add the new parcel item to the database
             ctx.ParcelItems.Add(npi);
             
@@ -600,24 +602,19 @@ namespace FBMS3.Data.Services
              //check the parcel does not already contain stock with the stock id passed in
             var p = ctx.Parcels.FirstOrDefault(p => p.Id == parcelId); 
 
-            var stockAvailableForParcel = p.FoodBank.Stock.OrderBy(s => s.Category.Id).Select(s => s.Category.Id).ToList();
+            var stockAvailableForParcel = p.FoodBank.Stock.Select(s => s.Category.Id).ToList();
 
             //create the list of parcelitems
             IList<ParcelItem> itemsToAdd = new List<ParcelItem>();
-            
-            var npi = new ParcelItem
-            {
 
-                ParcelId = parcelId
-            };
-
-
+            //loop to iterate through the different category id's
             for(int i = 0 ; i < stockAvailableForParcel.Count; i++)
             {
-                
+                //each loop will add the new parcel item to the list of parcel items   
                 itemsToAdd.Add( new ParcelItem
                 {
                     ParcelId = parcelId,
+                    //the stock id is assigned the index of the category ids
                     StockId = stockAvailableForParcel[i],
                     
                 });
@@ -625,11 +622,9 @@ namespace FBMS3.Data.Services
                 
             }
 
+            //add the list of parcel items, save changes and return the list of parcel items
             ctx.ParcelItems.AddRange(itemsToAdd);
-
-            //add the new parcelitem and save changes
             ctx.SaveChanges();
-
             return itemsToAdd;
 
         }
@@ -641,11 +636,21 @@ namespace FBMS3.Data.Services
                 p => p.StockId == stockId && p.ParcelId == parcelId  
             );
 
+            //check that both the parcel and the stock item exist 
+            var p = ctx.Parcels.FirstOrDefault(p => p.Id == parcelId);
+            var s = ctx.Stock.FirstOrDefault(s => s.Id == stockId);
+
+            //if either are null then return null
+            if (p == null || s == null) { return false ;}
+
             //if the parcel item is null then cannot remove so return false
             if(pi == null)
             {
                 return false;
             }
+
+            //re add the items back into the database that have been removed from the parcel
+            s.Quantity += pi.Quantity;
 
             //remove the parcel item
             ctx.ParcelItems.Remove(pi);
@@ -655,7 +660,7 @@ namespace FBMS3.Data.Services
             return true;
         }
 
-        public ParcelItem UpdateParcelItemQuantity(int parcelId, int stockId)
+        public ParcelItem UpdateParcelItemQuantity(int parcelId, int stockId, int quantity)
         {
             var parcel = GetParcelById(parcelId);
             //check the parcel exists
@@ -663,12 +668,18 @@ namespace FBMS3.Data.Services
             {
                 return null;
             }
+
+            //check the stock item exists
+            var s = ctx.Stock.FirstOrDefault(s => s.Id == stockId);
+
             var pi = parcel.Items.FirstOrDefault(s => s.StockId == stockId);
 
             if(pi == null)
             {
                 return null;
             }
+
+            pi.Quantity = quantity;
 
             ctx.SaveChanges();
             return pi;

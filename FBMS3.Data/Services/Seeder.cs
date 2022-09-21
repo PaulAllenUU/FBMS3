@@ -108,8 +108,7 @@ namespace FBMS3.Data.Services
             var parcel1 = svc.AddParcel(cL1.Id, u1.Id, f1.Id);
 
             //var populate = svc.PopulateParcel(parcel1.Id, s1.Id, c1.Id, 2);
-            
-            
+            //var populate = svc.AutoPopulateParcel(parcel1.Id);
         }
     }
 }

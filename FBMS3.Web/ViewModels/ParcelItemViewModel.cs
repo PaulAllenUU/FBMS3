@@ -14,6 +14,8 @@ namespace FBMS3.Web.ViewModels
         public int StockId { get; set; }
 
         public SelectList Items { get; set; }
+
+        public int Quantity { get; set; }
         
     }
 }

@@ -829,7 +829,7 @@ namespace FBMS3.Test
 
             //act
             var p = service.AddParcel(cL1.Id, user.Id, f.Id);
-            var pi = service.AddItemToParcel(p.Id, s1.Id);
+            var pi = service.AddItemToParcel(p.Id, s1.Id, 4);
             var remove = service.RemoveItemFromParcel(s1.Id, p.Id);
 
             //assert
@@ -868,7 +868,7 @@ namespace FBMS3.Test
 
             //act
             var p = service.AddParcel(cL1.Id, user.Id, f.Id);
-            var pi = service.AddItemToParcel(p.Id, s1.Id);
+            var pi = service.AddItemToParcel(p.Id, s1.Id, 3);
 
             //assert
             Assert.NotNull(pi);
